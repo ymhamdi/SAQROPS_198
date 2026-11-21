@@ -125,6 +125,27 @@
       "paceOutX": { "value": 10, "unit": "×", "source": "Playback speed of the automatic demo while the team is out and waiting for the PC. Team choice", "status": "MODELED" },
       "arrivedM": { "value": 1, "unit": "m", "source": "Distance to its objective under which the team counts as working there (the demo then speeds up). Team choice", "status": "MODELED" },
       "maxS": { "value": 700, "unit": "s", "source": "The automatic demo stops at this simulated time at the latest, whatever happens. Team choice", "status": "MODELED" }
+    },
+    "droneIndoor": {
+      "enduranceMin": { "value": 10, "unit": "min", "source": "Class of collision-tolerant indoor inspection drones (protective cage): up to 10 min (Elios 2 sheet, https://mfe-is.com/wp-content/uploads/2024/09/MFE-Rentals-Elios-2.pdf) to 11.5 min (Elios 3 base, https://mfe-is.com/wp-content/uploads/2024/12/Elios-3_tech-specs.pdf; reseller copies of the manufacturer sheets). The lower value is kept. To validate against the current manufacturer datasheet", "status": "MODELED" },
+      "cruiseMs": { "value": 2, "unit": "m/s", "source": "Same sheets: 2.4 m/s maximum in every direction and 2 m/s safe speed in a frontal collision (Elios 3). We cruise at 2 m/s. To validate", "status": "MODELED" },
+      "maxAmbientC": { "value": 50, "unit": "°C", "source": "Same sheets: operating temperature 0 to 50 °C. The drone does not enter a room whose detectors read this or more (the ceiling reads hotter than the drone's altitude: conservative). To validate", "status": "MODELED" },
+      "batteryReservePct": { "value": 25, "unit": "%", "source": "Same reserve policy as the outdoor drone (drone.batteryReservePct, R7): from every point the way home must still land with this reserve. Team rule", "status": "MODELED" },
+      "viewRadiusM": { "value": 7, "unit": "m", "source": "Distance, in clear line of sight, at which the thermal camera (160×120 px, field of view 56° × 42° on the sheets above) tells a door's state, an obstructed passage or the heat behind an open door. Team assumption, to validate", "status": "MODELED" },
+      "thermalNoiseSdC": { "value": 3, "unit": "°C", "source": "Standard deviation of the drone's room temperature reading (SIMULATED sensor noise). Team assumption", "status": "MODELED" }
+    },
+    "knowledge": {
+      "confidenceClear": { "value": 0.9, "unit": "1", "source": "Confidence of a drone observation taken in clear air (thermal and visible camera). Team assumption, to validate", "status": "MODELED" },
+      "confidenceSmoke": { "value": 0.5, "unit": "1", "source": "Confidence of an observation taken in smoke: the visible camera sees nothing, only the thermal one counts. Lower than in clear air. Team assumption, to validate", "status": "MODELED" },
+      "confidenceHalfLifeS": { "value": 120, "unit": "s", "source": "Time over which an observation's confidence halves: a fire changes a room within a minute or two. Team assumption, to validate", "status": "MODELED" },
+      "confidenceExpiry": { "value": 0.25, "unit": "1", "source": "Below this confidence an observation has expired and its room is UNKNOWN again (R10). Team assumption", "status": "MODELED" },
+      "unknownCostMultiplier": { "value": 2.5, "unit": "1", "source": "Route-cost multiplier of a room nobody has observed since the drone flew: an absence of observation is never a proof of safety (R9), so it is never free. Team assumption, to validate", "status": "MODELED" },
+      "observedHotCostMultiplier": { "value": 8, "unit": "1", "source": "Route-cost multiplier of a room the drone saw at or above progression.hotC. Team assumption", "status": "MODELED" },
+      "tooHotCostMultiplier": { "value": 20, "unit": "1", "source": "Route-cost multiplier of a room too hot for the drone to enter (« trop chaud pour le drone » is itself an observation that makes things worse, R9). Team assumption", "status": "MODELED" }
+    },
+    "rehearsal": {
+      "flashoverMarginS": { "value": 20, "unit": "s", "source": "A room becomes impassable in the rehearsal this long before the flashover the AI predicts for it. Safety margin, team assumption, to validate with the Protection civile", "status": "MODELED" },
+      "playbackS": { "value": 8, "unit": "s", "source": "Wall-clock duration of the rehearsal replay in the self-playing demo (at ×20 the whole sequence must stay under 10 s). Team choice", "status": "MODELED" }
     }
   }
 }
