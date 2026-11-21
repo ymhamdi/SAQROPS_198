@@ -93,7 +93,9 @@ Jalons :
 - 22:00 démo jouable (script §9 complet).
 - 01:00 gel (ensuite : bugs, README FR, MODEL_REPORT, CREDITS, Vercel).
 Après chaque jalon : test, typecheck et build verts, commit, résumé en 5 lignes (marche / ne marche pas).
-Le repo vit hors de OneDrive (ex. C:\dev\pnr) : node_modules et les verrous git ne supportent pas la synchronisation.
+Le repo vit dans C:\Users\youss\OneDrive\Desktop\AERODAY (choix de l'équipe, 21/11). OneDrive synchronise aussi
+node_modules et .git : si git ou npm signalent un fichier verrouillé, suspendre la synchronisation OneDrive.
+Python reste hors repo : venv C:\dev\pnr-venv, wheels C:\dev\wheels, données NIST brutes C:\dev\pnr-data.
 
 ## 9. Définition de « fini » = script de la vidéo
 1. Le PC ouvre le site ; départ de feu dans le stockage solvants.

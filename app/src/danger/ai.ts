@@ -16,6 +16,8 @@ export interface RoomPrediction {
   tffS: number
   /** above a decision threshold (chosen for recall ≥ 0.95 on validation) */
   alert: boolean
+  /** the shortest horizon whose threshold is crossed: what the alert says ("sous 30 s" / "sous 60 s") */
+  horizonS: 30 | 60 | null
   status: DataStatus
 }
 
@@ -28,7 +30,8 @@ export function predictRooms(site: Site, stats: RoomStats[], predictor: Predicto
     .map((r) => {
       const row = featureVector(stats[r.index], neighbours(site, r.index).map((n) => stats[n]))
       const p = predictor.predict(row)
-      return { room: r.index, ...p, alert: p.p30 >= predictor.thresholds.p30 || p.p60 >= predictor.thresholds.p60, status }
+      const horizonS = p.p30 >= predictor.thresholds.p30 ? 30 : p.p60 >= predictor.thresholds.p60 ? 60 : null
+      return { room: r.index, ...p, alert: horizonS !== null, horizonS, status }
     })
 }
 
@@ -50,7 +53,7 @@ export function aiReasons(site: Site, predictions: RoomPrediction[], involved: S
     out.push({
       code: 'FLASHOVER_PREDICTED',
       severity: onPlan ? 'no-go' : 'caution',
-      message: `Embrasement prévu ${name} dans ${roughSeconds(p.tffS)}${onPlan ? '' : ' (hors itinéraire)'}`,
+      message: `Embrasement prévu ${name} sous ${p.horizonS} s${onPlan ? '' : ' (hors itinéraire)'}`,
       source: 'ai',
       status: p.status,
       room: p.room,
