@@ -1,11 +1,14 @@
 // HUD du masque ARI: read in under a second. One primary number per slot, one alert at a time (icon + word + colour),
-// no sentence and no « Décision : COS » (R2: that line lives on the PC, the tablet and the card).
+// no sentence and no « Décision : COS » (R2: that line lives on the PC, the tablet and the card). Behind the symbology,
+// a synthetic first-person view of the building that follows the team in real time (scene/), labelled as what it is.
 
 import { H, v } from '../config'
+import { Scene } from '../scene/Scene'
 import type { Snapshot } from '../sim/protocol'
 import type { Site } from '../site/site'
 import { worstStatus } from '../stats/status'
 import { verdictLine } from '../stats/verdict'
+import { Num } from '../ui/Num'
 import { StatusBadge } from '../ui/StatusBadge'
 import { nextStep } from './crew'
 import './crew.css'
@@ -25,24 +28,20 @@ export function Hud({ site, snap }: { site: Site; snap: Snapshot | null }) {
   const next = nextStep(site, snap)
   return (
     <main className={`hud2 is-${alert.level}`}>
+      <Scene className="hud2-scene" site={site} snap={snap} />
+      <p className="hud2-tag">
+        Vue synthétique <StatusBadge status="SIMULATED" />
+      </p>
       <section className="hud2-alert" aria-live="assertive">
         <span className="hud2-icon">{alert.icon}</span> <strong>{alert.word}</strong>
       </section>
-      <section className="hud2-nav">
-        {next && next.bearingDeg !== null && (
-          <svg className="hud2-arrow" viewBox="-30 -30 60 60" role="img" aria-label="Direction à suivre">
-            <circle r="26" />
-            <g transform={`rotate(${next.bearingDeg})`}>
-              <path d="M0,-20 L10,10 L0,4 L-10,10 Z" />
-            </g>
-          </svg>
-        )}
-        {next && (
+      {next && (
+        <section className="hud2-nav">
           <p>
-            <strong>{Math.round(next.distanceM)} m</strong> {next.label}
+            <Num value={Math.round(next.distanceM)} unit="m" status={live} /> <span>{next.label}</span>
           </p>
-        )}
-      </section>
+        </section>
+      )}
       <section className="hud2-air">
         <span>AIR</span>
         <strong>{Math.round(snap.team.bar)}</strong>

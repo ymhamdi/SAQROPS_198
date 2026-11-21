@@ -148,10 +148,115 @@
   color: var(--amber-text);
 }
 
+/* The live map stays in view while the cards beside it scroll. */
 .tablet2 > .tablet2-map {
   grid-column: 2;
-  grid-row: 2 / span 6;
+  grid-row: 2 / span 8;
+  align-self: start;
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: calc(100vh - 76px);
   padding: 8px;
+}
+
+.tablet2-maptools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tablet2 .tablet2-maptools button {
+  margin-top: 0;
+}
+
+.tablet2 .tablet2-maptools button[aria-pressed='true'] {
+  background: var(--blue-bg);
+  color: var(--blue-text);
+  border-width: 2px;
+}
+
+.tablet2 .tablet2-maptools button.is-zoom {
+  min-width: 64px;
+  font-size: 26px;
+}
+
+.tablet2 .tablet2-maptools button:disabled {
+  opacity: 0.4;
+}
+
+.tablet2-canvas {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.tablet2-legend {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+/* The phase of the mission: past, current (a mark as well as a colour), to come. */
+.tablet2-mission ol {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.tablet2-mission li {
+  flex: 1;
+  padding: 10px 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--text-3);
+  background: var(--surface-2);
+}
+
+.tablet2-mission li.is-past {
+  color: var(--green);
+  background: var(--green-bg);
+  border-color: var(--green);
+}
+
+.tablet2-mission li.is-current {
+  font-weight: 700;
+  color: var(--blue-text);
+  background: var(--blue-bg);
+  border: 2px solid var(--blue);
+}
+
+.tablet2-mission li.is-current.is-nogo {
+  color: var(--red-text);
+  background: var(--red-bg);
+  border-color: var(--red);
+}
+
+.tablet2-mission p {
+  margin: 0;
+  font-size: 16px;
+}
+
+@media (max-width: 900px) {
+  .tablet2 {
+    grid-template-columns: 1fr;
+  }
+
+  .tablet2 > .tablet2-map {
+    grid-column: 1;
+    grid-row: auto;
+    position: static;
+    height: 70vh;
+  }
 }
 
 /* ---------- HUD: dark, see-through look, no filled panels; text and strokes with a dark halo ---------- */
@@ -161,12 +266,53 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto 1fr auto;
+  height: 100vh;
   min-height: 100vh;
-  padding: 32px;
-  background: radial-gradient(ellipse at 50% 40%, #3a3f44 0%, #1d2125 55%, var(--hud-bg) 100%);
+  overflow: hidden;
+  padding: 28px 32px;
+  background: var(--hud-bg);
   color: var(--visor-text);
   font-family: Barlow, system-ui, sans-serif;
   text-shadow: var(--visor-halo);
+}
+
+/* The synthetic view fills the visor; the symbology sits over it. */
+.hud2-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hud2 > section,
+.hud2 > .hud2-tag {
+  position: relative;
+  z-index: 1;
+}
+
+/* The view is a rendering, and says so. */
+.hud2-tag {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--visor-text-2);
+}
+
+/* NO-GO: the edges of the visor go red, in addition to the word and the icon. */
+.hud2.is-warning::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 140px 20px rgba(217, 48, 37, 0.6);
 }
 
 .hud2-alert {
@@ -188,33 +334,25 @@
   color: var(--hud-green);
 }
 
+/* Where next, under the view: distance and place, between the air and the point of no return. */
 .hud2-nav {
   grid-column: 2;
-  grid-row: 2;
-  align-self: center;
+  grid-row: 3;
+  align-self: end;
   justify-self: center;
   text-align: center;
-  font-size: 26px;
+  font-size: 24px;
+  line-height: 1.2;
+  max-width: 100%;
+  padding-bottom: 6px;
 }
 
-.hud2-arrow {
-  width: 160px;
-  height: 160px;
-  filter: var(--visor-halo-icon);
+.hud2-nav p {
+  margin: 0;
 }
 
-.hud2-arrow circle {
-  fill: none;
-  stroke: var(--visor-text);
-  stroke-width: 1.5;
-}
-
-.hud2-arrow path {
-  fill: var(--visor-text);
-}
-
-.hud2.is-warning .hud2-arrow path {
-  fill: var(--hud-red);
+.hud2-nav .num strong {
+  font-size: 44px;
 }
 
 .hud2-air,
