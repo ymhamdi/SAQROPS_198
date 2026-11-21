@@ -1,118 +1,67 @@
-// Walking-time cost model (CLAUDE.md §5). Edge cost = seconds to walk from one cell centre to a neighbour's.
+// Time cost of moving across the site: seconds per metre in each cell, from what the detectors say about its room
+// (clear, smoke, hot smoke), door procedure, and the danger multipliers (danger/). Walls and equipment are impassable.
+// Same interface as Martian Map's cost model, so the A* and the walk-home Dijkstra of search.ts are reused unchanged.
 
-import {
-  ROVER_SLOPE_IMPASSABLE_DEG,
-  ROVER_SLOPE_PENALTY_PER_DEG,
-  ROVER_SLOPE_PENALTY_START_DEG,
-  ROVER_SPEED_KMH,
-  ROVER_TERRAIN_MULTIPLIER,
-  SLOPE_IMPASSABLE_DEG,
-  SLOPE_PENALTY_PER_DEG,
-  SLOPE_PENALTY_START_DEG,
-  SAFE_ROUTE_SLOPE_PENALTY_PER_DEG,
-  SAFE_ROUTE_TERRAIN_MULTIPLIER,
-  SUIT_SPEED_FACTOR,
-  TERRAIN_COST_MULTIPLIER,
-  TOBLER_DECAY,
-  TOBLER_MAX_SPEED_KMH,
-  TOBLER_SLOPE_OFFSET,
-} from '../config'
-import type { CostGrid, TerrainClass } from '../types'
+import { H, v } from '../config.ts'
+import type { Site } from '../site/site.ts'
+import { CELL } from '../types.ts'
 
-export interface RouteParams {
-  suitSpeedFactor: number
-  slopePenaltyStartDeg: number
-  slopeImpassableDeg: number
-  slopePenaltyPerDeg: number
-  terrainMultiplier: Record<TerrainClass, number>
-  /** A vehicle's constant speed, m/s; when set it replaces the walking (Tobler) speed. */
-  fixedSpeedMs?: number
-}
-
-export const DEFAULT_ROUTE_PARAMS: RouteParams = {
-  suitSpeedFactor: SUIT_SPEED_FACTOR,
-  slopePenaltyStartDeg: SLOPE_PENALTY_START_DEG,
-  slopeImpassableDeg: SLOPE_IMPASSABLE_DEG,
-  slopePenaltyPerDeg: SLOPE_PENALTY_PER_DEG,
-  terrainMultiplier: TERRAIN_COST_MULTIPLIER,
-}
-
-/** Search costs for the "safest" alternative: same physics, much heavier hazard penalties (config.ts). */
-export const SAFEST_ROUTE_PARAMS: RouteParams = {
-  ...DEFAULT_ROUTE_PARAMS,
-  slopePenaltyPerDeg: SAFE_ROUTE_SLOPE_PENALTY_PER_DEG,
-  terrainMultiplier: SAFE_ROUTE_TERRAIN_MULTIPLIER,
-}
-
-/** The support rover driving (config.ts): constant speed, stricter slope limit, slow in sand, no rocky ground. */
-export const ROVER_ROUTE_PARAMS: RouteParams = {
-  ...DEFAULT_ROUTE_PARAMS,
-  fixedSpeedMs: ROVER_SPEED_KMH / 3.6,
-  slopePenaltyStartDeg: ROVER_SLOPE_PENALTY_START_DEG,
-  slopeImpassableDeg: ROVER_SLOPE_IMPASSABLE_DEG,
-  slopePenaltyPerDeg: ROVER_SLOPE_PENALTY_PER_DEG,
-  terrainMultiplier: ROVER_TERRAIN_MULTIPLIER,
-}
-
-export type RouteProfile = 'fastest' | 'safest'
-
-/** A CostGrid plus the per-cell cost multiplier and scratch buffers the searches reuse. */
+/** A grid prepared for the searches: seconds per metre per cell (Infinity = impassable) and reusable scratch buffers. */
 export interface PreparedGrid {
-  grid: CostGrid
-  params: RouteParams
-  /** terrain × slope-penalty multiplier per cell; Infinity = impassable */
-  mult: Float32Array
+  grid: { width: number; height: number; cellSizeM: number }
+  /** s/m per cell */
+  pace: Float32Array
+  /** the smallest finite pace: the A* heuristic's speed bound */
+  minPace: number
   scratch: { g: Float64Array; came: Int32Array; closed: Uint8Array }
 }
 
 /**
- * Tobler's hiking function × suit factor, in m/s. tanTheta is the signed slope along the
- * direction of travel (rise / horizontal run), so uphill and downhill differ.
+ * Seconds per metre in each room: its progression speed (from the detectors, R5) times its danger multiplier.
+ * Index = room index.
  */
-export function walkingSpeedMs(tanTheta: number, suitSpeedFactor: number): number {
-  const kmh = TOBLER_MAX_SPEED_KMH * Math.exp(-TOBLER_DECAY * Math.abs(tanTheta + TOBLER_SLOPE_OFFSET))
-  return (kmh * suitSpeedFactor) / 3.6
+export type RoomPace = ArrayLike<number>
+
+/** Door procedure time, spread over the door's cells (a door is one or two cells deep). */
+function doorExtraPace(cellM: number): number {
+  return v(H.progression.doorPassS) / (2 * cellM)
 }
 
-/** Fastest possible walking speed, m/s (Tobler's peak, on a 5% downhill). Used by the A* heuristic. */
-export function maxWalkingSpeedMs(params: RouteParams): number {
-  if (params.fixedSpeedMs) return params.fixedSpeedMs
-  return walkingSpeedMs(-TOBLER_SLOPE_OFFSET, params.suitSpeedFactor)
-}
-
-/** Cost multiplier of a cell from its terrain class and its (direction-free) slope. */
-export function cellMultiplier(slopeDeg: number, terrain: number, params: RouteParams): number {
-  if (slopeDeg >= params.slopeImpassableDeg) return Infinity
-  const terrainMult = params.terrainMultiplier[terrain as TerrainClass] ?? Infinity
-  const slopeMult = 1 + params.slopePenaltyPerDeg * Math.max(0, slopeDeg - params.slopePenaltyStartDeg)
-  return terrainMult * slopeMult
-}
-
-export function prepareGrid(grid: CostGrid, params: RouteParams = DEFAULT_ROUTE_PARAMS): PreparedGrid {
-  const n = grid.width * grid.height
-  const mult = new Float32Array(n)
-  for (let i = 0; i < n; i++) mult[i] = cellMultiplier(grid.slopeDeg[i], grid.terrainClass[i], params)
+export function prepareGrid(site: Site, roomPace: RoomPace): PreparedGrid {
+  const n = site.width * site.height
+  const pace = new Float32Array(n)
+  const clear = 1 / v(H.progression.clearMs)
+  let minPace = Infinity
+  for (let i = 0; i < n; i++) {
+    const k = site.kind[i]
+    let p: number
+    if (k === CELL.WALL || k === CELL.OBSTACLE) p = Infinity
+    else if (k === CELL.OUTSIDE) p = clear
+    else if (k === CELL.DOOR || k === CELL.EXIT) {
+      const [a, b] = site.doors[site.door[i]].rooms
+      p = Math.max(a >= 0 ? roomPace[a] : clear, b >= 0 ? roomPace[b] : clear) + doorExtraPace(site.cellM)
+    } else p = roomPace[site.room[i]]
+    pace[i] = p
+    if (p < minPace) minPace = p
+  }
   return {
-    grid,
-    params,
-    mult,
+    grid: { width: site.width, height: site.height, cellSizeM: site.cellM },
+    pace,
+    minPace,
     scratch: { g: new Float64Array(n), came: new Int32Array(n), closed: new Uint8Array(n) },
   }
 }
 
 export function isPassable(p: PreparedGrid, cell: number): boolean {
-  return Number.isFinite(p.mult[cell])
+  return Number.isFinite(p.pace[cell])
 }
 
-/**
- * Seconds to walk from cell `from` to neighbouring cell `to`, distM apart horizontally.
- * Half the step lies in each cell, so the two multipliers are averaged; either impassable → Infinity.
- * Distance is horizontal map distance, as in Tobler's function.
- */
+/** Seconds to step between neighbouring cells distM apart: half the step in each cell. */
 export function stepTime(p: PreparedGrid, from: number, to: number, distM: number): number {
-  const m = (p.mult[from] + p.mult[to]) / 2
-  if (!Number.isFinite(m)) return Infinity
-  const tanTheta = (p.grid.elevation[to] - p.grid.elevation[from]) / distM
-  const speed = p.params.fixedSpeedMs ?? walkingSpeedMs(tanTheta, p.params.suitSpeedFactor)
-  return (distM / speed) * m
+  return (distM * (p.pace[from] + p.pace[to])) / 2
+}
+
+/** Fastest possible speed anywhere on the grid, m/s (admissible A* heuristic). */
+export function maxSpeedMs(p: PreparedGrid): number {
+  return 1 / p.minPace
 }

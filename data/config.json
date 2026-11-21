@@ -1,0 +1,100 @@
+{
+  "about": "Every assumption of PNR, each with its value, unit, source and status (CLAUDE.md R4, tested by app/src/config.test.ts). Status: OBSERVED measured · DERIVED computed from observations · MODELED our assumption, a correlation or a normative value · SIMULATED · MOCK.",
+  "site": {
+    "path": "site/atelier.json",
+    "status": "MODELED"
+  },
+  "hypotheses": {
+    "fire": {
+      "alphaSlow": { "value": 0.00293, "unit": "kW/s²", "source": "t-squared design fire, slow growth (1055 kW at 600 s). NFPA 72 Annex B; SFPE Handbook of Fire Protection Engineering, 5th ed., design fires", "status": "MODELED" },
+      "alphaMedium": { "value": 0.01172, "unit": "kW/s²", "source": "t-squared design fire, medium growth (1055 kW at 300 s). NFPA 72 Annex B; SFPE Handbook, design fires", "status": "MODELED" },
+      "alphaFast": { "value": 0.0469, "unit": "kW/s²", "source": "t-squared design fire, fast growth (1055 kW at 150 s). NFPA 72 Annex B; SFPE Handbook, design fires", "status": "MODELED" },
+      "alphaUltraFast": { "value": 0.1876, "unit": "kW/s²", "source": "t-squared design fire, ultra-fast growth (1055 kW at 75 s), e.g. flammable liquids. NFPA 72 Annex B; SFPE Handbook, design fires", "status": "MODELED" },
+      "ventilationLimitKwPerM52": { "value": 1500, "unit": "kW/m^(5/2)", "source": "Ventilation-limited heat release Q = 1500·A·√H: Kawagoe (1958) air inflow 0.5·A·√H kg/s × ~3000 kJ per kg of air. SFPE Handbook, compartment fire chapters", "status": "MODELED" },
+      "mqhCoefficient": { "value": 6.85, "unit": "1", "source": "Hot-layer temperature rise ΔT = 6.85·(Q²/(A·√H·hk·AT))^(1/3): McCaffrey, Quintiere & Harkleroad (1981), Fire Technology 17(2):98-119. SFPE Handbook, Walton & Thomas, estimating temperatures in compartment fires", "status": "MODELED" },
+      "flashoverC": { "value": 600, "unit": "°C", "source": "Flashover when the hot layer reaches 600 °C: the label used by NIST P-Flash (Tam et al.) and the common 500-600 °C upper-layer criterion (Drysdale, An Introduction to Fire Dynamics)", "status": "MODELED" },
+      "flashoverCriterion": { "value": "temperature", "unit": "temperature | thomas | either", "source": "Team choice: temperature matches the NIST training label; thomas = Q ≥ 7.8·AT + 378·A·√H (Thomas 1981, Fire and Materials 5(3):103-111)", "status": "MODELED" },
+      "thomasAreaKwPerM2": { "value": 7.8, "unit": "kW/m²", "source": "Thomas (1981) minimum heat release for flashover, wall-area term. SFPE Handbook", "status": "MODELED" },
+      "thomasVentKwPerM52": { "value": 378, "unit": "kW/m^(5/2)", "source": "Thomas (1981) minimum heat release for flashover, ventilation term. SFPE Handbook", "status": "MODELED" },
+      "postFlashoverC": { "value": 900, "unit": "°C", "source": "Hot-layer temperature held after flashover (fully developed fires reach roughly 900-1100 °C). Drysdale, An Introduction to Fire Dynamics, ch. 10", "status": "MODELED" },
+      "convectiveFraction": { "value": 0.7, "unit": "1", "source": "Convective share of the heat release in plume correlations. Heskestad, SFPE Handbook, fire plumes; NFPA 92", "status": "MODELED" },
+      "plumeK1": { "value": 0.071, "unit": "kg/s·kW^(-1/3)·m^(-5/3)", "source": "Plume mass flow above the flame m = 0.071·Qc^(1/3)·z^(5/3) + 0.0018·Qc. Heskestad, SFPE Handbook, fire plumes; NFPA 92 (2018) eq. 5.5.1.1", "status": "MODELED" },
+      "plumeK2": { "value": 0.0018, "unit": "kg/s·kW⁻¹", "source": "Same correlation, second term. NFPA 92 (2018) eq. 5.5.1.1", "status": "MODELED" },
+      "plumeFlameK": { "value": 0.032, "unit": "kg/s·kW^(-3/5)·m⁻¹", "source": "Plume mass flow within the flame, m = 0.032·Qc^(3/5)·z. NFPA 92 (2018) eq. 5.5.1.1a", "status": "MODELED" },
+      "flameHeightK": { "value": 0.166, "unit": "m·kW^(-2/5)", "source": "Mean flame height for a fire of unknown diameter, L = 0.166·Qc^(2/5). NFPA 92 (2018) eq. 5.5.1.1b", "status": "MODELED" },
+      "doorDischargeCoefficient": { "value": 0.7, "unit": "1", "source": "Discharge coefficient of a doorway for buoyant hot-gas outflow. Karlsson & Quintiere, Enclosure Fire Dynamics (2000), ch. 10; SFPE Handbook, vent flows", "status": "MODELED" },
+      "airCpKjPerKgK": { "value": 1.0, "unit": "kJ/(kg·K)", "source": "Specific heat of air and smoke. Karlsson & Quintiere (2000)", "status": "MODELED" },
+      "rhoTKgKPerM3": { "value": 353, "unit": "kg·K/m³", "source": "Ideal gas: density × temperature of air at 1 atm. Karlsson & Quintiere (2000)", "status": "MODELED" },
+      "concreteConductivityWPerMK": { "value": 1.6, "unit": "W/(m·K)", "source": "Normal-weight concrete. SFPE Handbook, thermal properties of building materials; Karlsson & Quintiere (2000) table 6.1", "status": "MODELED" },
+      "concreteDensityKgPerM3": { "value": 2400, "unit": "kg/m³", "source": "Normal-weight concrete. Karlsson & Quintiere (2000) table 6.1", "status": "MODELED" },
+      "concreteHeatCapacityJPerKgK": { "value": 750, "unit": "J/(kg·K)", "source": "Normal-weight concrete. Karlsson & Quintiere (2000) table 6.1", "status": "MODELED" },
+      "concreteThicknessM": { "value": 0.2, "unit": "m", "source": "Team assumption for concrete walls", "status": "MODELED" },
+      "gypsumConductivityWPerMK": { "value": 0.48, "unit": "W/(m·K)", "source": "Gypsum board, for light partitions. Karlsson & Quintiere (2000) table 6.1", "status": "MODELED" },
+      "gypsumDensityKgPerM3": { "value": 1440, "unit": "kg/m³", "source": "Gypsum board. Karlsson & Quintiere (2000) table 6.1", "status": "MODELED" },
+      "gypsumHeatCapacityJPerKgK": { "value": 840, "unit": "J/(kg·K)", "source": "Gypsum board. Karlsson & Quintiere (2000) table 6.1", "status": "MODELED" },
+      "gypsumThicknessM": { "value": 0.016, "unit": "m", "source": "Team assumption: one 16 mm board layer", "status": "MODELED" },
+      "leakageAreaM2PerM2Floor": { "value": 0.0005, "unit": "m²/m²", "source": "Leakage of a room with every door closed, so a closed room still breathes a little. Team assumption, order of magnitude of NFPA 92 tight construction", "status": "MODELED" },
+      "doorJetFraction": { "value": 1.0, "unit": "1", "source": "Share of the excess fuel of a ventilation-limited room (free heat release above 1500·A·√H) that burns as a door jet in the next room, split by each open door's A·√H. Door jet fires as modelled in NIST CFAST (Peacock et al., CFAST technical reference guide)", "status": "MODELED" },
+      "spreadDelayS": { "value": 30, "unit": "s", "source": "After a flashover, a room joined by an open door ignites this long after. Team assumption (CLAUDE.md: spread through an open door after flashover)", "status": "MODELED" },
+      "doorFireResistanceS": { "value": 1800, "unit": "s", "source": "A closed EI 30 fire door holds 30 min. EN 13501-2 classification", "status": "MODELED" },
+      "layerResponseS": { "value": 15, "unit": "s", "source": "Time constant with which the hot layer follows the quasi-steady MQH temperature (MQH has no thermal inertia of its own). Team assumption", "status": "MODELED" },
+      "ambientC": { "value": 25, "unit": "°C", "source": "Indoor ambient temperature before the fire. Team assumption", "status": "MODELED" }
+    },
+    "detectors": {
+      "failureC": { "value": 150, "unit": "°C", "source": "A heat detector stops reporting above 150 °C, as assumed by NIST P-Flash (Tam et al. 2021)", "status": "MODELED" },
+      "noiseSdC": { "value": 1.0, "unit": "°C", "source": "Reading noise, one standard deviation. Team assumption", "status": "MODELED" },
+      "rtiMs05": { "value": 50, "unit": "(m·s)^(1/2)", "source": "Response time index of a fixed-temperature heat detector (typical 25-100). SFPE Handbook, detector response", "status": "MODELED" },
+      "minGasVelocityMs": { "value": 0.3, "unit": "m/s", "source": "Gas velocity used for detector response outside the ceiling jet. Team assumption", "status": "MODELED" },
+      "alpertNearK": { "value": 16.9, "unit": "1", "source": "Ceiling-jet temperature near the plume, ΔT = 16.9·Q^(2/3)/H^(5/3) for r/H ≤ 0.18: Alpert (1972), Fire Technology 8(3):181-195", "status": "MODELED" },
+      "alpertFarK": { "value": 5.38, "unit": "1", "source": "Ceiling-jet temperature away from the plume, ΔT = 5.38·(Q/r)^(2/3)/H: Alpert (1972)", "status": "MODELED" },
+      "alpertTempRatio": { "value": 0.18, "unit": "1", "source": "r/H limit between Alpert's two temperature correlations: Alpert (1972)", "status": "MODELED" },
+      "alpertVelNearK": { "value": 0.96, "unit": "1", "source": "Ceiling-jet velocity near the plume, u = 0.96·(Q/H)^(1/3) for r/H ≤ 0.15: Alpert (1972)", "status": "MODELED" },
+      "alpertVelFarK": { "value": 0.195, "unit": "1", "source": "Ceiling-jet velocity away from the plume, u = 0.195·Q^(1/3)·H^(1/2)/r^(5/6): Alpert (1972)", "status": "MODELED" },
+      "alpertVelRatio": { "value": 0.15, "unit": "1", "source": "r/H limit between Alpert's two velocity correlations: Alpert (1972)", "status": "MODELED" },
+      "sampleS": { "value": 1, "unit": "s", "source": "Detector reporting period in the simulation (the training data step is checked when the NIST file is opened)", "status": "MODELED" }
+    },
+    "ari": {
+      "cylinderL": { "value": 6.8, "unit": "L", "source": "Water volume of a common 300 bar composite SCBA cylinder. Team assumption, to be validated with the Protection civile", "status": "MODELED" },
+      "startBar": { "value": 300, "unit": "bar", "source": "Full cylinder pressure. Team assumption, to be validated with the Protection civile", "status": "MODELED" },
+      "whistleBar": { "value": 55, "unit": "bar", "source": "Low-pressure warning of a self-contained breathing apparatus at 55 ± 5 bar: EN 137:2006", "status": "MODELED" },
+      "returnFactor": { "value": 1.5, "unit": "1", "source": "The way out is assumed 1.5× slower than planned (fatigue, smoke, a victim). Rule carried over from Martian Map's point of no return; team assumption", "status": "MODELED" },
+      "consumptionApproachLpm": { "value": 60, "unit": "L/min", "source": "Air use while advancing in smoke with equipment (training figures range 40-100 L/min by effort). Team assumption, to be validated with the Protection civile", "status": "MODELED" },
+      "consumptionWorkLpm": { "value": 80, "unit": "L/min", "source": "Air use while working at the objective (search, rescue). Team assumption, to be validated with the Protection civile", "status": "MODELED" },
+      "consumptionExitLpm": { "value": 60, "unit": "L/min", "source": "Air use on the way out. Team assumption, to be validated with the Protection civile", "status": "MODELED" },
+      "workAtObjectiveS": { "value": 120, "unit": "s", "source": "Default time spent at each objective. Team assumption", "status": "MODELED" },
+      "airLowCautionBar": { "value": 100, "unit": "bar", "source": "Caution when the pressure drops below this. Team assumption", "status": "MODELED" }
+    },
+    "progression": {
+      "clearMs": { "value": 1.0, "unit": "m/s", "source": "Firefighter walking with breathing apparatus and equipment, no smoke. Team assumption, to be validated with the Protection civile", "status": "MODELED" },
+      "smokeMs": { "value": 0.5, "unit": "m/s", "source": "Advance in a smoke-filled room (reduced visibility). Team assumption, to be validated with the Protection civile", "status": "MODELED" },
+      "hotMs": { "value": 0.25, "unit": "m/s", "source": "Advance low in dense hot smoke, following a wall or a hose line. Team assumption, to be validated with the Protection civile", "status": "MODELED" },
+      "smokeAboveAmbientC": { "value": 15, "unit": "°C", "source": "A room whose detectors read this much above ambient is treated as smoke-filled. Team rule (detectors only, R5)", "status": "MODELED" },
+      "hotC": { "value": 100, "unit": "°C", "source": "A room whose detectors read this much is treated as hot dense smoke. Team rule (detectors only, R5)", "status": "MODELED" },
+      "doorPassS": { "value": 5, "unit": "s", "source": "Time to check and pass a door (door procedure). Team assumption", "status": "MODELED" }
+    },
+    "danger": {
+      "failedRoomCostMultiplier": { "value": 40, "unit": "1", "source": "Route cost multiplier in a room whose detectors have all failed (>150 °C at the ceiling): avoided, still crossable to get out. Team rule", "status": "MODELED" },
+      "predictedFlashoverCostMultiplier": { "value": 60, "unit": "1", "source": "Route cost multiplier in a room the model expects to flash over within 60 s. Team rule", "status": "MODELED" },
+      "fallbackThreshold": { "value": 0.5, "unit": "probability", "source": "Decision threshold used only when ml/model/metrics.json gives none (the trained model's threshold is chosen for recall ≥ 0.95)", "status": "MODELED" },
+      "rerouteCostChange": { "value": 0.15, "unit": "fraction", "source": "Re-plan the route only when the verdict changes or its cost moves by more than this share (no flicker). Team choice", "status": "MODELED" }
+    },
+    "radio": {
+      "deadZoneWalls": { "value": 3, "unit": "walls", "source": "A point is a radio dead zone when the straight line to the engine crosses at least this many concrete walls. Team rule, to be validated with the Protection civile", "status": "MODELED" }
+    },
+    "drone": {
+      "enduranceMin": { "value": 41, "unit": "min", "source": "Maximum flight time of a current industrial thermal drone (manufacturer spec sheet, 2022 enterprise class)", "status": "MODELED" },
+      "cruiseMs": { "value": 8, "unit": "m/s", "source": "Reconnaissance speed around the building. Team assumption (well below the class's 23 m/s maximum)", "status": "MODELED" },
+      "maxWindMs": { "value": 12, "unit": "m/s", "source": "Flight refused above this wind (the class is rated to 15 m/s; team margin)", "status": "MODELED" },
+      "batteryReservePct": { "value": 25, "unit": "%", "source": "Battery that must remain on landing back at the engine. Team assumption", "status": "MODELED" },
+      "altitudeM": { "value": 30, "unit": "m", "source": "Fixed reconnaissance altitude. Team assumption", "status": "MODELED" },
+      "thermalResolution": { "value": "640×512", "unit": "px", "source": "Thermal camera resolution of the class (manufacturer spec sheet)", "status": "MODELED" },
+      "plumeExclusionLengthM": { "value": 80, "unit": "m", "source": "Length of the no-fly zone downwind of the fire. Team assumption", "status": "MODELED" },
+      "plumeExclusionHalfAngleDeg": { "value": 25, "unit": "°", "source": "Half-angle of the downwind no-fly cone. Team assumption", "status": "MODELED" }
+    },
+    "sim": {
+      "tickS": { "value": 1, "unit": "s", "source": "Simulation step (CLAUDE.md §5)", "status": "MODELED" },
+      "playbackSpeeds": { "value": [1, 5, 10, 20], "unit": "×", "source": "Playback speeds offered; ×10 for the video. Team choice", "status": "MODELED" },
+      "seed": { "value": 42, "unit": "1", "source": "Random seed of the detector noise in the video scenario. Team choice", "status": "MODELED" }
+    }
+  }
+}

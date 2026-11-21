@@ -1,0 +1,10 @@
+{
+  "status": "DUMMY",
+  "note": "Placeholder trained on synthetic t-squared histories to freeze the format. Not a model of anything.",
+  "xgboost": "3.4.1",
+  "contractVersion": 1,
+  "thresholds": {
+    "p30": 0.5,
+    "p60": 0.5
+  }
+}

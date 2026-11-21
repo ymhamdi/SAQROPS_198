@@ -1,7 +1,7 @@
 // A* (one leg) and the reversed-graph Dijkstra walk-home field, 8-connected, on a PreparedGrid.
 
 import { createHeap } from './heap'
-import { isPassable, maxWalkingSpeedMs, stepTime, type PreparedGrid } from './cost'
+import { isPassable, maxSpeedMs, stepTime, type PreparedGrid } from './cost'
 
 const DR = [-1, -1, -1, 0, 0, 1, 1, 1]
 const DC = [-1, 0, 1, -1, 1, -1, 0, 1]
@@ -42,7 +42,7 @@ export function findPath(p: PreparedGrid, start: number, goal: number): Path | n
   closed.fill(0)
 
   // Admissible: octile distance at the fastest speed any step can reach, with the smallest multiplier (1).
-  const secondsPerCell = cellSizeM / maxWalkingSpeedMs(p.params)
+  const secondsPerCell = cellSizeM / maxSpeedMs(p)
   const goalR = (goal / width) | 0
   const goalC = goal - goalR * width
   const heuristic = (cell: number) => {

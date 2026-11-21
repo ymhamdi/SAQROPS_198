@@ -7,7 +7,7 @@ import { defineConfig } from 'vitest/config'
 
 const DATA_DIR = fileURLToPath(new URL('../data', import.meta.url))
 // What the app may read from data/. raw/ (downloads) is never served or shipped.
-const PUBLIC_DATA = ['config.json', 'SOURCES.md', 'processed']
+const PUBLIC_DATA = ['config.json', 'SOURCES.md', 'consignes.json', 'site', 'weather', 'nist']
 const TYPES: Record<string, string> = {
   '.json': 'application/json',
   '.md': 'text/markdown; charset=utf-8',
@@ -20,7 +20,7 @@ const TYPES: Record<string, string> = {
 function dataDir(): Plugin {
   let outDir = 'dist'
   return {
-    name: 'martian-map-data',
+    name: 'pnr-data',
     configResolved(config) {
       outDir = resolve(config.root, config.build.outDir)
     },
@@ -36,7 +36,7 @@ function dataDir(): Plugin {
     },
     closeBundle() {
       if (!existsSync(join(DATA_DIR, 'config.json'))) {
-        console.warn('[martian-map-data] data/config.json not found: build has no data (run `python -m pipeline mock`).')
+        console.warn('[pnr-data] data/config.json not found: build has no data.')
         return
       }
       for (const entry of PUBLIC_DATA) {
@@ -47,15 +47,13 @@ function dataDir(): Plugin {
   }
 }
 
-// The copilot server (server/, FastAPI) behind /api, so the app calls it on its own origin.
-const COPILOT_API = { '/api': { target: process.env.COPILOT_API_URL ?? 'http://127.0.0.1:8787', changeOrigin: true } }
-
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), dataDir()],
-  server: { proxy: COPILOT_API },
-  preview: { proxy: COPILOT_API },
+  // The model files and the contract live in ../ml/model (shared with the Python side).
+  server: { fs: { allow: ['..'] } },
   test: {
     include: ['src/**/*.test.ts'],
+    exclude: ['src/legacy/**', 'node_modules/**'],
   },
 })

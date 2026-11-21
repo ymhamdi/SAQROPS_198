@@ -1,0 +1,71 @@
+{
+  "name": "Atelier de pièces composites aéronautiques (site fictif)",
+  "status": "MODELED",
+  "source": "Fictional site drawn by the team for the demo; no real company. Layout typical of a composite-parts workshop: cutting and lay-up, autoclave, paint booth, solvent store, Li-ion charging room, main switchboard, offices.",
+  "location": {
+    "lat": 36.6965,
+    "lon": 10.1955,
+    "note": "Approximate coordinates of an industrial zone of Greater Tunis, used only to fetch the outdoor wind. The plan is never drawn over a real map.",
+    "status": "MODELED"
+  },
+  "units": "metres; x eastwards from the building's west wall, y southwards from its north wall",
+  "building": { "widthM": 60, "depthM": 40, "marginM": 5, "cellM": 0.5 },
+  "rooms": [
+    { "id": "bureaux", "name": "Bureaux", "rect": [0, 0, 10, 8], "heightM": 3.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["fumees"], "growth": "medium" },
+    { "id": "tgbt", "name": "TGBT / transformateur", "rect": [10, 0, 16, 6], "heightM": 4.0, "walls": "concrete", "flashoverModel": false, "hazards": ["electrique"], "growth": "slow" },
+    { "id": "liion", "name": "Local de charge batteries Li-ion", "rect": [16, 0, 22, 6], "heightM": 4.0, "walls": "concrete", "flashoverModel": true, "hazards": ["liion", "fumees"], "growth": "fast" },
+    { "id": "solvants", "name": "Stockage solvants", "rect": [0, 32, 6, 40], "heightM": 4.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["solvants", "fumees"], "growth": "ultraFast" },
+    { "id": "peinture", "name": "Cabine de peinture", "rect": [6, 32, 16, 40], "heightM": 4.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["solvants", "fumees"], "growth": "fast" },
+    { "id": "halle", "name": "Halle de production (découpe, drapage, autoclave)", "rect": null, "heightM": 8.0, "walls": "concrete", "flashoverModel": false, "hazards": ["fumees", "pression"], "growth": "medium" }
+  ],
+  "obstacles": [
+    { "id": "autoclave", "name": "Autoclave", "rect": [40, 2, 52, 7], "hazards": ["pression"] },
+    { "id": "drapage-1", "name": "Tables de découpe et drapage", "rect": [26, 14, 38, 16.5], "hazards": [] },
+    { "id": "drapage-2", "name": "Tables de découpe et drapage", "rect": [26, 22, 38, 24.5], "hazards": [] },
+    { "id": "congel-1", "name": "Congélateurs préimprégnés", "rect": [46, 14, 58, 15.5], "hazards": [] },
+    { "id": "congel-2", "name": "Congélateurs préimprégnés", "rect": [46, 22, 58, 23.5], "hazards": [] },
+    { "id": "stock-panneaux", "name": "Stock de panneaux", "rect": [24, 34, 34, 36], "hazards": [] }
+  ],
+  "doors": [
+    { "id": "d-bureaux", "name": "Porte bureaux", "rect": [4, 7.5, 5, 8], "heightM": 2.1, "open": true, "rating": null },
+    { "id": "d-tgbt", "name": "Porte TGBT", "rect": [12, 5.5, 13, 6], "heightM": 2.1, "open": false, "rating": "EI30" },
+    { "id": "d-liion", "name": "Porte local Li-ion", "rect": [18, 5.5, 19, 6], "heightM": 2.1, "open": false, "rating": "EI30" },
+    { "id": "d-solvants-peinture", "name": "Porte stockage ↔ cabine", "rect": [5.5, 35, 6.5, 37], "heightM": 2.1, "open": true, "rating": "EI30" },
+    { "id": "d-solvants-halle", "name": "Porte stockage ↔ halle", "rect": [2, 32, 3, 32.5], "heightM": 2.1, "open": false, "rating": "EI30" },
+    { "id": "d-peinture-halle", "name": "Porte cabine ↔ halle", "rect": [10, 32, 12, 32.5], "heightM": 2.5, "open": true, "rating": null }
+  ],
+  "exits": [
+    { "id": "sortie-ouest", "name": "Sortie Ouest", "rect": [0, 18, 0.5, 20], "heightM": 2.1 },
+    { "id": "sortie-est", "name": "Sortie Est", "rect": [59.5, 18, 60, 20], "heightM": 2.1 },
+    { "id": "sortie-nord", "name": "Portail Nord", "rect": [34, 0, 38, 0.5], "heightM": 4.0 }
+  ],
+  "engine": { "name": "Engin (FPT)", "at": [63, 22] },
+  "detectors": [
+    { "id": "det-bureaux-1", "at": [3, 4] },
+    { "id": "det-bureaux-2", "at": [7, 4] },
+    { "id": "det-tgbt", "at": [13, 3] },
+    { "id": "det-liion", "at": [19, 3] },
+    { "id": "det-solvants", "at": [3, 36] },
+    { "id": "det-peinture-1", "at": [9, 36] },
+    { "id": "det-peinture-2", "at": [13, 36] },
+    { "id": "det-halle-1", "at": [10, 20] },
+    { "id": "det-halle-2", "at": [22, 12] },
+    { "id": "det-halle-3", "at": [22, 28] },
+    { "id": "det-halle-4", "at": [35, 10] },
+    { "id": "det-halle-5", "at": [35, 28] },
+    { "id": "det-halle-6", "at": [50, 10] },
+    { "id": "det-halle-7", "at": [50, 28] },
+    { "id": "det-halle-8", "at": [56, 19] }
+  ],
+  "objectives": [
+    { "id": "victime-peinture", "name": "Victime signalée — cabine de peinture", "at": [12, 37], "kind": "sauvetage" },
+    { "id": "coupure-tgbt", "name": "Coupure électrique — TGBT", "at": [13, 3], "kind": "action" },
+    { "id": "reco-liion", "name": "Reconnaissance — local Li-ion", "at": [19, 3], "kind": "reconnaissance" }
+  ],
+  "demo": {
+    "fireRoom": "solvants",
+    "fireAt": [3, 37],
+    "entry": "sortie-ouest",
+    "objectives": ["victime-peinture"]
+  }
+}
