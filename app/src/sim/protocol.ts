@@ -9,7 +9,8 @@ import type { LatchLogEntry } from '../stats/latch'
 import type { Verdict } from '../stats/verdict'
 import type { DataStatus, Point } from '../types'
 import { droneAt, type Plume } from '../drone/drone'
-import type { SimContext, SimState, TeamMode } from './sim'
+import type { RehearsalPlan } from '../rehearsal/engine'
+import type { SimContext, SimState, TeamMode, ValidatedPlan } from './sim'
 import { teamNow } from './sim'
 
 export interface RoomView {
@@ -79,6 +80,8 @@ export interface Snapshot {
   }
   /** what PNR knows now: the detectors, the AI and the drone merged (R9, R10) */
   known: Known
+  /** the intervention plan the COS validated (R12), or null */
+  plan: ValidatedPlan | null
 }
 
 export type Action =
@@ -90,6 +93,8 @@ export type Action =
   | { type: 'reengage' }
   | { type: 'drone' }
   | { type: 'indoor' }
+  | { type: 'engage-direct' }
+  | { type: 'plan-validate'; plan: RehearsalPlan }
 
 export type RequestBody = { type: 'reset'; seed: number } | { type: 'step'; n: number } | { type: 'act'; action: Action }
 
@@ -142,6 +147,7 @@ export function snapshot(ctx: SimContext, s: SimState): Snapshot {
     drone: droneView(ctx, s),
     indoor: indoorView(ctx, s),
     known: s.known,
+    plan: s.plan,
   }
 }
 

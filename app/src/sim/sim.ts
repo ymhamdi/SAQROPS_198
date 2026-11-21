@@ -9,6 +9,7 @@ import { droneAt, droneParams, loopAround, planFlight, plumeOf, type DroneParams
 import { indoorParams, planIndoor, senseIndoor, type IndoorKnown, type IndoorParams, type IndoorPlan } from '../drone/indoor.ts'
 import { knownReasons, mergeKnown, mergeKnowledge, type Known } from '../knowledge/known.ts'
 import type { Observation } from '../knowledge/observation.ts'
+import type { RehearsalPlan } from '../rehearsal/engine.ts'
 import { observeRoom, paceOf, ruleMultiplier, type RoomObservation } from '../danger/rules.ts'
 import { ignite, initFireState, setDoor, stepFire, type FireSetup, type FireState } from '../fire/engine.ts'
 import type { FireParams } from '../fire/params.ts'
@@ -66,6 +67,12 @@ export interface IndoorState {
   reason: string | null
 }
 
+/** The intervention plan the COS validated after the rehearsal (R12): it only applies from that decision on. */
+export interface ValidatedPlan {
+  validatedAtS: number
+  plan: RehearsalPlan
+}
+
 export type TeamMode = 'standby' | 'engaged' | 'evacuating' | 'out'
 
 export interface Team {
@@ -107,6 +114,8 @@ export interface SimState {
   indoor: IndoorState
   /** what PNR knows once the indoor drone has flown (R9, R10); inactive before */
   known: Known
+  /** the plan the COS validated, or null (no rehearsal, or engaged without one) */
+  plan: ValidatedPlan | null
 }
 
 export function makeContext(site: Site, setup: FireSetup, params: FireParams, predictor: Predictor): SimContext {
@@ -165,6 +174,7 @@ export function initSim(ctx: SimContext, doors: boolean[], seed: number): SimSta
     drone: { status: 'ground', launchedAt: null, flight: null, seen: site.rooms.map(() => false), roofC: site.rooms.map(() => null), reason: null, noise: 12345 },
     indoor: { status: 'ground', launchedAt: null, plan: null, observations: [], reason: null },
     known: mergeKnowledge(site.rooms.length, false, [], 0),
+    plan: null,
   }
   observe(ctx, s)
   replan(ctx, s)
@@ -468,6 +478,25 @@ export function engage(ctx: SimContext, s: SimState): void {
   s.team.engagedAt = s.fire.t
   replan(ctx, s)
   judge(ctx, s)
+}
+
+/** « Engager sans répétition »: the COS can always send the team without rehearsing (decision COS, logged). */
+export function engageWithoutRehearsal(ctx: SimContext, s: SimState): void {
+  if (s.team.mode !== 'standby') return
+  s.notes.push({ t: s.fire.t, text: 'Engagement sans répétition (décision COS)' })
+  engage(ctx, s)
+}
+
+/**
+ * « Valider le plan (décision COS) » (R12): only now does the rehearsed plan apply: the objectives take the plan's order,
+ * the team is engaged, and the plan is kept so that the PC can compare it with what happens.
+ */
+export function validatePlan(ctx: SimContext, s: SimState, plan: RehearsalPlan): void {
+  if (s.team.mode !== 'standby') return
+  s.plan = { validatedAtS: s.fire.t, plan }
+  s.notes.push({ t: s.fire.t, text: 'Plan d’intervention validé (décision COS)' })
+  setObjectives(ctx, s, plan.order, `Ordre des objectifs fixé par le plan validé (${plan.order.length} objectif${plan.order.length > 1 ? 's' : ''})`)
+  engage(ctx, s)
 }
 
 export function setObjectives(ctx: SimContext, s: SimState, ids: string[], note: string): void {

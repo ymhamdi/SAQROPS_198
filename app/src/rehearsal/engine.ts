@@ -201,6 +201,7 @@ export function rehearse(site: Site, input: KnownInput): RehearsalPlan {
     const p = track[o.index]
     const airSlackS = (usableL(ap, barAfter(ap, p.airUsedL)) - ap.returnFactor * exitTravel[p.cell] * exitRate) / workRate
     let fireSlackS = Infinity
+    let fireRoom = ''
     const way = pathDown(g.cost, exitCost, p.cell)
     if (way) {
       let off = 0
@@ -214,14 +215,20 @@ export function rehearse(site: Site, input: KnownInput): RehearsalPlan {
         const r = site.room[b]
         if (r >= 0 && !seen.has(r)) {
           seen.add(r)
-          if (Number.isFinite(closeAtS[r])) fireSlackS = Math.min(fireSlackS, closeAtS[r] - (p.departS + ap.returnFactor * off))
+          if (Number.isFinite(closeAtS[r])) {
+            const slack = closeAtS[r] - (p.departS + ap.returnFactor * off)
+            if (slack < fireSlackS) {
+              fireSlackS = slack
+              fireRoom = nameOf(r)
+            }
+          }
         }
       }
     }
     const limit = p.departS + Math.min(airSlackS, fireSlackS)
     if (turnBackS === null || limit < turnBackS) {
       turnBackS = limit
-      turnBackAt = o.name
+      turnBackAt = `${o.name} · limité par ${airSlackS <= fireSlackS ? 'l’air' : fireRoom}`
     }
   }
 

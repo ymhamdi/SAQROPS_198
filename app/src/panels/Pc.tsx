@@ -7,31 +7,22 @@ import type { SimControls } from '../sim/client'
 import type { Snapshot } from '../sim/protocol'
 import type { Site } from '../site/site'
 import { worstStatus } from '../stats/status'
-import { verdictLine, type Reason } from '../stats/verdict'
+import { rehearse, type RehearsalPlan } from '../rehearsal/engine'
+import { knownInputOf } from '../rehearsal/input'
+import { verdictLine } from '../stats/verdict'
 import { Num } from '../ui/Num'
 import { StatusBadge } from '../ui/StatusBadge'
 import { Card } from './Card'
+import { clock } from './clock'
+import { IndoorCard, PlanCard } from './PlanPanel'
 import { Plan } from './Plan'
+import { ReasonList } from './ReasonList'
 import './pc.css'
 
 const MODE_LABEL = { standby: 'En attente', engaged: 'Engagé', evacuating: 'Évacuation', out: 'Sorti' } as const
 const CONDITION_LABEL = { clear: 'Clair', smoke: 'Fumées', hot: 'Fumées chaudes', failed: 'Détecteurs HS' } as const
 const DRONE_LABEL = { ground: 'au sol', flying: 'en vol', landed: 'posé', refused: 'vol refusé' } as const
-const SOURCE_LABEL: Record<Reason['source'], string> = { rules: 'Règles', ai: 'IA', air: 'Air', route: 'Itinéraire', latch: 'Verrou', drone: 'Drone' }
-
-export const clock = (s: number) => `T+${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
-
-function ReasonList({ reasons }: { reasons: Reason[] }) {
-  return (
-    <ul className="pc-reasons">
-      {reasons.map((r, i) => (
-        <li key={i} className={`is-${r.severity}`}>
-          <span className="pc-src">{SOURCE_LABEL[r.source]}</span> {r.message} <StatusBadge status={r.status} />
-        </li>
-      ))}
-    </ul>
-  )
-}
+export { clock }
 
 /** The self-playing demo as the PC sees it: on or off, and the narration of the current moment. */
 export interface PcDemo {
@@ -48,6 +39,7 @@ export function Pc({ site, sim, onOpenCrew, demo }: { site: Site; sim: SimContro
   const [truth, setTruth] = useState(false)
   const [mode, setMode] = useState<'doors' | 'fire'>('doors')
   const [card, setCard] = useState(false)
+  const [rehearsal, setRehearsal] = useState<RehearsalPlan | null>(null)
   const snap = sim.snap
   if (!snap) return <main className="pc-loading">{sim.error ?? 'Chargement de la simulation…'}</main>
   const s: Snapshot = snap
@@ -133,6 +125,16 @@ export function Pc({ site, sim, onOpenCrew, demo }: { site: Site; sim: SimContro
           )}
         </section>
 
+        {(s.team.mode === 'standby' || s.indoor.status === 'flown') && <IndoorCard site={site} snap={s} onLaunch={() => sim.act({ type: 'indoor' })} />}
+        {(s.team.mode === 'standby' || s.plan) && (
+          <PlanCard
+            snap={s}
+            plan={rehearsal}
+            onRehearse={() => setRehearsal(rehearse(site, knownInputOf(site, s)))}
+            onValidate={(plan) => sim.act({ type: 'plan-validate', plan })}
+          />
+        )}
+
         <section className="pc-card">
           <span className="pc-kick">Binôme · {MODE_LABEL[s.team.mode]}</span>
           <dl className="pc-gauges">
@@ -166,8 +168,8 @@ export function Pc({ site, sim, onOpenCrew, demo }: { site: Site; sim: SimContro
           </p>
           <div className="pc-actions">
             {s.team.mode === 'standby' && (
-              <button type="button" className="pc-primary" disabled={s.team.objectives.length === 0} onClick={() => sim.act({ type: 'engage' })}>
-                Engager le binôme
+              <button type="button" disabled={s.team.objectives.length === 0} onClick={() => sim.act({ type: 'engage-direct' })}>
+                Engager sans répétition
               </button>
             )}
             {s.team.mode === 'engaged' && (
