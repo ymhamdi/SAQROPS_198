@@ -17,7 +17,7 @@ import './pc.css'
 const MODE_LABEL = { standby: 'En attente', engaged: 'Engagé', evacuating: 'Évacuation', out: 'Sorti' } as const
 const CONDITION_LABEL = { clear: 'Clair', smoke: 'Fumées', hot: 'Fumées chaudes', failed: 'Détecteurs HS' } as const
 const DRONE_LABEL = { ground: 'au sol', flying: 'en vol', landed: 'posé', refused: 'vol refusé' } as const
-const SOURCE_LABEL: Record<Reason['source'], string> = { rules: 'Règles', ai: 'IA', air: 'Air', route: 'Itinéraire', latch: 'Verrou' }
+const SOURCE_LABEL: Record<Reason['source'], string> = { rules: 'Règles', ai: 'IA', air: 'Air', route: 'Itinéraire', latch: 'Verrou', drone: 'Drone' }
 
 export const clock = (s: number) => `T+${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
 

@@ -2,7 +2,9 @@
 
 import type { RoomCondition } from '../danger/rules'
 import { featureVector } from '../ml/features'
-import { neighbours } from '../site/site'
+import type { Known } from '../knowledge/known'
+import { receivedBy, type Observation } from '../knowledge/observation'
+import { cellCentre, neighbours } from '../site/site'
 import type { LatchLogEntry } from '../stats/latch'
 import type { Verdict } from '../stats/verdict'
 import type { DataStatus, Point } from '../types'
@@ -62,6 +64,21 @@ export interface Snapshot {
     reservePct: number
     maxWindMs: number
   }
+  /** the indoor drone: its flight and what has reached PNR of what it saw (SIMULATED) */
+  indoor: {
+    status: 'ground' | 'flown' | 'refused'
+    launchedAt: number | null
+    reason: string | null
+    durationS: number
+    path: Point[]
+    tooHot: number[]
+    targets: { id: string; reached: boolean }[]
+    observations: Observation[]
+    /** pictures taken but still in a radio dead zone */
+    pending: number
+  }
+  /** what PNR knows now: the detectors, the AI and the drone merged (R9, R10) */
+  known: Known
 }
 
 export type Action =
@@ -72,6 +89,7 @@ export type Action =
   | { type: 'evacuate' }
   | { type: 'reengage' }
   | { type: 'drone' }
+  | { type: 'indoor' }
 
 export type RequestBody = { type: 'reset'; seed: number } | { type: 'step'; n: number } | { type: 'act'; action: Action }
 
@@ -122,6 +140,24 @@ export function snapshot(ctx: SimContext, s: SimState): Snapshot {
     model: { dummy: ctx.predictor.dummy, trainedOn: ctx.predictor.trainedOn, thresholds: ctx.predictor.thresholds },
     readingsStatus: ctx.readingsStatus,
     drone: droneView(ctx, s),
+    indoor: indoorView(ctx, s),
+    known: s.known,
+  }
+}
+
+function indoorView(ctx: SimContext, s: SimState): Snapshot['indoor'] {
+  const i = s.indoor
+  const got = receivedBy(i.observations, s.fire.t)
+  return {
+    status: i.status,
+    launchedAt: i.launchedAt,
+    reason: i.reason,
+    durationS: i.plan?.durationS ?? 0,
+    path: i.plan ? i.plan.points.map((p) => cellCentre(ctx.site, p.cell)) : [],
+    tooHot: i.plan?.tooHot ?? [],
+    targets: i.plan?.targets.map((t) => ({ id: t.id, reached: t.reached })) ?? [],
+    observations: got,
+    pending: i.observations.length - got.length,
   }
 }
 

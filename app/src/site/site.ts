@@ -71,6 +71,8 @@ export interface Site {
   objectives: (SitePoint & { kind: string })[]
   obstacles: { id: string; name: string; rect: Rect; hazards: string[] }[]
   engine: SitePoint
+  /** things the plan does not show (a collapsed rack): the simulator's truth, found only by the indoor drone (SIMULATED) */
+  hidden: { id: string; name: string; cells: number[] }[]
   demo: {
     fireRoom: number
     fireAt: Point
@@ -224,6 +226,7 @@ export function buildSite(json: SiteJson = siteJson): Site {
     objectives: json.objectives.map((o) => ({ ...point(o.id, o.name, o.at, true), kind: o.kind })),
     obstacles: json.obstacles.map((o) => ({ id: o.id, name: o.name, rect: o.rect as Rect, hazards: o.hazards })),
     engine: point('engine', json.engine.name, json.engine.at, false),
+    hidden: [],
     demo: {
       fireRoom: byId(json.demo.fireRoom),
       fireAt: { x: json.demo.fireAt[0] + marginM, y: json.demo.fireAt[1] + marginM },

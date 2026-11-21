@@ -2,7 +2,7 @@
 // both apply an action in exactly the same way.
 
 import type { Action } from './protocol'
-import { engage, evacuate, launchDrone, reengageTeam, setObjectives, startFire, toggleDoor, type SimContext, type SimState } from './sim'
+import { engage, evacuate, launchDrone, launchIndoor, reengageTeam, setObjectives, startFire, toggleDoor, type SimContext, type SimState } from './sim'
 
 export function applyAction(ctx: SimContext, s: SimState, a: Action): void {
   if (a.type === 'fire') startFire(ctx, s, a.at)
@@ -12,4 +12,5 @@ export function applyAction(ctx: SimContext, s: SimState, a: Action): void {
   else if (a.type === 'evacuate') evacuate(ctx, s)
   else if (a.type === 'reengage') reengageTeam(ctx, s)
   else if (a.type === 'drone') launchDrone(ctx, s)
+  else if (a.type === 'indoor') launchIndoor(ctx, s)
 }

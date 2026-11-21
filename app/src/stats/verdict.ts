@@ -15,9 +15,11 @@ export type ReasonCode =
   | 'HAZARD'
   | 'MODEL_DUMMY'
   | 'LATCHED'
+  | 'ROOM_UNKNOWN'
+  | 'DRONE_HOT'
 
-/** Where a reason comes from: the AI may only add reasons, never remove one (R1). */
-export type ReasonSource = 'rules' | 'ai' | 'air' | 'route' | 'latch'
+/** Where a reason comes from: the AI and the indoor drone may only add reasons, never remove one (R1, R9). */
+export type ReasonSource = 'rules' | 'ai' | 'air' | 'route' | 'latch' | 'drone'
 
 export interface Reason {
   code: ReasonCode

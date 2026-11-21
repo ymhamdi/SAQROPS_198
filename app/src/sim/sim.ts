@@ -6,6 +6,9 @@ import { H, v } from '../config.ts'
 import { aiMultiplier, aiReasons, predictRooms, type RoomPrediction } from '../danger/ai.ts'
 import { mergeAi } from '../danger/merge.ts'
 import { droneAt, droneParams, loopAround, planFlight, plumeOf, type DroneParams, type Flight, type Wind } from '../drone/drone.ts'
+import { indoorParams, planIndoor, senseIndoor, type IndoorKnown, type IndoorParams, type IndoorPlan } from '../drone/indoor.ts'
+import { knownReasons, mergeKnown, mergeKnowledge, type Known } from '../knowledge/known.ts'
+import type { Observation } from '../knowledge/observation.ts'
 import { observeRoom, paceOf, ruleMultiplier, type RoomObservation } from '../danger/rules.ts'
 import { ignite, initFireState, setDoor, stepFire, type FireSetup, type FireState } from '../fire/engine.ts'
 import type { FireParams } from '../fire/params.ts'
@@ -32,6 +35,7 @@ export interface SimContext {
   /** status of the readings: SIMULATED here; OBSERVED with real detectors */
   readingsStatus: DataStatus
   drone: DroneParams
+  indoor: IndoorParams
   /** outdoor wind from the Open-Meteo cache (DERIVED) */
   wind: Wind
   /** the reconnaissance loop around the building */
@@ -50,6 +54,16 @@ export interface DroneState {
   roofC: (number | null)[]
   reason: string | null
   noise: number
+}
+
+/** The indoor drone's flight: planned at take-off from what PNR knows, sensed from the truth, observations stamped. */
+export interface IndoorState {
+  status: 'ground' | 'flown' | 'refused'
+  launchedAt: number | null
+  plan: IndoorPlan | null
+  /** all of them, including those still in a radio dead zone (the views only get those received) */
+  observations: Observation[]
+  reason: string | null
 }
 
 export type TeamMode = 'standby' | 'engaged' | 'evacuating' | 'out'
@@ -90,6 +104,9 @@ export interface SimState {
   /** bumps on every re-plan, so the views know the route changed */
   planVersion: number
   drone: DroneState
+  indoor: IndoorState
+  /** what PNR knows once the indoor drone has flown (R9, R10); inactive before */
+  known: Known
 }
 
 export function makeContext(site: Site, setup: FireSetup, params: FireParams, predictor: Predictor): SimContext {
@@ -102,6 +119,7 @@ export function makeContext(site: Site, setup: FireSetup, params: FireParams, pr
     detByRoom: site.rooms.map((r) => site.detectors.flatMap((d, i) => (d.room === r.index ? [i] : []))),
     readingsStatus: 'SIMULATED',
     drone: droneParams(),
+    indoor: indoorParams(),
     wind: { speedMs: weather.windSpeedMs, fromDeg: weather.windFromDeg, status: weather.status as DataStatus },
     loop: loopAround({ x0: site.marginM, y0: site.marginM, x1: site.marginM + 60, y1: site.marginM + 40 }, droneParams().loopOffsetM),
     roomBox: site.rooms.map((r) => {
@@ -145,6 +163,8 @@ export function initSim(ctx: SimContext, doors: boolean[], seed: number): SimSta
     notes: [],
     planVersion: 0,
     drone: { status: 'ground', launchedAt: null, flight: null, seen: site.rooms.map(() => false), roofC: site.rooms.map(() => null), reason: null, noise: 12345 },
+    indoor: { status: 'ground', launchedAt: null, plan: null, observations: [], reason: null },
+    known: mergeKnowledge(site.rooms.length, false, [], 0),
   }
   observe(ctx, s)
   replan(ctx, s)
@@ -166,10 +186,16 @@ export function observe(ctx: SimContext, s: SimState) {
   s.predictions = predictRooms(site, s.stats, ctx.predictor, ctx.readingsStatus)
   for (const p of s.predictions) if (p.alert && s.firstAlertAt[p.room] === null) s.firstAlertAt[p.room] = t
   const byRoom = new Map(s.predictions.map((p) => [p.room, p]))
+  // The indoor drone's picture only ever adds cost (R9): a multiplier of at least 1, and the passages it found blocked.
+  s.known = mergeKnowledge(site.rooms.length, s.indoor.status === 'flown', s.indoor.observations, t)
   const travelPace = s.observations.map((o) => paceOf(o.condition))
-  const costPace = s.observations.map((o, r) => paceOf(o.condition) * ruleMultiplier(o.condition) * aiMultiplier(byRoom.get(r)))
+  const costPace = s.observations.map((o, r) => paceOf(o.condition) * ruleMultiplier(o.condition) * aiMultiplier(byRoom.get(r)) * s.known.rooms[r].extraCost)
   s.travel = prepareGrid(site, travelPace)
   s.cost = prepareGrid(site, costPace)
+  for (const c of s.known.blockedCells) {
+    s.travel.pace[c] = Infinity
+    s.cost.pace[c] = Infinity
+  }
   const exits = site.exits.map((e) => site.doors[e].cells[0])
   s.exitTravel = nearestHaven(exits.map((c) => walkHomeField(s.travel, c)))
   s.exitCost = nearestHaven(exits.map((c) => walkHomeField(s.cost, c)))
@@ -272,7 +298,7 @@ export function judge(ctx: SimContext, s: SimState) {
   }
   if (s.team.track.length > 0 && s.team.mode !== 'out') reasons.push(...airReasons(s.team.track.slice(s.team.index), s.exitTravel, ctx.air))
   const base = verdictOf(reasons)
-  s.computed = mergeAi(base, aiReasons(site, s.predictions, involved, ctx.predictor.dummy))
+  s.computed = finalVerdict(ctx, s, base, involved)
   const before = s.latch.latched
   const { shown, latch } = applyLatch(s.latch, s.computed, s.fire.t)
   s.shown = shown
@@ -291,8 +317,14 @@ function judgeAfterReplan(ctx: SimContext, s: SimState) {
   const involved = involvedRooms(ctx, s)
   const reasons: Reason[] = []
   if (s.team.track.length > 0) reasons.push(...airReasons(s.team.track.slice(s.team.index), s.exitTravel, ctx.air))
-  s.computed = mergeAi(verdictOf(reasons), aiReasons(ctx.site, s.predictions, involved, ctx.predictor.dummy))
+  s.computed = finalVerdict(ctx, s, verdictOf(reasons), involved)
   s.shown = applyLatch(s.latch, s.computed, s.fire.t).shown
+}
+
+/** The rules' verdict, then the AI's reasons (R1), then the indoor drone's (R9): each can only add. */
+function finalVerdict(ctx: SimContext, s: SimState, base: Verdict, involved: Set<number>): Verdict {
+  const withAi = mergeAi(base, aiReasons(ctx.site, s.predictions, involved, ctx.predictor.dummy))
+  return mergeKnown(withAi, knownReasons(s.known, involved, (r) => ctx.site.rooms[r].name))
 }
 
 /** One simulated second (or dt). */
@@ -389,6 +421,30 @@ export function launchDrone(ctx: SimContext, s: SimState): void {
   d.launchedAt = s.fire.t
   d.seen = d.seen.map(() => false)
   s.notes.push({ t: s.fire.t, text: flight.reason ? `Drone en vol : ${flight.reason}.` : 'Drone en vol : tour complet du bâtiment.' })
+}
+
+/**
+ * The indoor drone's flight, planned now from what PNR knows (open doors, detector temperatures) towards the team's
+ * objectives, and sensed from the truth, with each picture stamped with the time it is taken. The flight is computed in
+ * one go; the views only get what has reached PNR by the current time (a picture from a radio dead zone arrives late).
+ * Simplification: the rooms' temperatures are read at take-off, not along the flight.
+ */
+export function launchIndoor(ctx: SimContext, s: SimState): void {
+  const { site } = ctx
+  const known: IndoorKnown = { doorOpen: [...s.fire.doorOpen], roomTLastC: s.observations.map((o) => o.tLastC) }
+  const ids = s.team.objectives.length > 0 ? s.team.objectives : site.demo.objectives
+  const plan = planIndoor(site, known, s.team.entryDoor, ids.map((id) => ({ id, cell: objectiveCell(ctx, id) })), ctx.indoor)
+  if (!plan.ok) {
+    s.indoor = { status: 'refused', launchedAt: s.fire.t, plan, observations: [], reason: plan.reason }
+    s.notes.push({ t: s.fire.t, text: plan.reason ?? 'Drone d’intérieur : vol refusé.' })
+    return
+  }
+  const truth = { layerC: s.fire.rooms.map((r) => r.layerC), doorOpen: [...s.fire.doorOpen], hidden: site.hidden, ambientC: ctx.params.ambientC }
+  const observations = senseIndoor(site, plan, truth, s.fire.t, ctx.indoor, v(H.sim.seed))
+  s.indoor = { status: 'flown', launchedAt: s.fire.t, plan, observations, reason: plan.reason }
+  s.notes.push({ t: s.fire.t, text: `Drone d’intérieur en vol${plan.reason ? ` : ${plan.reason}` : ''}. ${observations.length} observations horodatées.` })
+  // Its picture counts from this tick.
+  observe(ctx, s)
 }
 
 // ---------- PC actions ----------
