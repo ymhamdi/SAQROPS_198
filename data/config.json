@@ -114,6 +114,17 @@
       "tickS": { "value": 1, "unit": "s", "source": "Simulation step (CLAUDE.md §5)", "status": "MODELED" },
       "playbackSpeeds": { "value": [1, 5, 10, 20], "unit": "×", "source": "Playback speeds offered; ×10 for the video. Team choice", "status": "MODELED" },
       "seed": { "value": 42, "unit": "1", "source": "Random seed of the detector noise in the video scenario. Team choice", "status": "MODELED" }
+    },
+    "demo": {
+      "droneAtS": { "value": 60, "unit": "s", "source": "Simulated time at which the automatic demo launches the drone, once the detectors locate the fire. Video script, CLAUDE.md §9 step 2. Team choice", "status": "MODELED" },
+      "engageAtS": { "value": 100, "unit": "s", "source": "Simulated time at which the automatic demo engages the team. Video script, CLAUDE.md §9 step 3. Team choice", "status": "MODELED" },
+      "closeDoorAfterNoGoS": { "value": 8, "unit": "s", "source": "Delay between the NO-GO and the COS closing the store-booth door in the automatic demo. Video script, CLAUDE.md §9 step 5. Team choice", "status": "MODELED" },
+      "reengageAfterOutS": { "value": 6, "unit": "s", "source": "Delay between the team being out and the PC re-engaging it on the remaining objective in the automatic demo. Video script, CLAUDE.md §9 step 6. Team choice", "status": "MODELED" },
+      "paceFastX": { "value": 20, "unit": "×", "source": "Playback speed of the automatic demo while nothing moves on the crew screens (fire growing, work at an objective), so that the demo lasts about a minute. Team choice", "status": "MODELED" },
+      "paceWalkX": { "value": 5, "unit": "×", "source": "Playback speed of the automatic demo while the team walks, slow enough to follow the view. Team choice", "status": "MODELED" },
+      "paceOutX": { "value": 10, "unit": "×", "source": "Playback speed of the automatic demo while the team is out and waiting for the PC. Team choice", "status": "MODELED" },
+      "arrivedM": { "value": 1, "unit": "m", "source": "Distance to its objective under which the team counts as working there (the demo then speeds up). Team choice", "status": "MODELED" },
+      "maxS": { "value": 700, "unit": "s", "source": "The automatic demo stops at this simulated time at the latest, whatever happens. Team choice", "status": "MODELED" }
     }
   }
 }

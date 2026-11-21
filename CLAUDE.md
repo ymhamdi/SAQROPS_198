@@ -60,6 +60,10 @@ app/src/scene/   vue synthétique du HUD (render.ts : lancer de rayons sur la gr
                  repères) ; LiveMap.tsx = carte en direct de la tablette ; mission.ts = phases de la mission ; camera.ts
 app/src/twin/    jumeau numérique (?view=twin, ouvert depuis le PC) : réalité simulée / ce que PNR en sait, chaîne de
                  décision en direct, courbes ; lit le snapshot diffusé par le PC, ne simule pas
+app/src/demo/    démonstration automatique (?demo=1, ou ?view=hud|tablet|twin&demo=1) : script.ts joue le COS du scénario
+                 §9 (feu, drone, engagement, porte fermée, ré-engagement) à partir du seul snapshot, sans la vérité du
+                 simulateur (R5 testé) ; useDemo.ts l'applique au worker et règle la vitesse (allures dans config.json,
+                 hypotheses.demo) ; DemoHost/DemoBar = fenêtre autonome et bandeau de légendes (sans mot de verdict : R2)
 ml/              kaggle/pnr-flashover.ipynb (notebook exporté de Kaggle), train.py (même code), prepare.py (NIST xlsx →
                  Parquet), generate.ts (plan B : Node → CSV sur l'atelier), model/ (model-*.json, metrics.json,
                  golden.csv), MODEL_REPORT.md

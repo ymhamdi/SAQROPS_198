@@ -71,7 +71,16 @@ export interface Site {
   objectives: (SitePoint & { kind: string })[]
   obstacles: { id: string; name: string; rect: Rect; hazards: string[] }[]
   engine: SitePoint
-  demo: { fireRoom: number; fireAt: Point; entry: number; objectives: string[] }
+  demo: {
+    fireRoom: number
+    fireAt: Point
+    entry: number
+    objectives: string[]
+    /** the door the COS closes after the NO-GO in the video script (step 5) */
+    closeDoor: number
+    /** the objectives the PC keeps when it re-engages the team (step 6) */
+    thenObjectives: string[]
+  }
 }
 
 type SiteJson = typeof siteJson
@@ -191,6 +200,11 @@ export function buildSite(json: SiteJson = siteJson): Site {
   }
   const entry = doors.findIndex((d) => d.id === json.demo.entry)
   if (entry < 0) throw new Error(`site: unknown entry ${json.demo.entry}`)
+  const closeDoor = doors.findIndex((d) => d.id === json.demo.closeDoor)
+  if (closeDoor < 0 || doors[closeDoor].isExit) throw new Error(`site: the demo door ${json.demo.closeDoor} must be an interior door`)
+  for (const id of [...json.demo.objectives, ...json.demo.thenObjectives]) {
+    if (!json.objectives.some((o) => o.id === id)) throw new Error(`site: unknown demo objective ${id}`)
+  }
 
   return {
     name: json.name,
@@ -215,6 +229,8 @@ export function buildSite(json: SiteJson = siteJson): Site {
       fireAt: { x: json.demo.fireAt[0] + marginM, y: json.demo.fireAt[1] + marginM },
       entry,
       objectives: json.demo.objectives,
+      closeDoor,
+      thenObjectives: json.demo.thenObjectives,
     },
   }
 }

@@ -6,6 +6,7 @@
 import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import contract from '../../../ml/model/contract.json' with { type: 'json' }
 import { H, v } from '../config'
+import { demoHref } from '../demo/links'
 import { clock } from '../panels/Pc'
 import { Plan, PX, roomBoxes } from '../panels/Plan'
 import type { Snapshot } from '../sim/protocol'
@@ -53,6 +54,11 @@ export function Twin({ site, snap }: { site: Site; snap: Snapshot | null }) {
         <p>
           Ce jumeau reflète la simulation du PC en direct. Ouvrez le <strong>PC du COS</strong> dans ce navigateur puis cliquez sur <strong>Lecture</strong>, ou lancez ce jumeau avec le bouton
           « Ouvrir le jumeau numérique » du PC.
+        </p>
+        <p>
+          <a className="demo-link" href={demoHref('twin')}>
+            Lancer la démonstration automatique
+          </a>
         </p>
       </main>
     )
