@@ -10,6 +10,7 @@ import { worstStatus } from '../stats/status'
 import { verdictLine, type Reason } from '../stats/verdict'
 import { Num } from '../ui/Num'
 import { StatusBadge } from '../ui/StatusBadge'
+import { Card } from './Card'
 import { Plan } from './Plan'
 import './pc.css'
 
@@ -34,6 +35,7 @@ function ReasonList({ reasons }: { reasons: Reason[] }) {
 export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud') => void }) {
   const [truth, setTruth] = useState(false)
   const [mode, setMode] = useState<'doors' | 'fire'>('doors')
+  const [card, setCard] = useState(false)
   const snap = sim.snap
   if (!snap) return <main className="pc-loading">Chargement de la simulation…</main>
   const s: Snapshot = snap
@@ -143,6 +145,9 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
                 Évacuation
               </button>
             )}
+            <button type="button" onClick={() => setCard(true)}>
+              Fiche réflexe
+            </button>
             <button type="button" onClick={() => onOpenCrew('tablet')}>
               Ouvrir la tablette
             </button>
@@ -217,6 +222,7 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
           </ul>
         </section>
       </aside>
+      {card && <Card site={site} snap={s} onClose={() => setCard(false)} />}
     </main>
   )
 }

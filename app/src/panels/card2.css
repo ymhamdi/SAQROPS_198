@@ -1,0 +1,164 @@
+/* Fiche réflexe: an A4 sheet previewed over the PC, printed alone. */
+
+.fiche-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: auto;
+  padding: 24px;
+  background: var(--backdrop);
+}
+
+.fiche-tools {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.fiche-tools button {
+  min-height: 40px;
+  padding: 0 16px;
+  font: inherit;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.fiche {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 14mm;
+  background: var(--surface);
+  color: var(--text);
+  font-family: Barlow, system-ui, sans-serif;
+  font-size: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.fiche header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 6px;
+}
+
+.fiche h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.fiche h3 {
+  margin: 10px 0 4px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fiche h4 {
+  margin: 6px 0 2px;
+  font-size: 12px;
+}
+
+.fiche-kick {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.fiche-verdict {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border: 2px solid;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.fiche-verdict.is-go {
+  border-color: var(--green);
+}
+
+.fiche-verdict.is-nogo {
+  border-color: var(--red);
+}
+
+.fiche-cols {
+  display: grid;
+  grid-template-columns: 70mm 1fr;
+  gap: 8mm;
+}
+
+.fiche dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  margin: 0;
+}
+
+.fiche dd {
+  margin: 0;
+}
+
+.fiche .num strong {
+  font-size: 13px;
+}
+
+.fiche ul,
+.fiche ol {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.fiche small {
+  color: var(--text-2);
+}
+
+.fiche-note {
+  margin: 4px 0 0;
+  color: var(--text-2);
+}
+
+.fiche-plan .plan {
+  cursor: default;
+}
+
+.fiche footer {
+  margin-top: 10px;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .fiche,
+  .fiche * {
+    visibility: visible;
+  }
+
+  .fiche-backdrop {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    background: none;
+  }
+
+  .fiche {
+    box-shadow: none;
+  }
+}
