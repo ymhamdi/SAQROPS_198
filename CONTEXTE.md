@@ -129,8 +129,9 @@ réflexe reçoivent le plan validé. Si le COS engage **sans** répétition, le 
 
 C'est la répétition de mission de l'aviation, appliquée à la reconnaissance. Tout ce qui en vient porte
 « RÉPÉTITION — SIMULATION », dans un cadre violet pointillé, et n'apparaît jamais sur le HUD en direct. Les chiffres du
-drone d'intérieur (autonomie 10 min, 2 m/s, 50 °C) viennent de fiches techniques publiques d'une classe de drones à cage
-de protection : `data/config.json`, section `droneIndoor`, **à valider**.
+drone d'intérieur (autonomie 9 min, 1,5 m/s, 50 °C) viennent des documents officiels du constructeur d'une classe de
+drones à cage de protection (lus le 22/11, références exactes dans `data/SOURCES.md`) : `data/config.json`, section
+`droneIndoor`, **à valider** par la Protection civile.
 
 ### Les 12 règles de sécurité (chacune vérifiée par un test automatique)
 

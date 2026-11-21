@@ -59,3 +59,83 @@ Open-Meteo forecast API (analysis of numerical weather models, not a measurement
 Endurance, speed, wind limit and thermal resolution of a current enterprise thermal drone class (manufacturer spec
 sheets); reserve, altitude and no-fly cone are team assumptions. Flights are simulated: in Tunisia any real flight
 needs prior authorisation.
+
+## Indoor drone — MODELED (`hypotheses.droneIndoor`)
+
+The class is the collision-tolerant indoor inspection drone with a protective cage. Its figures are those of the
+manufacturer's current **Elios 3** documents, read on 2026-11-22 from the manufacturer's own files (not from reseller
+copies). The brand appears in this file and in `config.json` sources only, never in the interface. Status stays MODELED:
+the figures describe a real aircraft, but the simulated drone, the fire and the site are ours, and the Protection civile
+has not yet validated them.
+
+Documentation page of the manufacturer (lists every file below):
+https://knowledge.flyability.com/aircraft/elios-3/elios-3-documentation
+
+### The three figures
+
+| Config key | Value kept | What the manufacturer prints | Where |
+|---|---|---|---|
+| `enduranceMin` | **9 min** | "Max. flight time 11.5 min (Elios 3 base), 9.1 min (Elios 3 + LiDAR)" | Technical Specifications v1.1, p.2 |
+| | | "The flight time of the ELIOS 3 with the LiDAR sensor mounted is 9 minutes in total. Without the LiDAR sensor mounted, the flight time is 12 minutes and 30 seconds." | User Manual v1.3, section 2.4.3, p.23 |
+| | | Standard battery: 12 min 30 s with no payload, 9 min 10 s with Rev 6 LiDAR, 9 min with Rev 7 LiDAR | Batteries Technical Specifications, p.3 |
+| `cruiseMs` | **1.5 m/s** | "Max. horizontal speed: Assist mode 1.5 m/s (4.9 ft/s), Assist-Sport mode 2 m/s (6.6 ft/s), Attitude mode 5 m/s, Sport mode 7 m/s" | Technical Specifications v1.1, p.2 |
+| | | "ASSIST mode ensures that you never exceed the maximum collision speed of the drone and is thus the safest mode to fly in." | User Manual v1.3, section 4.5.1, p.32 |
+| | | "Max. safe collision speed 2 m/s (< 6.6 ft/s) in frontal collisions, 2.4 m/s (< 7.9 ft/s) in all spherical directions" | Technical Specifications v1.1, p.2 |
+| `maxAmbientC` | **50 °C** | "Operating temperature 0 ºC to 50 ºC (32 °F to 122 °F)", footnote 1: "Valid for batteries pre-condition between 10 °C and 40 °C" | Technical Specifications v1.1, p.2 |
+| | | "Max. ambient operating temperature: 50 °C, 122 °F" for the standard battery with no payload, Rev 6 and Rev 7 LiDAR (definition, note 3: "at sea-level and no-wind conditions at which a normal collision resilience and wind resistance can be expected") | Batteries Technical Specifications, p.3 |
+
+How each value was chosen:
+
+- **Endurance 9 min.** No document prints 10 min for the Elios 3. The sheet lists the SLAM-based LiDAR as the
+  stabilisation system and the LiDAR payload as the base option, so the with-LiDAR figures are taken as applicable
+  (9 to 9.1 min) and the lowest is kept. All of them are maxima "in ideal
+  conditions: sea-level, 20 °C ambient temperature, new propellers and motors, new fully charged batteries, no wind and
+  hovering" (Batteries Technical Specifications, p.3). The manual (p.23) lists what shortens it: a cold battery (< 20 °C),
+  an old battery, wind or speed in Sport, many collisions, very confined spaces, damaged propellers, altitude. The 25 %
+  reserve (`batteryReservePct`) is applied on top, by the drone code, not by this figure.
+- **Cruise 1.5 m/s.** It is the maximum speed of the Assist mode, the mode the manual calls the safest. Assist-Sport
+  (2 m/s) would be the upper bound and sits exactly at the maximum safe frontal collision speed (2 m/s), so it leaves no
+  margin.
+- **Ambient limit 50 °C.** The drone does not enter a room whose detectors read 50 °C or more. Two caveats the figure
+  hides: the 0 to 50 °C range holds for batteries pre-conditioned between 10 and 40 °C (the battery's own operating
+  range is 10 to 40 °C, Batteries Technical Specifications, p.2), and the high-capacity battery lowers the limit to 35 to
+  40 °C with the UT or RAD payloads (p.3 and p.4). Neither applies to the configuration modelled (standard battery,
+  inspection camera, LiDAR), but a different payload would need a lower value.
+
+### Other figures of the same block (not from a datasheet)
+
+- `viewRadiusM` 7 m, `thermalNoiseSdC` 3 °C, `batteryReservePct` 25 %: team assumptions, to validate.
+- Thermal camera facts the assumptions lean on: Lepton 3.5, 160 × 120 px, 9 fps, sensitivity ≤ 50 mK, accuracy "from ±5 °C
+  or ±5 %" (Technical Specifications v1.1, p.3); field of view 56° × 42° and scene range −10 °C to 140 °C of the same
+  module (Elios 2 RAD User Manual v1.2, p.16: the Elios 3 sheet does not print them). A 3 °C standard deviation is of the
+  order of the printed accuracy, it is not derived from it.
+
+### What was corrected on 2026-11-22
+
+The first values (10 min, 2 m/s, 50 °C) came from reseller copies of the sheets. Checked against the manufacturer's files:
+50 °C is confirmed; **10 min** is in no Elios 3 document (now 9 min); the old citation of **2 m/s** was the maximum safe
+collision speed, not a cruise speed (now the Assist maximum, 1.5 m/s). The Elios 2 figures that the first source also
+quoted ("up to 10 min") were not found in a manufacturer file; the only Elios 2 flight time read from one is "up to
+9 min with RAD payload" (Elios 2 RAD User Manual v1.2, p.15). The Elios 2 is no longer used as a reference.
+
+### Documents read (all public; SHA-256 of the files as downloaded on 2026-11-22)
+
+| Document | SHA-256 |
+|---|---|
+| Elios 3 Technical Specifications v1.1 (4 pages) | `3a2a4ff72963ea05f084b2dd9c09c0904e38397916de72b1298782e5f91b2948` |
+| Elios 3 Batteries Technical Specifications, Standard and High-Capacity (4 pages) | `6ace75e3e17263c83d31c40cadf39bc89c029c1873e00e6377e5efdba1b70a3b` |
+| Elios 3 User Manual v1.3 (92 pages) | `56ffc06aabb1edaf5ba4ef614b305e958e9560a24ce36a4de9e70b4ed75f7721` |
+| Elios 3 RAD User Manual v1.0, 25.07.2023 (consulted; payload-specific figures, not used: 7 min 30 s with LiDAR, 45 °C) | `078b71416b0c18bb496574bbe53f6911f7225c1ad7d7c62864ba20142e6b75b0` |
+| Elios 2 RAD User Manual v1.2, 24.02.2022 (consulted; thermal camera field of view only) | `c735a26e179647ebb0fa05fcd491444f11d6d53252c81138569d8c211a6b6394` |
+
+Direct links (the first three are listed on the documentation page above; the file names are those of that page):
+
+- https://3798671238-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FEUlQdNranSJ0ddu4qSxa%2Fuploads%2F9gRokOPsGVhfPZz4y88R%2FElios%203%20Technical%20Specifications%20v1.1.pdf?alt=media&token=948d790d-751a-42e7-a038-cd582bab857d
+- https://3798671238-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FEUlQdNranSJ0ddu4qSxa%2Fuploads%2FnutwYTLi3xsLk59UctXJ%2FElios%203%20Battery%20Technical%20Specifications%20(Standard%20and%20High-Capacity).pdf?alt=media&token=ff27393c-be60-4507-9885-6c98e11a128f
+- https://3798671238-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FEUlQdNranSJ0ddu4qSxa%2Fuploads%2FPEM2i7pU23YHpWfRh03y%2FElios%203%20User%20Manual%20v1.3.pdf?alt=media&token=d631c396-6cae-4941-9b24-924e10a599e1
+- https://www.flyability.com/hubfs/Knowledge%20Base%20Files/Documents/Manuals/E3%20and%20equipments/Elios%203%20RAD%20User%20Manual%20v1.0.pdf
+- https://www.flyability.com/hubfs/ELIOS%202%20RAD%20user%20manual%20v1.2.pdf
+
+Not read: the manufacturer's web pages quoting "up to 12 minutes" and "17 minutes with the high-capacity battery"
+(consistent with the battery sheet: 12 min 30 s and 17 min, p.3). Page numbers are the position in the PDF; in the user
+manual they are also the printed "Page n of 92".
