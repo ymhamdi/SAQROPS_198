@@ -128,6 +128,7 @@ export function Pc({ site, sim, onOpenCrew, demo }: { site: Site; sim: SimContro
         {(s.team.mode === 'standby' || s.indoor.status === 'flown') && <IndoorCard site={site} snap={s} onLaunch={() => sim.act({ type: 'indoor' })} />}
         {(s.team.mode === 'standby' || s.plan) && (
           <PlanCard
+            site={site}
             snap={s}
             plan={rehearsal}
             onRehearse={() => setRehearsal(rehearse(site, knownInputOf(site, s)))}

@@ -3,10 +3,12 @@
 // the COS validates it. Every verdict carries « Décision : COS » (R2) and every number its label (R3).
 
 import { confidenceAt } from '../knowledge/observation'
+import { comparePlan } from '../rehearsal/compare'
 import type { RehearsalPlan } from '../rehearsal/engine'
 import { RehearsalFrame } from '../rehearsal/RehearsalBanner'
 import type { Snapshot } from '../sim/protocol'
 import type { Site } from '../site/site'
+import { worstStatus } from '../stats/status'
 import { DECISION_COS, verdictLine } from '../stats/verdict'
 import { Num } from '../ui/Num'
 import { StatusBadge } from '../ui/StatusBadge'
@@ -58,9 +60,12 @@ export function IndoorCard({ site, snap, onLaunch }: { site: Site; snap: Snapsho
 }
 
 /** The rehearsal and its plan: entry, order, hours, turn-back time, fall-back exit, risks, a GO or NO-GO per phase. */
-export function PlanCard({ snap, plan, onRehearse, onValidate }: { snap: Snapshot; plan: RehearsalPlan | null; onRehearse: () => void; onValidate: (p: RehearsalPlan) => void }) {
+export function PlanCard({ site, snap, plan, onRehearse, onValidate }: { site: Site; snap: Snapshot; plan: RehearsalPlan | null; onRehearse: () => void; onValidate: (p: RehearsalPlan) => void }) {
   const validated = snap.plan
   const shown = validated?.plan ?? plan
+  // Once the team is in, how it does against the plan it was given.
+  const cmp = validated && snap.team.mode !== 'standby' ? comparePlan(site, validated.plan, { cell: snap.team.cell, clock: snap.team.clock, bar: snap.team.bar }) : null
+  const live = worstStatus('MODELED', snap.readingsStatus)
   return (
     <RehearsalFrame>
       <span className="pc-kick">Répétition de l’intervention · plan</span>
@@ -112,6 +117,19 @@ export function PlanCard({ snap, plan, onRehearse, onValidate }: { snap: Snapsho
               </li>
             ))}
           </ul>
+          {cmp && validated && (
+            <div className="rehearsal-compare" aria-live="polite">
+              <span className="pc-kick">Plan ou réel · à la position du binôme</span>
+              <p>
+                {cmp.delayS > 2 ? 'Retard' : cmp.delayS < -2 ? 'Avance' : 'À l’heure'} <Num value={Math.round(Math.abs(cmp.delayS))} unit="s" status={worstStatus(live, validated.plan.status)} />
+                {cmp.offRouteM > 2 && ` · hors de l’itinéraire répété (${Math.round(cmp.offRouteM)} m) : le trajet a été replanifié`}
+              </p>
+              <p>
+                Pression réelle <Num value={Math.round(cmp.realBar)} unit="bar" status={live} /> contre <Num value={Math.round(cmp.plannedBar)} unit="bar" status={validated.plan.status} /> prévus (
+                <Num value={Math.round(cmp.barDelta)} unit="bar" status={worstStatus(live, validated.plan.status)} />)
+              </p>
+            </div>
+          )}
           {!validated && (
             <div className="pc-actions">
               <button type="button" className="pc-primary" disabled={snap.team.mode !== 'standby'} onClick={() => onValidate(shown)}>

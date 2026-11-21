@@ -43,7 +43,7 @@ const noop = () => {}
 describe('R12 the rehearsal is labelled and framed as a simulation', () => {
   test('every rehearsal surface carries the banner and the dashed frame, before and after the plan exists', () => {
     for (const p of [null, plan]) {
-      const out = html(createElement(PlanCard, { snap, plan: p, onRehearse: noop, onValidate: noop }))
+      const out = html(createElement(PlanCard, { site, snap, plan: p, onRehearse: noop, onValidate: noop }))
       expect(out).toContain(REHEARSAL_BANNER)
       expect(out).toContain('rehearsal-frame')
     }
@@ -51,7 +51,7 @@ describe('R12 the rehearsal is labelled and framed as a simulation', () => {
   })
 
   test('the plan shows its verdicts with « Décision : COS » (R2) and every number with its label (R3)', () => {
-    const out = html(createElement(PlanCard, { snap, plan, onRehearse: noop, onValidate: noop }))
+    const out = html(createElement(PlanCard, { site, snap, plan, onRehearse: noop, onValidate: noop }))
     expect(out).toContain('Décision : COS')
     expect(out).toContain('Valider le plan (décision COS)')
     // Every number rendered by Num carries a badge: as many badges as numbers.
@@ -104,6 +104,20 @@ describe('the plan only applies once the COS validates it', () => {
     expect(st.plan?.plan.order).toEqual(reversed.order)
     expect(st.notes.some((n) => n.text.includes('Plan d’intervention validé (décision COS)'))).toBe(true)
     expect(snapshot(c, st).plan?.validatedAtS).toBe(st.fire.t)
+  })
+
+  test('once the team is in, the plan card compares plan and real, labelled and framed', () => {
+    const { c, st } = fresh()
+    const before = html(createElement(PlanCard, { site, snap: snapshot(c, st), plan, onRehearse: noop, onValidate: noop }))
+    expect(before).not.toContain('Plan ou réel')
+    applyAction(c, st, { type: 'plan-validate', plan })
+    for (let k = 0; k < 20; k++) tick(c, st)
+    const out = html(createElement(PlanCard, { site, snap: snapshot(c, st), plan: null, onRehearse: noop, onValidate: noop }))
+    expect(out).toContain('Plan ou réel')
+    expect(out).toMatch(/À l’heure|Retard|Avance/)
+    expect(out).toContain('contre')
+    expect(out).toContain(REHEARSAL_BANNER)
+    expect(out).not.toContain('Valider le plan')
   })
 
   test('a plan can only be validated before the engagement', () => {

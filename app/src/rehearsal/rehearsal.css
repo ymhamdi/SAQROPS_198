@@ -169,6 +169,14 @@
   opacity: 0.55;
 }
 
+.rehearsal-compare {
+  display: grid;
+  gap: 2px;
+  padding: 6px 8px;
+  border-left: 4px solid var(--rehearsal);
+  background: rgba(255, 255, 255, 0.75);
+}
+
 .rehearsal-obs {
   margin: 0;
   padding: 0;
