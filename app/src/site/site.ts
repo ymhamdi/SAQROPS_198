@@ -12,6 +12,8 @@ export interface SiteRoom {
   index: number
   id: string
   name: string
+  /** label that fits on the plan */
+  short: string
   heightM: number
   walls: WallMaterial
   /** small enough for the flashover model (NIST training domain); the hall only gets smoke and temperature */
@@ -163,6 +165,7 @@ export function buildSite(json: SiteJson = siteJson): Site {
       index: i,
       id: r.id,
       name: r.name,
+      short: r.short,
       heightM: r.heightM,
       walls: r.walls as WallMaterial,
       flashoverModel: r.flashoverModel,

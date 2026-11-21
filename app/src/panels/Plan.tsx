@@ -114,8 +114,8 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
     ctx.fillStyle = '#3c4043'
     site.rooms.forEach((room, r) => {
       const b = boxes[r]
-      if (room.id === 'halle') ctx.fillText(room.name, b.x + 240, b.y + 300)
-      else ctx.fillText(room.name, b.x + 6, b.y + 16)
+      if (room.id === 'halle') ctx.fillText(room.short, b.x + 240, b.y + 300)
+      else ctx.fillText(room.short, b.x + 6, b.y + 16)
     })
 
     // Model alerts: dashed red outline and the horizon.
@@ -129,7 +129,7 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
       ctx.strokeRect(b.x - 2, b.y - 2, b.w + 4, b.h + 4)
       ctx.restore()
       ctx.fillStyle = '#d93025'
-      ctx.fillText(`IA : embrasement < ${rv.pred.horizonS} s`, b.x + 6, b.y + b.h - 8)
+      ctx.fillText(`IA < ${rv.pred.horizonS} s`, b.x + 6, b.y + 32)
     })
 
     // Truth layer (SIMULATED): fire seats, hot-layer temperature, flashovers.
@@ -142,7 +142,7 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
         ctx.fillRect(b.x, b.y, b.w, b.h)
         ctx.fillStyle = '#8c1d18'
         const lead = rv.truth.flashedAt !== null && rv.firstAlertAt !== null ? ` · alerte IA ${rv.truth.flashedAt - rv.firstAlertAt} s avant` : ''
-        ctx.fillText(`[SIMULATED] ${Math.round(rv.truth.layerC)} °C${rv.truth.flashedAt !== null ? ` · embrasé à ${rv.truth.flashedAt} s${lead}` : ''}`, b.x + 6, b.y + 30)
+        ctx.fillText(`[SIMULATED] ${Math.round(rv.truth.layerC)} °C${rv.truth.flashedAt !== null ? ` · embrasé à ${rv.truth.flashedAt} s${lead}` : ''}`, b.x + 6, b.y + 50)
       })
     }
 
@@ -187,9 +187,11 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
       ctx.fill()
       ctx.stroke()
       ctx.restore()
+      // Label at the far end of the cone, away from the rooms' own labels.
+      const far = { x: src.x + len * 0.75 * Math.sin((pl.towardDeg * Math.PI) / 180), y: src.y - len * 0.75 * Math.cos((pl.towardDeg * Math.PI) / 180) }
       ctx.fillStyle = '#3c4043'
-      ctx.font = '600 11px Barlow, system-ui, sans-serif'
-      ctx.fillText('Zone interdite drone (panache)', src.x + 20, src.y - 20)
+      ctx.font = '600 12px Barlow, system-ui, sans-serif'
+      ctx.fillText('Zone interdite drone (panache)', Math.min(far.x, ctx.canvas.width - 200), Math.max(14, far.y))
     }
     if (showDrone && dr.path.length > 1) {
       ctx.save()
@@ -206,12 +208,12 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
       ctx.restore()
     }
     if (showDrone) {
-      ctx.font = '600 11px Barlow, system-ui, sans-serif'
+      // Rooms the thermal camera has seen: a violet corner mark; the temperatures are listed in the drone card.
       snap.drone.roofC.forEach((c, r) => {
         if (c === null) return
         const b = boxes[r]
         ctx.fillStyle = 'rgba(161, 66, 244, 0.9)'
-        ctx.fillText(`Toit ${Math.round(c)} °C [SIMULATED]`, b.x + 6, b.y + b.h - 22)
+        ctx.fillRect(b.x + b.w - 12, b.y + 4, 8, 8)
       })
       if (dr.at && dr.status === 'flying') {
         const q = at(dr.at)

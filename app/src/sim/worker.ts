@@ -10,7 +10,8 @@ import { engage, evacuate, initSim, launchDrone, makeContext, reengageTeam, setO
 const ctx = globalThis as unknown as { onmessage: ((e: MessageEvent<Request>) => void) | null; postMessage(m: Response): void }
 
 const site = buildSite()
-const sim = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictor())
+const predictor = loadPredictor()
+const sim = makeContext(site, fireSetupOf(site), defaultFireParams(), predictor)
 let state: SimState = initSim(sim, initialDoors(site), 42)
 
 function act(a: Action) {

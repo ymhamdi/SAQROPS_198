@@ -11,12 +11,12 @@
   "units": "metres; x eastwards from the building's west wall, y southwards from its north wall",
   "building": { "widthM": 60, "depthM": 40, "marginM": 5, "cellM": 0.5 },
   "rooms": [
-    { "id": "bureaux", "name": "Bureaux", "rect": [0, 0, 10, 8], "heightM": 3.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["fumees"], "growth": "medium" },
-    { "id": "tgbt", "name": "TGBT / transformateur", "rect": [10, 0, 16, 6], "heightM": 4.0, "walls": "concrete", "flashoverModel": false, "hazards": ["electrique"], "growth": "slow" },
-    { "id": "liion", "name": "Local de charge batteries Li-ion", "rect": [16, 0, 22, 6], "heightM": 4.0, "walls": "concrete", "flashoverModel": true, "hazards": ["liion", "fumees"], "growth": "fast" },
-    { "id": "solvants", "name": "Stockage solvants", "rect": [0, 32, 6, 40], "heightM": 4.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["solvants", "fumees"], "growth": "ultraFast" },
-    { "id": "peinture", "name": "Cabine de peinture", "rect": [6, 32, 16, 40], "heightM": 4.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["solvants", "fumees"], "growth": "fast" },
-    { "id": "halle", "name": "Halle de production (découpe, drapage, autoclave)", "rect": null, "heightM": 8.0, "walls": "concrete", "flashoverModel": false, "hazards": ["fumees", "pression"], "growth": "medium" }
+    { "id": "bureaux", "short": "Bureaux", "name": "Bureaux", "rect": [0, 0, 10, 8], "heightM": 3.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["fumees"], "growth": "medium" },
+    { "id": "tgbt", "short": "TGBT", "name": "TGBT / transformateur", "rect": [10, 0, 16, 6], "heightM": 4.0, "walls": "concrete", "flashoverModel": false, "hazards": ["electrique"], "growth": "slow" },
+    { "id": "liion", "short": "Li-ion", "name": "Local de charge batteries Li-ion", "rect": [16, 0, 22, 6], "heightM": 4.0, "walls": "concrete", "flashoverModel": true, "hazards": ["liion", "fumees"], "growth": "fast" },
+    { "id": "solvants", "short": "Solvants", "name": "Stockage solvants", "rect": [0, 32, 6, 40], "heightM": 4.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["solvants", "fumees"], "growth": "ultraFast" },
+    { "id": "peinture", "short": "Peinture", "name": "Cabine de peinture", "rect": [6, 32, 16, 40], "heightM": 4.0, "walls": "gypsum", "flashoverModel": true, "hazards": ["solvants", "fumees"], "growth": "fast" },
+    { "id": "halle", "short": "Halle de production", "name": "Halle de production (découpe, drapage, autoclave)", "rect": null, "heightM": 8.0, "walls": "concrete", "flashoverModel": false, "hazards": ["fumees", "pression"], "growth": "medium" }
   ],
   "obstacles": [
     { "id": "autoclave", "name": "Autoclave", "rect": [40, 2, 52, 7], "hazards": ["pression"] },

@@ -38,7 +38,7 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
   const [mode, setMode] = useState<'doors' | 'fire'>('doors')
   const [card, setCard] = useState(false)
   const snap = sim.snap
-  if (!snap) return <main className="pc-loading">Chargement de la simulation…</main>
+  if (!snap) return <main className="pc-loading">{sim.error ?? 'Chargement de la simulation…'}</main>
   const s: Snapshot = snap
   const live = worstStatus('MODELED', s.readingsStatus)
   const toggleObjective = (id: string, name: string) => {
@@ -191,6 +191,20 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
             </div>
           </dl>
           {s.drone.reason && <p className="pc-note">{s.drone.reason}</p>}
+          {s.drone.roofC.some((c) => c !== null) && (
+            <div className="pc-roofs">
+              <span className="pc-kick">Image thermique des toits (affichage PC, jamais pour le verdict)</span>
+              <ul>
+                {site.rooms.map((room, r) =>
+                  s.drone.roofC[r] === null ? null : (
+                    <li key={room.id}>
+                      {room.short} <Num value={s.drone.roofC[r]} unit="°C" status="SIMULATED" />
+                    </li>
+                  ),
+                )}
+              </ul>
+            </div>
+          )}
           <p className="pc-note">
             Retour à l'engin garanti avec <Num value={s.drone.reservePct} unit="%" status="MODELED" /> de réserve · vol simulé (tout vol réel en Tunisie exige une autorisation
             préalable)
@@ -245,9 +259,9 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
                       {rv.pred ? (
                         <>
                           <Num value={rv.pred.p60 * 100} unit="%" status={rv.pred.status} />
-                          <small>
-                            délai estimé ≈ <Num value={Math.round(rv.pred.tffS / 5) * 5} unit="s" status={rv.pred.status} />
-                          </small>
+                          <span className="pc-tff">
+                            délai ≈ <Num value={Math.round(rv.pred.tffS / 5) * 5} unit="s" status={rv.pred.status} />
+                          </span>
                         </>
                       ) : (
                         <small>hors modèle (halle)</small>

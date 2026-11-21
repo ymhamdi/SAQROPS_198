@@ -40,6 +40,11 @@ export function useSim(): SimControls {
   }, [])
 
   useEffect(() => {
+    // A fresh worker owes nothing: React runs this effect twice in development (StrictMode), and a request sent to the
+    // first, terminated worker would otherwise leave `busy` set forever.
+    busy.current = false
+    queue.current = []
+    owed.current = 0
     const w = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
     worker.current = w
     w.onmessage = (e: MessageEvent<Response>) => {
@@ -48,9 +53,20 @@ export function useSim(): SimControls {
       else setError(e.data.error)
       pump()
     }
+    // A worker that fails to load or throws reports here, not in the page console: show it.
+    w.onerror = (e) => {
+      busy.current = false
+      setError(`Le moteur de simulation n'a pas démarré : ${e.message || 'erreur de chargement du worker'}`)
+      console.error('simulation worker error', e)
+    }
+    w.onmessageerror = () => setError('Message illisible reçu du moteur de simulation')
     queue.current.push({ type: 'reset', seed: v(H.sim.seed) })
     pump()
-    return () => w.terminate()
+    return () => {
+      w.terminate()
+      worker.current = null
+      busy.current = false
+    }
   }, [pump])
 
   useEffect(() => {
