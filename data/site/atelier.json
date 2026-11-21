@@ -62,6 +62,9 @@
     { "id": "coupure-tgbt", "name": "Coupure électrique — TGBT", "at": [13, 3], "kind": "action" },
     { "id": "reco-liion", "name": "Reconnaissance — local Li-ion", "at": [19, 3], "kind": "reconnaissance" }
   ],
+  "hiddenObstacles": [
+    { "id": "rack-effondre", "name": "Rack effondré", "rect": [4, 27, 13, 28.5], "note": "Simulated truth of the demo (SIMULATED): a collapsed rack across the diagonal from the west exit to the paint booth. The plan does not show it; only the indoor drone can find it. It never blocks the simulated team on its own." }
+  ],
   "demo": {
     "fireRoom": "solvants",
     "fireAt": [3, 37],

@@ -337,6 +337,12 @@ function finalVerdict(ctx: SimContext, s: SimState, base: Verdict, involved: Set
   return mergeKnown(withAi, knownReasons(s.known, involved, (r) => ctx.site.rooms[r].name))
 }
 
+/** True when a cell of the rest of the plan has become impassable (a passage the drone found blocked). */
+function trackBlocked(s: SimState): boolean {
+  for (let k = Math.max(0, s.team.index); k < s.team.track.length; k++) if (!Number.isFinite(s.cost.pace[s.team.track[k].cell])) return true
+  return false
+}
+
 /** One simulated second (or dt). */
 export function tick(ctx: SimContext, s: SimState, dt = v(H.sim.tickS)): void {
   stepFire(ctx.setup, ctx.params, s.fire, dt)
@@ -358,6 +364,9 @@ export function tick(ctx: SimContext, s: SimState, dt = v(H.sim.tickS)): void {
       s.notes.push({ t: s.fire.t, text: 'Binôme sorti.' })
     }
   }
+  // A passage the drone has just found blocked lies on the rest of the plan: re-plan before judging, so that a stale route
+  // through it never reads as a NO-GO that the latch (R6) would then keep.
+  if (team.mode !== 'out' && trackBlocked(s)) replan(ctx, s)
   const prev = s.computed.verdict
   judge(ctx, s)
   const costNow = remainingCost(s)

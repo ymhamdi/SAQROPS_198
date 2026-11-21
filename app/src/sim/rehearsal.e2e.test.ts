@@ -34,6 +34,14 @@ describe('video scenario with the rehearsal', { timeout: 60_000 }, () => {
     run((x) => x.fire.t >= 60)
     applyAction(ctx, s, { type: 'drone' })
     log.push(`t=${s.fire.t} drones: indoor flight ${Math.round(s.indoor.plan!.durationS)} s, ${s.indoor.observations.length} observations`)
+    // The drone found the collapsed rack the plan does not show; the door it could not open stays UNKNOWN behind.
+    const rack = site.hidden[0].cells
+    const found = s.indoor.observations.find((o) => o.kind === 'obstacle')
+    expect(found?.cells).toEqual(rack)
+    expect(s.known.blockedCells).toEqual(expect.arrayContaining(rack))
+    expect(s.known.rooms[site.rooms.findIndex((r) => r.id === 'tgbt')].unknown).toBe(true)
+    // Finding it while the team waits must not read as a NO-GO that the latch would keep (R6): the route is re-planned first.
+    expect(s.latch.latched).toBe(false)
 
     // 2. The rehearsal, on what PNR knows, in well under a second.
     run((x) => x.fire.t >= 90)
@@ -44,6 +52,9 @@ describe('video scenario with the rehearsal', { timeout: 60_000 }, () => {
     expect(ms).toBeLessThan(1000)
     expect(plan.verdict).toBe('GO')
     expect(new Set(plan.order)).toEqual(new Set(site.demo.objectives))
+    // The plan goes round the rack, and says what the detour costs.
+    for (const p of plan.track) expect(rack).not.toContain(p.cell)
+    expect(plan.reasons.some((r) => r.message.includes('Passage obstrué') && r.source === 'drone')).toBe(true)
     // The rehearsal alone changed nothing: the team is still waiting.
     expect(s.team.mode).toBe('standby')
     expect(s.plan).toBeNull()
@@ -53,6 +64,8 @@ describe('video scenario with the rehearsal', { timeout: 60_000 }, () => {
     applyAction(ctx, s, { type: 'plan-validate', plan })
     expect(s.team.mode).toBe('engaged')
     expect(s.team.objectives).toEqual(plan.order)
+    // The team's own route goes round it too, now that PNR knows.
+    for (const p of s.team.track) expect(rack).not.toContain(p.cell)
     expect(s.shown.verdict).toBe('GO')
     expect(s.plan?.plan.verdict).toBe('GO')
     log.push(`t=${s.fire.t} plan validated, engaged: ${s.shown.verdict}`)

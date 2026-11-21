@@ -50,6 +50,28 @@ describe('site grid (data/site/atelier.json)', () => {
     for (const r of site.rooms) expect(Number.isFinite(out[r.cells[Math.floor(r.cells.length / 2)]]), r.id).toBe(true)
   })
 
+  test('a collapsed rack the plan does not show lies in the hall: floor on the grid, a detour when it is known, never a dead end', () => {
+    expect(site.hidden).toHaveLength(1)
+    const rack = site.hidden[0]
+    const hall = site.rooms.findIndex((r) => r.id === 'halle')
+    for (const c of rack.cells) {
+      expect(site.kind[c]).toBe(CELL.FLOOR)
+      expect(site.room[c]).toBe(hall)
+    }
+    const entry = site.doors[site.demo.entry].cells[0]
+    const victim = site.objectives.find((o) => o.id === 'victime-peinture')!.cell
+    const free = prepareGrid(site, clearPace())
+    const blocked = prepareGrid(site, clearPace())
+    for (const c of rack.cells) blocked.pace[c] = Infinity
+    const direct = findPath(free, entry, victim)!
+    const around = findPath(blocked, entry, victim)
+    expect(around).not.toBeNull()
+    expect(direct.cells.some((c) => rack.cells.includes(c))).toBe(true)
+    expect(around!.timeS).toBeGreaterThan(direct.timeS + 1)
+    expect(around!.cells.some((c) => rack.cells.includes(c))).toBe(false)
+    for (const o of site.objectives) expect(findPath(blocked, entry, o.cell), o.id).not.toBeNull()
+  })
+
   test('cellAt and cellCentre agree', () => {
     const c = cellAt(site, { x: 12.3, y: 40.1 })
     const centre = cellCentre(site, c)

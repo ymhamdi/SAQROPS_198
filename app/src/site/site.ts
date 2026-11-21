@@ -207,6 +207,14 @@ export function buildSite(json: SiteJson = siteJson): Site {
   for (const id of [...json.demo.objectives, ...json.demo.thenObjectives]) {
     if (!json.objectives.some((o) => o.id === id)) throw new Error(`site: unknown demo objective ${id}`)
   }
+  // Things the plan does not show: the simulator's truth, never painted into the grid. They must lie on open floor.
+  const hidden = json.hiddenObstacles.map((h) => {
+    const { c0, r0, c1, r1 } = toCells(h.rect as Rect)
+    const cells: number[] = []
+    for (let row = r0; row < r1; row++) for (let col = c0; col < c1; col++) cells.push(row * width + col)
+    if (cells.some((c) => kind[c] !== CELL.FLOOR)) throw new Error(`site: hidden obstacle ${h.id} must lie on open floor`)
+    return { id: h.id, name: h.name, cells }
+  })
 
   return {
     name: json.name,
@@ -226,7 +234,7 @@ export function buildSite(json: SiteJson = siteJson): Site {
     objectives: json.objectives.map((o) => ({ ...point(o.id, o.name, o.at, true), kind: o.kind })),
     obstacles: json.obstacles.map((o) => ({ id: o.id, name: o.name, rect: o.rect as Rect, hazards: o.hazards })),
     engine: point('engine', json.engine.name, json.engine.at, false),
-    hidden: [],
+    hidden,
     demo: {
       fireRoom: byId(json.demo.fireRoom),
       fireAt: { x: json.demo.fireAt[0] + marginM, y: json.demo.fireAt[1] + marginM },
