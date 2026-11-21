@@ -1,0 +1,290 @@
+/* PC du COS. Built on the existing tokens of index.css; calm, legible from a distance, red only for NO-GO. */
+
+.pc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  grid-template-rows: auto 1fr;
+  gap: 12px 16px;
+  min-height: 100vh;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: Barlow, system-ui, sans-serif;
+}
+
+.pc-loading {
+  padding: 32px;
+  font-family: Barlow, system-ui, sans-serif;
+}
+
+.pc-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.pc-head h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.pc-kick {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.pc-clock strong {
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-controls,
+.pc-maptools,
+.pc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.pc-controls {
+  margin-left: auto;
+}
+
+.pc button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.pc button[aria-pressed='true'] {
+  background: var(--blue-bg);
+  border-color: var(--blue);
+  color: var(--blue-text);
+}
+
+.pc button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pc .pc-primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--on-accent);
+}
+
+.pc .pc-danger {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--on-accent);
+}
+
+.pc-map {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pc-maptools label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+.plan {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.plan.is-fire {
+  cursor: crosshair;
+  outline: 3px solid var(--amber);
+}
+
+.pc-legend,
+.pc-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.pc-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.pc-card,
+.pc-verdict {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.pc-verdict h2 {
+  margin: 2px 0 4px;
+  font-size: 40px;
+  line-height: 1;
+}
+
+.pc-verdict p {
+  margin: 0 0 8px;
+  font-weight: 500;
+}
+
+.pc-verdict.is-go {
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+
+.pc-verdict.is-go h2 {
+  color: var(--green);
+}
+
+.pc-verdict.is-nogo {
+  border-color: var(--red);
+  background: var(--red-bg);
+}
+
+.pc-verdict.is-nogo h2 {
+  color: var(--red);
+}
+
+.pc-reasons,
+.pc-list,
+.pc-log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.pc-reasons li {
+  padding: 3px 0;
+}
+
+.pc-reasons li.is-no-go {
+  color: var(--red-text);
+  font-weight: 600;
+}
+
+.pc-reasons li.is-caution {
+  color: var(--amber-text);
+}
+
+.pc-reasons li.is-info {
+  color: var(--text-2);
+}
+
+.pc-src {
+  display: inline-block;
+  min-width: 64px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.pc-gauges {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.pc-gauges dt {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.pc-gauges dd {
+  margin: 0;
+}
+
+.num strong {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-rooms .num strong {
+  font-size: 14px;
+}
+
+.pc-list li {
+  padding: 4px 0;
+}
+
+.pc-list em {
+  color: var(--green);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.pc-rooms {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.pc-rooms th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  padding: 4px 4px 4px 0;
+}
+
+.pc-rooms td {
+  padding: 4px 4px 4px 0;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.pc-rooms td small {
+  display: block;
+  color: var(--text-2);
+}
+
+.pc-rooms tr.is-alert td {
+  color: var(--red-text);
+}
+
+.pc-log li {
+  padding: 2px 0;
+}
+
+.pc-log span {
+  display: inline-block;
+  min-width: 52px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-2);
+}
+
+@media (max-width: 1100px) {
+  .pc {
+    grid-template-columns: 1fr;
+  }
+}

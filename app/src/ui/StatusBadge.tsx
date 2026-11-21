@@ -1,18 +1,15 @@
 import type { DataStatus } from '../types'
 
-/** Provenance of a value, plus SIMULATED for drills (the storm drill): never presented like a measurement. */
-export type BadgeStatus = DataStatus | 'SIMULATED'
-
-const TITLES: Record<BadgeStatus, string> = {
-  OBSERVED: 'Direct measurement',
-  DERIVED: 'Computed from observations',
-  MODELED: 'Based on assumptions',
-  MOCK: 'Placeholder, not real data',
-  SIMULATED: 'A drill or simulation, not a real event',
+const TITLES: Record<DataStatus, string> = {
+  OBSERVED: 'Mesure réelle',
+  DERIVED: 'Calculé à partir de mesures',
+  MODELED: 'Hypothèse, corrélation ou valeur normative',
+  SIMULATED: 'Produit par la simulation, pas une mesure',
+  MOCK: 'Valeur factice',
 }
 
-/** Every value in the UI shows where it comes from (CLAUDE.md §4 Scientific honesty). */
-export function StatusBadge({ status }: { status: BadgeStatus }) {
+/** Every value in the UI shows where it comes from (CLAUDE.md R3): SIMULATED and MOCK never look like OBSERVED. */
+export function StatusBadge({ status }: { status: DataStatus }) {
   return (
     <span className={`badge badge-${status.toLowerCase()}`} title={TITLES[status]}>
       {status}
