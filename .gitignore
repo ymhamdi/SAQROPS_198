@@ -1,0 +1,37 @@
+# Working notes stay local, except the HUD design notes (aviation HUD principles reused for the ARI mask HUD)
+/docs/*
+!/docs/HUD_DESIGN_NOTES.md
+
+# Raw downloads (NIST xlsx, UL FSRI) stay local; ml/prepare.py rebuilds the Parquet from them
+/ml/data/
+/ml/raw/
+
+# Node
+node_modules/
+dist/
+*.local
+*.tsbuildinfo
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets (the repo is public)
+.env
+.env.*
+
+# Claude Code plugin state
+.omc/
+.impeccable/

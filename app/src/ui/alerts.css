@@ -1,0 +1,187 @@
+/* The fixed alert slot (HUD and tablet): one alert, icon + word + colour, the rest counted. A live warning takes
+   over: a solid band on the tablet, a red frame on the see-through visor. Shapes differ too: octagon = warning,
+   triangle = caution. */
+
+.alert-slot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  min-height: 56px;
+  padding: 10px 16px;
+  border-radius: var(--radius-card);
+}
+
+.alert-slot.is-empty {
+  visibility: hidden;
+}
+
+.alert-slot svg {
+  flex: none;
+}
+
+.alert-word {
+  flex: none;
+  padding: 2px 8px;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.alert-text {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.alert-title {
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.alert-action {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.alert-more {
+  flex: none;
+  margin-left: auto;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* ---------- visor (see-through: no fill, the halo from the visor carries the text) ---------- */
+
+.alert-slot.is-visor {
+  padding: 0;
+  background: transparent;
+  color: var(--visor-text);
+}
+
+.alert-slot.is-visor .alert-word {
+  box-shadow: var(--visor-halo-line);
+}
+
+.alert-slot.is-visor.is-caution > svg,
+.alert-slot.is-visor.is-caution .alert-word {
+  color: var(--visor-caution);
+}
+
+.alert-slot.is-visor.is-warning > svg,
+.alert-slot.is-visor.is-warning .alert-word {
+  color: var(--visor-warning);
+}
+
+.alert-slot.is-visor .alert-more {
+  color: var(--visor-text-2);
+}
+
+/* The one takeover: a live warning. A red frame (a stroke, not a fill), larger type, the action in words. */
+.alert-slot.is-visor.is-takeover {
+  width: 100%;
+  min-height: 88px;
+  padding: 14px 22px;
+  gap: 16px;
+  border: 2px solid var(--visor-warning);
+  box-shadow: var(--visor-halo-line);
+  animation: alert-in 220ms var(--ease-out);
+}
+
+.alert-slot.is-takeover .alert-word {
+  font-size: 18px;
+}
+
+.alert-slot.is-takeover .alert-title {
+  font-size: 30px;
+  white-space: nowrap;
+}
+
+.alert-slot.is-takeover .alert-action {
+  font-weight: 600;
+  font-size: 22px;
+  white-space: nowrap;
+}
+
+.alert-slot.is-tablet.is-takeover .badge {
+  color: var(--on-accent);
+  border-color: var(--on-accent);
+}
+
+/* ---------- tablet (daylight) ---------- */
+
+.alert-slot.is-tablet {
+  min-height: 64px;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.alert-slot.is-tablet.is-caution {
+  background: var(--amber-bg);
+}
+
+.alert-slot.is-tablet.is-caution > svg,
+.alert-slot.is-tablet.is-caution .alert-word {
+  color: var(--amber-text);
+}
+
+.alert-slot.is-tablet.is-warning {
+  background: var(--red-bg);
+}
+
+.alert-slot.is-tablet.is-warning > svg,
+.alert-slot.is-tablet.is-warning .alert-word {
+  color: var(--red-text);
+}
+
+.alert-slot.is-tablet.is-takeover {
+  background: var(--visor-warning-band);
+  color: var(--on-accent);
+}
+
+.alert-slot.is-tablet.is-takeover > svg,
+.alert-slot.is-tablet.is-takeover .alert-word,
+.alert-slot.is-tablet.is-takeover .badge {
+  color: var(--on-accent);
+  border-color: var(--on-accent);
+}
+
+.alert-slot.is-tablet .alert-more {
+  color: var(--text-2);
+}
+
+@keyframes alert-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alert-slot.is-visor.is-takeover {
+    animation: none;
+  }
+}
+
+/* The title takes the room that is left and wraps in it; "+N more" never sits on top of it. */
+.alert-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Narrower visors: the centre column is ~250 px, so "+N more" goes on its own line under the alert. */
+@media (max-width: 1100px) {
+  .alert-slot.is-visor {
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+
+  .alert-slot.is-visor .alert-more {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+}
