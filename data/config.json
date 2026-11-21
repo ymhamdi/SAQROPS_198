@@ -51,6 +51,7 @@
       "alpertVelNearK": { "value": 0.96, "unit": "1", "source": "Ceiling-jet velocity near the plume, u = 0.96·(Q/H)^(1/3) for r/H ≤ 0.15: Alpert (1972)", "status": "MODELED" },
       "alpertVelFarK": { "value": 0.195, "unit": "1", "source": "Ceiling-jet velocity away from the plume, u = 0.195·Q^(1/3)·H^(1/2)/r^(5/6): Alpert (1972)", "status": "MODELED" },
       "alpertVelRatio": { "value": 0.15, "unit": "1", "source": "r/H limit between Alpert's two velocity correlations: Alpert (1972)", "status": "MODELED" },
+      "fsriRadiusM": { "value": 1.3, "unit": "m", "source": "Distance from the fire to a quadrant's thermocouple tree assumed when a UL FSRI ceiling thermocouple is turned into a detector signal (3.7 m room, quadrant centres about 0.9-1.9 m from the fuel). Team assumption", "status": "MODELED" },
       "sampleS": { "value": 1, "unit": "s", "source": "Detector reporting period in the simulation (the training data step is checked when the NIST file is opened)", "status": "MODELED" }
     },
     "ari": {

@@ -2,7 +2,7 @@
 
 import { readFileSync } from 'node:fs'
 import { describe, expect, test } from 'vitest'
-import { FEATURE_NAMES, featureVector, roomStats, type RoomHistory } from './features'
+import { FEATURE_NAMES, featureVector, roomStats, trimHistory, type RoomHistory } from './features'
 
 interface Case {
   tNow: number
@@ -31,6 +31,22 @@ describe('feature parity with ml/features.py', () => {
           else expect(Math.abs(g - want[k]), `${FEATURE_NAMES[k]} at t=${c.tNow}`).toBeLessThanOrEqual(1e-9 * Math.max(1, Math.abs(want[k])))
         })
       })
+    }
+  })
+})
+
+describe('trimHistory', () => {
+  test('gives exactly the same statistics as the whole history, on every parity case', () => {
+    for (const c of fixture.cases) {
+      for (const r of c.rooms) {
+        const h: RoomHistory = { t: r.t, readings: r.readings.map((d) => d.map(toNaN)) }
+        const full = roomStats(h, c.tNow)
+        const trimmed = roomStats(trimHistory(h, c.tNow), c.tNow)
+        for (const k of Object.keys(full) as (keyof typeof full)[]) {
+          if (Number.isNaN(full[k])) expect(trimmed[k], k).toBeNaN()
+          else expect(trimmed[k], k).toBeCloseTo(full[k], 9)
+        }
+      }
     }
   })
 })

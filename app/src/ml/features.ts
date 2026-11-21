@@ -109,6 +109,22 @@ export function roomStats(h: RoomHistory, tNow: number): RoomStats {
   }
 }
 
+/**
+ * The part of a history the features can see at tNow: the samples from 30 s before the room's first failure up to it,
+ * and the last 60 s. roomStats gives the same result on it as on the whole history (tested), with far less work on
+ * long runs (ml/featurize.ts).
+ */
+export function trimHistory(h: RoomHistory, tNow: number): RoomHistory {
+  let first = -1
+  for (let k = 0; k < h.t.length && h.t[k] <= tNow && first < 0; k++) if (h.readings.some((d) => Number.isNaN(d[k]))) first = k
+  const keep: number[] = []
+  for (let k = 0; k < h.t.length && h.t[k] <= tNow; k++) {
+    const nearFail = first >= 0 && k <= first && h.t[k] >= h.t[first] - SLOPE_AT_FAIL_S
+    if (nearFail || h.t[k] >= tNow - WINDOW_S) keep.push(k)
+  }
+  return { t: keep.map((k) => h.t[k]), readings: h.readings.map((d) => keep.map((k) => d[k])) }
+}
+
 /** Max ignoring NaN; NaN when nothing is valid. */
 function nanMax(values: number[]): number {
   let best = NaN
