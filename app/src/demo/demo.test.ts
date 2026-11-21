@@ -161,6 +161,17 @@ describe('automatic demo', { timeout: 120_000 }, () => {
     }
   })
 
+  test('without the rehearsal no caption speaks of a validated plan; with it, the engagement is on that plan', () => {
+    for (const scene of DEMO_SCENES) {
+      if (scene === 'indoor' || scene === 'rehearsal') continue
+      const c = captionOf(scene, false)
+      expect(c.text, scene).not.toMatch(/plan valid/i)
+      expect(c.text.length).toBeGreaterThan(20)
+    }
+    expect(captionOf('engaged', true).text).toMatch(/plan validé/)
+    expect(captionOf('engaged', false).text).toMatch(/COS engage/)
+  })
+
   test('without the rehearsal the story is numbered over six steps, with it over eight', () => {
     for (const scene of DEMO_SCENES) {
       if (scene === 'indoor' || scene === 'rehearsal') continue

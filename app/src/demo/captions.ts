@@ -26,8 +26,12 @@ export const CAPTIONS: Record<DemoScene, Caption> = {
   end: { step: 8, text: 'Fin de la démonstration. Simulation : le verdict est une aide, la décision appartient au COS.' },
 }
 
+/** Without the rehearsal there is no validated plan: the COS engages the team directly. */
+const ENGAGED_WITHOUT_PLAN = 'Le COS engage un binôme vers la victime puis la coupure électrique : itinéraire, air et point de non-retour en direct.'
+
 /** The caption of a scene and where it stands in the story: without the rehearsal the story has two steps fewer. */
 export function captionOf(scene: DemoScene, withRehearsal: boolean): Caption & { steps: number } {
   const c = CAPTIONS[scene]
-  return withRehearsal ? { ...c, steps: STEPS } : { ...c, step: c.step > 2 ? c.step - 2 : c.step, steps: STEPS_WITHOUT_REHEARSAL }
+  if (withRehearsal) return { ...c, steps: STEPS }
+  return { step: c.step > 2 ? c.step - 2 : c.step, text: scene === 'engaged' ? ENGAGED_WITHOUT_PLAN : c.text, steps: STEPS_WITHOUT_REHEARSAL }
 }
