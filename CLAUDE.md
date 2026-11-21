@@ -55,6 +55,11 @@ app/src/drone/   trajet de reconnaissance, PNR batterie (même logique que le PN
 app/src/live/    BroadcastChannel PC ↔ tablette ↔ HUD (SIMULATED)
 app/src/panels/  MissionControl = PC du COS · Tablet = tablette chef de binôme · Hud = HUD masque ARI ·
                  PrintCard = fiche réflexe binôme
+app/src/scene/   vue synthétique du HUD (render.ts : lancer de rayons sur la grille du plan, fumée et chaleur d'après les
+                 détecteurs seuls, R5 testé : la vérité du simulateur ne change aucun pixel) + Scene.tsx (chevrons de route,
+                 repères) ; LiveMap.tsx = carte en direct de la tablette ; mission.ts = phases de la mission ; camera.ts
+app/src/twin/    jumeau numérique (?view=twin, ouvert depuis le PC) : réalité simulée / ce que PNR en sait, chaîne de
+                 décision en direct, courbes ; lit le snapshot diffusé par le PC, ne simule pas
 ml/              kaggle/pnr-flashover.ipynb (notebook exporté de Kaggle), train.py (même code), prepare.py (NIST xlsx →
                  Parquet), generate.ts (plan B : Node → CSV sur l'atelier), model/ (model-*.json, metrics.json,
                  golden.csv), MODEL_REPORT.md

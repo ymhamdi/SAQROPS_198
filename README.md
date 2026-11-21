@@ -1,269 +1,127 @@
 <div align="center">
 
-# Martian Map
+# PNR · Point de Non-Retour
 
-### Safe Marswalks, mapped.
+### À chaque seconde : l'engagement est-il encore tenable, par où sortir, et pourquoi ?
 
-Google Maps directions for one Marswalk: a hyperlocal route planner for two suited astronauts and a support rover, in the boxwork ridges of Mount Sharp, Gale Crater, where Curiosity worked in 2025–26.
+Aide à la décision pour la Protection civile lors d'un incendie sur site industriel.
+Prévision de l'embrasement par IA · point de non-retour sur l'air de l'ARI · drone de reconnaissance simulé.
 
-**NASA Space Apps Challenge 2026 · *Interplanetary Survival Guide: Martian Map***
+**Challenge Aero-Entrepreneur · Tunisian Aeroday × Protection civile × INJAZ**
 
-**[▶ Open the live app](https://interplanetary-survival-guide-marti-red.vercel.app)** · [Example plan](https://interplanetary-survival-guide-marti-red.vercel.app/#stops=t:msl-panorama,t:msl-valle-de-la-luna,t:msl-nevado-sajama,t:msl-nodules&rover=2) · [Quick start](#quick-start) · [Data sources](data/SOURCES.md) · [Credits and AI use](CREDITS.md)
-
-</div>
-
-![Martian Map: a GO Marswalk through seven real Curiosity stops on HiRISE imagery, with the safety checks, elevation profile and timeline](assets/readme/hero.jpg)
-
-<div align="center">
-
-**1,000,000** terrain cells at 2 m · **7** real Curiosity stops · **10+** NASA datasets · **3** interfaces · **356** automated tests
+[Lancer l'application](#lancer-lapplication) · [Rapport du modèle IA](ml/MODEL_REPORT.md) · [Données et sources](data/SOURCES.md) · [Crédits et usage de l'IA](CREDITS.md)
 
 </div>
 
 ---
 
-## February 6, 1971: lost on the Moon
+> *« Le point de non-retour, l'aviation le calcule pour chaque vol. Nous le calculons pour chaque pompier qui entre dans le feu. »*
 
-<img src="assets/readme/apollo14-cone-crater.jpg" align="right" width="40%" alt="LRO image of the Apollo 14 site with the illustrative path towards Cone Crater">
+**Prototype de démonstration.** Le site, le feu, les relevés des détecteurs, la position du binôme et le vol du drone sont **simulés**, et l'application l'affiche partout. Il n'y a eu aucun test en intervention réelle et aucune validation par la Protection civile à ce jour. Le verdict est une aide : **Décision : COS**.
 
-On Apollo 14's second moonwalk, **Alan Shepard and Edgar Mitchell** set out for the rim of **Cone Crater**. The terrain rolled, landmarks hid behind ridges, and their map was made for a much larger scale. They lost time, lost track of where they were, and **turned back short of the rim**.
+## Le problème
 
-### Now imagine it on Mars.
+Quand un binôme de sapeurs-pompiers entre dans une usine en feu, il ne sait pas si le local voisin va **s'embraser** (*flashover*), ni s'il lui reste **assez d'air** pour ressortir. Le chef de binôme et le COS décident à l'aveugle.
 
-The first crew to walk on Mars will be further from help than anyone before them:
+PNR répond en continu à trois questions : **l'engagement est-il encore tenable, par où sortir, et pourquoi ?**
 
-- **No GPS:** no satellite positioning on Mars.
-- **No live link to Earth:** signals take 3 to 22 minutes each way.
-- **No compass:** Mars has no global magnetic field.
-- **Dangerous terrain:** sand traps, steep walls and boulder fields, in a suit with limited oxygen.
+- Une **IA** lit les détecteurs de chaleur du bâtiment, même quand ils tombent en panne, et prévoit l'embrasement d'un local **30 à 60 s à l'avance**.
+- Un calcul de **point de non-retour** sur l'air de l'ARI vérifie que le binôme ressort avant le sifflet (55 bar), en comptant un retour 1,5 fois plus lent que prévu.
+- Le verdict **GO / NO-GO** s'affiche avec ses raisons sur le PC du COS, la tablette du chef de binôme et le masque (HUD). Un NO-GO reste verrouillé : **seul le COS peut ré-engager**.
+- Un **drone** de reconnaissance (simulé) part de l'engin, fait le tour du bâtiment hors du panache et surveille sa batterie avec la même logique de point de non-retour.
 
-**Martian Map is the guide they would carry.**
+## Cinq fenêtres, un seul verdict
 
-<br clear="right">
+Le site de démonstration est un atelier fictif de pièces composites aéronautiques (60 × 40 m) : bureaux, TGBT, local de charge Li-ion, stockage de solvants, cabine de peinture, halle avec autoclave, 3 sorties, 15 détecteurs de chaleur. Aucune entreprise réelle n'est nommée.
 
-<sub>LRO image of the Apollo 14 site: NASA/GSFC/Arizona State University. Path illustrative.</sub>
+| Écran | Pour qui | Contenu |
+|---|---|---|
+| **PC du COS** | le COS, au poste de commandement | Plan en direct (locaux teintés d'après les détecteurs, alertes IA, portes, binôme, drone), verdict et raisons, air et PNR, objectifs, journal. Le COS peut déclencher un départ de feu, ouvrir ou fermer une porte, engager, ajouter ou retirer un objectif, ordonner l'évacuation et ré-engager. |
+| **Tablette** | le chef de binôme | Verdict, phase de la mission, prochain point, distance, pression, sortie prévue, marge PNR, alertes, messages du PC, et une **carte en direct** qui suit le binôme (cap en haut, nord en haut ou plan complet) avec les locaux teintés d'après leurs détecteurs. Gros boutons, pour les gants. |
+| **HUD du masque ARI** | le porteur | Une seule alerte à la fois (icône + mot + couleur), air et PNR, lisibles en moins d'une seconde, sur une **vue synthétique** en première personne : le bâtiment reconstruit à partir du plan, avec portes, fumée et chaleur d'après les seuls détecteurs, chevrons de route au sol et alertes de l'IA. Elle est dessinée, pas filmée, et étiquetée SIMULATED. |
+| **Fiche réflexe** | le binôme | Une page A4 imprimable : verdict, mission, air, plan, sorties, dangers de l'itinéraire avec des consignes sourcées. |
+| **Jumeau numérique** | le jury, le COS | La réalité simulée à côté de ce que PNR en sait, la chaîne de décision en direct (détecteurs → 13 variables → IA et règles → fusion → verdict) et les courbes du local suivi. |
 
----
+La tablette, le HUD et le jumeau numérique sont d'autres fenêtres du **même navigateur**, reliées en direct au PC (elles remplacent la radio).
 
-## 01 · Seven layers. One map.
+## Comment ça marche
 
-Existing tools like Mars Trek map Mars at global and regional scale. A crew on foot needs **the scale of one walk**: a 2 × 2 km site at 2 m resolution. We layered real NASA data over exactly that site.
-
-<table>
-<tr>
-<td width="25%" align="center"><img src="assets/readme/layer-1-optical.jpg" alt="Optical layer"><br><b>1 · Imagery</b><br><sub>MRO HiRISE, ~25 cm/px</sub></td>
-<td width="25%" align="center"><img src="assets/readme/layer-2-topography.jpg" alt="Topography layer"><br><b>2 · Topography</b><br><sub>USGS Gale DEM, 1 m (HiRISE + CTX stereo)</sub></td>
-<td width="25%" align="center"><img src="assets/readme/layer-3-slope.jpg" alt="Slope layer"><br><b>3 · Slope</b><br><sub>from the DEM · 25° and up is a wall</sub></td>
-<td width="25%" align="center"><img src="assets/readme/layer-4-terrain.jpg" alt="Terrain layer"><br><b>4 · Terrain</b><br><sub>sand and boulders from HiRISE 25 cm</sub></td>
-</tr>
-<tr>
-<td align="center"><img src="assets/readme/layer-5-thermal.jpg" alt="Thermal layer"><br><b>5 · Thermal</b><br><sub>Mars Odyssey THEMIS night IR: warm rock, cool sand</sub></td>
-<td align="center"><img src="assets/readme/layer-6-minerals.jpg" alt="Mineral layer"><br><b>6 · Minerals</b><br><sub>MRO CRISM: blue water-bearing, green olivine</sub></td>
-<td align="center"><img src="assets/readme/layer-7-walk-home.jpg" alt="Walk-home layer"><br><b>7 · Walk home</b><br><sub>minutes to safety from every cell</sub></td>
-<td align="center"><img src="assets/readme/layer-8-radio.jpg" alt="Radio shadow layer"><br><b>+ Radio shadow</b><br><sub>no line of sight to the habitat mast or rover</sub></td>
-</tr>
-</table>
-
-Every value in the app carries a label: `OBSERVED`, `DERIVED`, `MODELED` (our assumption) or `MOCK`. Nothing assumed is ever shown as measured.
-
----
-
-## 02 · Straight line vs. A* path
-
-<table>
-<tr>
-<td width="50%" align="center"><img src="assets/readme/path-straight.jpg" alt="A straight line between the stops cuts through sand and steep ground"><br><b>Straight line</b><br>cuts straight through sand, slopes and walls</td>
-<td width="50%" align="center"><img src="assets/readme/path-astar.jpg" alt="The A* path follows the ridges and avoids the hazards"><br><b>A* path</b><br>follows the ridges, avoids the hazards, timed for a suited walker</td>
-</tr>
-</table>
-
-The planner runs **A\*** over a walking-time model (Tobler's hiking function, slowed for a spacesuit, uphill and downhill treated differently) on the 2 m terrain grid, and judges every plan **GO or NO-GO, always with the reasons**:
-
-| Check | Rule |
-|---|---|
-| **O₂ budget** | the walk fits the suit's 8 h with a 30 min reserve |
-| **Point of no return** | from every point, an emergency walk home at 1.5× the planned time still fits the O₂ left |
-| **Sunset** | back at least 30 min before sunset, from our own Mars24 clock |
-| **Radiation and space weather** | alerts, the walk's dose, and real NASA DONKI CME forecasts for Mars |
-| **Radio** | line of sight to the habitat mast or the rover |
-| **Terrain** | time on sand, boulders and slopes over 15°; 25° and up is impassable |
-
-<p align="center"><img src="assets/readme/diagram-point-of-no-return.svg" alt="The point of no return: time walked, an emergency walk home at 1.5 times the planned pace, the margin and the 30 minute reserve" width="100%"></p>
-
-The point of no return is checked **at every 2 m step** of the route, against the nearest safe haven: the habitat, or the rover where it is parked. The tablet and the HUD count it down live during the walk.
-
-The safest route is the default. A faster one is offered only when it saves enough time to be worth the extra hazard, with the trade-off spelled out. The **rover** can carry the crew between distant stops: all seven stops take **3 h 13 min** riding and walking, against 4 h 42 min on foot.
-
-<details>
-<summary><b>See the rover-assisted plan and the conditions panel</b></summary>
-<br>
-
-![Rover-assisted Marswalk: dashed stretches are driven, the rover parks by each stop](assets/readme/ride.jpg)
-
-![Conditions panel: start window strip, REMS weather, sunset and space weather](assets/readme/conditions.jpg)
-
-</details>
-
----
-
-## 03 · Curiosity's path, one tap away
-
-<table>
-<tr>
-<td width="34%"><img src="assets/readme/curiosity-path.jpg" alt="Curiosity's real path crossing the Marswalk"></td>
-<td width="33%"><img src="assets/readme/stop-photos.jpg" alt="Real Curiosity Navcam photos at the Valle de la Luna drill site"></td>
-<td width="33%"><img src="assets/readme/stop-360.jpg" alt="360° view rendered from the real terrain at the same stop"></td>
-</tr>
-<tr>
-<td><b>Curiosity's real track</b>, sols 4462–4983, drawn on the map where it crosses your walk.</td>
-<td><b>Curiosity's own photos</b> at every stop, with what to study there and why, from NASA's mission reports.</td>
-<td><b>A 360° view</b> rendered from the real elevation model, facing the way ahead (switch on the card). Labelled: not a photo.</td>
-</tr>
-</table>
-
-The seven science stops sit exactly where Curiosity stood during its 2025–26 boxwork campaign: ridges, hollows, nodules and three drill sites. One line under the verdict sums it up: *Curiosity worked these 7 stops over 274 sols. This crew: one 4 h 42 min Marswalk.*
-
----
-
-## 04 · One engine. Every route.
+À chaque seconde de simulation, le PC est maître et diffuse le résultat ; la tablette et le HUD affichent sans simuler.
 
 ```mermaid
 flowchart LR
-  subgraph IN[Inputs]
-    L[Layer data<br/>DEM · slope · sand · boulders]
-    C[Chosen checkpoints<br/>science stops · via points]
-    W[Conditions<br/>REMS weather · Mars24 sun · DONKI]
-  end
-  L --> G[2 m cost grid<br/>1000 × 1000 cells]
-  G --> A[A* route search<br/>Web Worker]
-  C --> A
-  G --> H[Walk-home field<br/>Dijkstra from every safe haven]
-  A --> J{GO / NO-GO<br/>with reasons}
-  H --> J
-  W --> J
-  J --> P[Planner]
-  J --> M[Mission control]
-  J --> T[Tablet]
-  J --> V[Helmet HUD]
-  J --> K[Printed card]
+  F["Moteur feu<br/>un modèle par local, pas de 1 s"] --> D["Détecteurs<br/>retard · bruit · pannes au-delà de 150 °C"]
+  D --> RG["Règles sur détecteurs"]
+  D --> IA["IA XGBoost<br/>embrasement sous 30 / 60 s"]
+  RG --> M["Fusion<br/>l'IA ne peut qu'aggraver (R1)"]
+  IA --> M
+  M --> C["Coût par local"]
+  C --> A["A* : itinéraire<br/>et temps de sortie"]
+  A --> AIR["Air ARI<br/>point de non-retour"]
+  AIR --> V{"Verdict GO / NO-GO<br/>raisons · verrou (R6)"}
+  M --> V
+  V --> PC["PC du COS"]
+  V --> T["Tablette"]
+  V --> H["HUD du masque"]
+  V --> K["Fiche réflexe"]
 ```
 
-One judge decides GO or NO-GO for every view, so the planner, mission control, the tablet, the HUD and the printed card always agree. When the plan changes mid-walk, only the rest is re-planned, from where the crew and the rover really are: **the part already walked never changes**.
+- **Moteur feu** : un seul moteur, utilisé par l'application et par la génération des données d'entraînement. Corrélations publiées et citées (NFPA 72, Kawagoe, MQH, Heskestad, Alpert, CFAST pour les jets de porte) dans [`data/SOURCES.md`](data/SOURCES.md).
+- **Route et air** : le code vient de *Martian Map* (planificateur de sorties sur Mars avec réserve d'O₂), adapté à l'air de l'ARI : réserve d'O₂ → air de l'ARI, habitat → sorties, walk-home → temps de sortie.
+- **Tout tourne dans le navigateur** : Vite, React, TypeScript, simulation dans un Web Worker. Pas de serveur, pas de base de données, pas d'authentification.
 
----
+## L'IA en bref
 
-## 05 · One map. Three interfaces.
+Trois modèles **XGBoost**, évalués dans le navigateur par un évaluateur TypeScript sans dépendance, prédisent pour chaque local : P(embrasement ≤ 30 s), P(embrasement ≤ 60 s) et le délai avant l'embrasement, à partir de 13 variables tirées des seuls détecteurs de chaleur, détecteurs en panne compris.
 
-### Plan · the mission builder
+| | Chiffre | Données |
+|---|---|---|
+| Embrasement sous 60 s, rappel | **0,95** (PR-AUC 0,76 contre 0,31 pour une règle sur la pente de température) | notre simulateur, SIMULATED |
+| Embrasements annoncés / manqués | 893 / 12 sur 905, avance médiane **94 s** | notre simulateur, SIMULATED |
+| Essais réels UL FSRI (120 expériences) | 11 embrasements sur 11 annoncés, avance médiane 54 s, **mais 92 locaux sur 109 qui ne s'embrasent pas déclenchent aussi une alerte** | essais réels, OBSERVED |
 
-Pick stops, rank them high, medium or low, choose a start in the GO window, stage the rover, and print a two-sided A4 Marswalk card. Every plan is a shareable link.
+**Limite à dire franchement :** le modèle livré est entraîné sur notre propre simulateur, donc il en apprend les habitudes. Les jeux NIST P-Flash prévus n'étaient pas accessibles le 21 novembre, et le test sur essais réels montre trop de fausses alertes. Tous les détails (données, variables, étalonnage, limites, plan de validation avec la Protection civile) sont dans **[ml/MODEL_REPORT.md](ml/MODEL_REPORT.md)**.
 
-<table>
-<tr>
-<td width="62%"><img src="assets/readme/print-card.jpg" alt="Printable two-sided A4 Marswalk card"></td>
-<td width="38%"><img src="assets/readme/phone.jpg" alt="The planner on a phone"></td>
-</tr>
-<tr>
-<td><b>Printable Marswalk card:</b> map, checks, what to do if something goes wrong, and each stop in order.</td>
-<td><b>Any screen:</b> phones, tablets and laptops.</td>
-</tr>
-</table>
+## Le drone de reconnaissance
 
-### Steer · the habitat control post
+L'élément aéronautique : un drone thermique **simulé** qui décolle de l'engin et fait le tour du bâtiment à altitude fixe (30 m).
 
-![Mission control: the crew's position, the rest of the walk, and a drafted change judged GO before it is sent](assets/readme/mission-control.jpg)
+- Il reste **hors du panache** : un cône d'exclusion sous le vent, orienté par le vent réel du site (Open-Meteo, DERIVED).
+- Il surveille sa **batterie** avec la même logique de point de non-retour que l'air de l'ARI : retour à l'engin garanti avec 25 % de réserve.
+- Le vol est **refusé** au-delà de 12 m/s de vent.
+- Son image thermique de toiture (SIMULATED) s'affiche sur le PC seulement et ne nourrit jamais le verdict.
+- Autonomie, vitesse, vent maximal et résolution thermique sont ceux d'une classe de drones thermiques industriels (`data/config.json`, MODELED). Aucune marque n'est mise en avant. En Tunisie, **tout vol réel exige une autorisation préalable**.
 
-Mission control follows the crew **live** and changes the rest of the walk while they move: drop or reorder stops, add a science target, send the crew through a point to get round a problem, or bring them straight home. Each change is planned from the crew's position, judged GO / NO-GO and drawn dashed **before** it is sent. Open the crew tablet in a second window and the two are linked; the new route reaches the crew with a message.
+## Huit règles de sécurité, chacune avec un test
 
-<p align="center"><img src="assets/readme/diagram-live-link.svg" alt="Mission control and the crew tablet linked live; a route change re-plans only the part ahead of the crew" width="100%"></p>
+| | Règle | Test |
+|---|---|---|
+| R1 | L'IA ne peut que dégrader un verdict (GO → NO-GO), jamais l'inverse | `app/src/danger/merge.test.ts` |
+| R2 | Tout verdict affiché sur le PC, la tablette et la fiche porte « Décision : COS » ; le HUD ne montre que des alertes courtes | `app/src/stats/verdict.test.ts` |
+| R3 | Tout nombre affiché porte son étiquette ; SIMULATED et MOCK ne ressemblent jamais à OBSERVED | `app/src/ui/labels.test.ts` |
+| R4 | Toute hypothèse vit dans `data/config.json`, avec sa source et son statut | `app/src/config.test.ts` |
+| R5 | Le verdict ne lit jamais la vérité du simulateur ni l'image thermique du drone : seulement les détecteurs (bruités, en panne) et l'IA | `app/src/sim/sim.test.ts` |
+| R6 | Un NO-GO est verrouillé : seul le COS peut ré-engager, et l'action est journalisée | `app/src/stats/latch.test.ts` |
+| R7 | Drone : retour garanti avec la réserve de batterie, vol refusé par vent fort, jamais dans la zone du panache | `app/src/drone/drone.test.ts` |
+| R8 | L'évaluateur du navigateur reproduit les prédictions Python à 10⁻⁶ près, détecteurs en panne compris | `app/src/ml/xgb.test.ts` |
 
-Between position reports, mission control moves the crew along the plan at their playback speed, so the dot moves smoothly even when the crew's window reports only once a second; each report corrects it.
+## Des données affichées honnêtement
 
-### Walk · on the arm and in the visor
+Chaque nombre porte son étiquette, et une valeur vaut son entrée la plus faible.
 
-<table>
-<tr>
-<td width="50%"><img src="assets/readme/tablet.jpg" alt="Crew tablet: the leg being walked is bold blue, the rest faded, the walked part grey"></td>
-<td width="50%"><img src="assets/readme/hud.jpg" alt="Helmet HUD over a real Curiosity Navcam view"></td>
-</tr>
-<tr>
-<td><b>Tablet:</b> the leg being walked (bold blue, to the next stop) stands out from the rest of the path (faded) and the part already walked (grey). Next stop, bearing, O₂, point of no return, live warnings and Abort, with targets sized for gloved hands.</td>
-<td><b>Helmet HUD:</b> where next, life support, live cautions and the EVA clock, over a real Curiosity view. <b>Abort</b> routes the crew to the nearer safe haven and shows the time to safety and the O₂ spare on arrival.</td>
-</tr>
-</table>
+| Étiquette | Signification |
+|---|---|
+| `OBSERVED` | Mesure réelle (essais UL FSRI) |
+| `DERIVED` | Calculée à partir de mesures (le vent Open-Meteo est une analyse de modèle météo, pas une mesure sur site) |
+| `MODELED` | Nos hypothèses, corrélations et valeurs normatives, et les données d'entraînement de notre moteur |
+| `SIMULATED` | Produit par le moteur feu pendant la démonstration : relevés, prédictions de l'IA, image thermique du drone, liaison entre fenêtres |
+| `MOCK` | Valeur factice (la position du binôme) |
 
-#### Running late
+Les références de chaque corrélation et de chaque jeu de données sont dans [`data/SOURCES.md`](data/SOURCES.md). Les consignes de la fiche réflexe sont des paraphrases de références publiques (ERG 2024, OSHA, NFPA 70E, EN 137) : elles doivent être relues contre leurs sources et **validées par la Protection civile** avant tout usage réel.
 
-<table>
-<tr>
-<td width="50%"><img src="assets/readme/running-late.jpg" alt="Running late: the tablet suggests dropping the lowest-priority stop to stay GO"></td>
-<td>
+## Lancer l'application
 
-Before the walk, each stop gets a priority: **high, medium or low**. At a stop, the tablet shows how long the crew can stay and still be GO (*"221 min spare, then the point of no return"*), with **Stay 15 min longer**.
-
-If a longer stay breaks the plan:
-
-1. The rest of the walk is re-planned **from where the crew and the rover really are**.
-2. Stops ahead are dropped in order: **lowest priority first**, then the one that costs the walk the most time.
-3. Any dropped stop that turns out not to be needed is **put back**, so the cut is as small as possible.
-4. A stop where the rover waits as safe haven is never dropped. If nothing helps, the tablet says: head back, use Abort.
-
-</td>
-</tr>
-</table>
-
----
-
-## 06 · Live location correction
-
-There is no GPS on Mars. During the walk, the app's idea of where the crew is comes from the plan and the clock, and real walkers drift. **Get real position** corrects that, and plans the way back on the real terrain.
-
-<p align="center"><img src="assets/readme/diagram-position-fix.svg" alt="Live location correction in three steps: the plan's estimate, the position fix, and the way back onto the route ahead" width="100%"></p>
-
-<table>
-<tr>
-<td width="50%"><img src="assets/readme/tablet-fix.jpg" alt="Position fix on the tablet: a pink path leads back onto the planned route"></td>
-<td>
-
-**What the crew sees:** the correction (dashed), the way back (pink), its length and time, and how much earlier or later the rest of the plan now runs. Playing on walks the pink path, then carries on from where it rejoins.
-
-**The rules for the way back:**
-- the quickest walkable path onto **the rest of the current leg**;
-- **never back** over ground already walked;
-- **never past the next stop**, so no science is skipped.
-
-**Honest about the demo:** the fix itself is simulated (labelled `MOCK`): a 15–40 m drift onto walkable ground. A real crew would get it from their rover matching a 360° stereo view to the HiRISE map, as NASA's Mars Global Localization does for Perseverance. Swapping in a real fix means replacing one function, `getRealPosition()`.
-
-</td>
-</tr>
-</table>
-
----
-
-## 07 · Ask. Get a safe answer.
-
-<table>
-<tr>
-<td width="34%"><img src="assets/readme/copilot-answer.jpg" alt="Copilot answer card: Yes, you can stay 20 more minutes; limit 3 h 49 min, set by the point of no return"></td>
-<td>
-
-> **Navigator:** *Can we stay 20 more minutes?*
->
-> **Copilot:** *Yes. The limit is 3 h 49 min, set by the point of no return. Move on by 07:49.*
-
-1. **A language model reads the question** (typed or spoken).
-2. **The safety engine sets every number.** The model never decides what is safe.
-3. **Works offline:** without the model, a rules mode answers the same questions.
-
-</td>
-</tr>
-</table>
-
----
-
-## Quick start
-
-You need **Node.js 22.12 or newer** ([download](https://nodejs.org), the LTS version is fine) and an **internet connection** (the HiRISE base map loads live from NASA Mars Trek). Check your version with `node --version`.
+Il faut **Node.js 22.12 ou plus récent** (24 recommandé), vérifiable avec `node --version`.
 
 ```bash
 cd app
@@ -271,91 +129,75 @@ npm install
 npm run dev
 ```
 
-Open the address it prints (normally **http://localhost:5173**). All site data is already in the project; nothing else needs to be downloaded or built. Stop the server with `Ctrl+C`. The example plan on your machine: http://localhost:5173/#stops=t:msl-panorama,t:msl-valle-de-la-luna,t:msl-nevado-sajama,t:msl-nodules&rover=2
+Ouvrir <http://localhost:5173> (écrire `localhost`, pas `127.0.0.1`).
 
-### Try it in 2 minutes
+- Tablette : <http://localhost:5173/?view=tablet>
+- HUD : <http://localhost:5173/?view=hud>
+- Jumeau numérique : <http://localhost:5173/?view=twin>
 
-1. **Plan:** click the round white science targets on the map (or open the example plan). The route, the checks and the **GO / NO-GO** verdict appear on the left. Click a stop in the list for Curiosity's photos and the 360° view.
-2. **Walk:** click **Tablet** (top right), then **Play walk**. Press **Get real position** to see a position fix and the pink path back.
-3. **Steer:** click **Control**, then **Open crew tablet**. Put the two windows side by side, press **Play walk** in the crew window, and drop a stop in mission control: the crew gets the new route live.
-4. Also try **HUD**, **Layers**, the **Mars clock** chip (start window, conditions, solar-storm drill) and **Print card**.
+Ces fenêtres doivent être ouvertes dans le **même navigateur** que le PC, ce que font aussi les boutons « Ouvrir la tablette », « Ouvrir le HUD » et « Ouvrir le jumeau numérique » du PC. Aucun téléchargement n'est nécessaire : toutes les données sont dans le dépôt, et l'application fonctionne hors-ligne.
 
-<details>
-<summary><b>Other commands</b></summary>
+## Rejouer la démonstration
 
-Run these inside `app/`:
+Sur le PC, régler la vitesse sur **×20** puis cliquer **Lecture**. Les temps ci-dessous sont en temps simulé. Ouvrir la tablette et le HUD côte à côte pour voir la liaison en direct.
 
-```bash
-npm test           # unit tests
-npm run typecheck  # TypeScript check
-npm run build      # production build into app/dist
-npm run preview    # serve that build at http://localhost:4173
-```
-
-If `npm install` fails or the page stays blank, check `node --version` first: older Node versions do not work with this project.
-
-</details>
-
----
-
-## Real data, labelled honestly
-
-Every dataset is real. The one `MOCK` item is the demo position fix on the tablet.
-
-| Layer or input | Source | Label |
+| T+ | Action | Ce qu'on voit |
 |---|---|---|
-| Base map | MRO HiRISE Curiosity-site mosaic (NASA Mars Trek) | OBSERVED |
-| Elevation, slope, hillshade | USGS MSL Gale Merged DEM 1 m (HiRISE, CTX, HRSC) | DERIVED |
-| Sand and rocky ground | Our rule applied to the USGS Gale 25 cm HiRISE orthophoto | MODELED |
-| Night-time warmth (rock vs sand) | Mars Odyssey THEMIS night IR, 100 m (Mars Trek) | OBSERVED |
-| Minerals from orbit (water-bearing, olivine sand) | MRO CRISM observation FRT0000B6F1, 18 m, smoothed to ~90 m (NASA PDS) | DERIVED (relative) |
-| Science stops, Curiosity's path | Curiosity traverse (JPL MMGIS), mission blog, JPL news | DERIVED / OBSERVED |
-| Stop photos | Curiosity Navcam and Hazcam raw images | OBSERVED |
-| 360° views | Rendered from the DEM and orthophoto (not photos) | DERIVED |
-| Weather on the planned sol | Curiosity REMS daily report, sol 4718 (2025-11-13) | MODELED (measured min/max, assumed curve) |
-| Space weather | NASA DONKI: WSA-Enlil CME forecasts for Mars | MODELED |
-| Walking speed, O₂, limits, habitat position, antenna heights | Our stated assumptions, each documented in the config | MODELED |
-| Position fix ("Get real position" on the tablet) | Simulated 15–40 m drift (`app/src/localize/getRealPosition.ts`); the way back is planned on the real terrain | MOCK |
-| Live link between mission control and the crew | Two windows of one browser (BroadcastChannel), standing in for the suit radio | SIMULATED |
+| 0 s | **Départ de feu** (scénario : stockage de solvants) | Le local se teinte au fil des relevés des détecteurs |
+| 60 s | **Décoller** le drone | Boucle autour du bâtiment, demi-tour de chaque côté du panache, batterie et marge de retour |
+| 100 s | **Engager** le binôme (victime dans la cabine de peinture, puis coupure du TGBT) | **GO** et itinéraire |
+| ≈ 214 s | rien, cela arrive tout seul | **NO-GO** « Embrasement prévu Cabine de peinture sous 60 s » ; itinéraire vers la sortie, alerte sur la tablette et le HUD |
+| ensuite | Fermer la porte stockage ↔ cabine | Le score de l'IA retombe ; **le verdict reste NO-GO**, et le PC propose « Ré-engager (décision COS) » |
+| ≈ 259 s | le binôme est dehors, à 272 bar | Cocher **Vérité simulateur** : l'embrasement réel de la cabine (286 s si la porte reste ouverte) montre que l'IA avait **72 s d'avance** |
+| ensuite | Décocher l'objectif « Victime – cabine » puis **Ré-engager** | Nouvel itinéraire vers le TGBT, reçu en direct sur la tablette |
+| fin | **Fiche réflexe** puis **Imprimer** | La fiche A4 avec les consignes sourcées |
 
-**Mineral layer.** The official resources' CRISM mosaics do not cover this site, so it comes from a CRISM observation in NASA's PDS archive (FRT0000B6F1). Its signals are weak at this site, so it is smoothed to ~90 m and shown as relative strength, not abundances. The position fix is explained in [06 · Live location correction](#06--live-location-correction).
+## Commandes
 
-Full provenance for every dataset (product IDs, URLs, processing and checks) is in **[data/SOURCES.md](data/SOURCES.md)**.
-
-## Credits and AI use
-
-Built with the help of an AI coding assistant (Claude Code). **[CREDITS.md](CREDITS.md)** explains where AI was used and lists every data, code, font and method source. No NASA logos or branding are used, and no AI-generated images or video. The screenshots in this README are of this app; the Apollo 14 image is credited above.
-
-## Rebuild the data (optional)
-
-Not needed to run the app. Python 3.11+, from the project folder (not `app/`). Use `python3` on macOS/Linux if `python` is not found. Downloads are cached in `data/raw/` (git-ignored).
+À lancer dans `app/` :
 
 ```bash
-pip install -r pipeline/requirements.txt
-python -m pytest pipeline              # pipeline tests
-
-python -m pipeline gale-surface        # USGS DEM + 25 cm orthophoto → terrain grid with sand and rocky ground, habitat placed
-python -m pipeline msl-targets         # Curiosity's boxwork stops placed on the grid
-python -m pipeline msl-traverse        # Curiosity's path inside the site
-python -m pipeline msl-images          # Curiosity raw images at each stop
-python -m pipeline gale-panoramas      # 360° views rendered at the habitat and the stops
-python -m pipeline themis-night-ir     # THEMIS night-IR overlay
-python -m pipeline crism               # CRISM mineral overlay (downloads 2 bands, ~5 MB)
-python -m pipeline msl-weather         # REMS weather for sol 4718
-python -m pipeline donki               # space weather around that sol (NASA_API_KEY optional, DEMO_KEY otherwise)
-python -m pipeline msl-weather         # again, so DONKI radiation alerts reach the conditions
+npm test           # plus de 170 tests (règles R1 à R8, moteur feu, scénario de la démonstration)
+npm run typecheck  # vérification des types
+npm run build      # version de production dans app/dist
+npm run preview    # sert ce build sur localhost:4173
 ```
 
-`python -m pipeline build --dem <file.tif> --bbox <lonmin,latmin,lonmax,latmax> --out data/processed/<name>` converts any other elevation GeoTIFF into a terrain grid. See `--help` for sand and boulder masks.
+Rafraîchir le vent réel (facultatif, l'application lit un cache) : `node scripts/fetch-weather.ts`.
 
-## Layout
+## Réentraîner et valider le modèle
 
+Les commandes complètes (génération des données, entraînement, évaluation sur les essais réels UL FSRI, validation du moteur feu) sont au [§9 du rapport du modèle](ml/MODEL_REPORT.md#9-reproduire). Les scripts `ml/*.ts` s'exécutent directement avec Node 24 ; la partie Python demande `pip install -r ml/requirements.txt`. Les données brutes restent hors du dépôt (`ml/data/raw/`).
+
+## Organisation du dépôt
+
+```text
+app/        application web : Vite + React + TypeScript, simulation dans un Web Worker (Vitest)
+  src/fire    moteur feu, un modèle par local            src/danger  règles, IA, fusion « ne peut qu'aggraver »
+  src/ml      évaluateur XGBoost, variables du modèle    src/stats   air ARI, point de non-retour, verdict, verrou
+  src/route   A*, temps de sortie, re-itinéraire         src/drone   reconnaissance, batterie, zone du panache
+  src/sim     boucle de simulation (Web Worker)          src/live    liaison PC ↔ tablette ↔ HUD
+  src/panels  PC du COS, tablette, HUD, fiche réflexe    src/site    plan de l'atelier (grille 0,5 m)
+  src/scene   vue synthétique du HUD, carte de la tablette  src/twin   jumeau numérique
+data/       config.json (toutes les hypothèses), SOURCES.md, consignes.json, site/, weather/
+ml/         données, entraînement, évaluation, modèles exportés (model/), rapports (report/), MODEL_REPORT.md
+scripts/    fetch-weather.ts (vent Open-Meteo)
+docs/       notes de conception du HUD
+CLAUDE.md   règles du projet (sécurité, conventions)       PRODUCT.md  produit, utilisateurs, principes
 ```
-app/            Vite + React + TypeScript + Leaflet; route engine in a Web Worker (Vitest)
-pipeline/       Python data pipeline: one converter per dataset in pipeline/sources/ (pytest)
-data/           config.json, SOURCES.md (provenance), processed/ (what the app reads)
-server/         optional voice copilot server (speech-to-text and a local LLM; see server/README.md)
-assets/readme/  the images in this README
-```
 
-The app's optional copilot (`app/src/copilot/`) runs in offline rules mode when its server is not running, as on the live site.
+## Limites assumées
+
+- Le site, le feu, les relevés des détecteurs et le vol du drone sont **simulés** ; c'est affiché partout.
+- Le modèle livré est entraîné sur notre simulateur, et il donne trop de fausses alertes sur les essais réels (voir le rapport).
+- Les hypothèses d'air et de vitesse (bouteille ARI, consommation, progression en fumée, retour ×1,5) sont des **ordres de grandeur à valider** par la Protection civile.
+- La position du binôme est **simulée** (`MOCK`) ; en vrai, il faudrait un système de localisation des pompiers en intérieur.
+- La vue du HUD est **dessinée à partir du plan** (lancer de rayons sur la grille de l'atelier, un seul niveau, sans moteur 3D) : ce n'est pas une image de caméra, et elle ne lit jamais la vérité du simulateur.
+- En Tunisie, tout vol réel de drone exige une autorisation préalable.
+- PNR **aide** à décider ; il ne décide pas : **Décision : COS**.
+
+## Crédits et licence
+
+Ce dépôt part d'un instantané de **Martian Map** (NASA Space Apps Challenge 2026) dont il reprend le moteur de route et la logique de point de non-retour. Le code, les tests et la documentation ont été écrits avec l'aide d'un assistant IA (Claude Code). Toutes les sources, les données, les polices et l'usage de l'IA sont détaillés dans **[CREDITS.md](CREDITS.md)**.
+
+Ce projet n'est approuvé ni par la Protection civile, ni par Tunisian Aeroday, ni par INJAZ, ni par la NASA. Licence [MIT](LICENSE).
