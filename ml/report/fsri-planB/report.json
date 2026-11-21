@@ -1,0 +1,43 @@
+{
+  "name": "UL FSRI (mod\u00e8le plan B)",
+  "model": "plan B : moteur PNR, 5 000 sc\u00e9narios al\u00e9atoires (graine 42)",
+  "p30": {
+    "threshold": 0.4096306562423706,
+    "recall": 0.42424242424242425,
+    "falseNegativeRate": 0.5757575757575758,
+    "precision": 0.004492939666238768,
+    "prAuc": 0.01015757771852676,
+    "brier": 0.28697883720198214,
+    "positives": 33,
+    "n": 7788
+  },
+  "p60": {
+    "threshold": 0.48982319235801697,
+    "recall": 0.6060606060606061,
+    "falseNegativeRate": 0.3939393939393939,
+    "precision": 0.01221001221001221,
+    "prAuc": 0.024286594509131884,
+    "brier": 0.3078299512145601,
+    "positives": 66,
+    "n": 7788
+  },
+  "scenario": {
+    "flashovers": 11,
+    "detected": 11,
+    "detectionRate": 1.0,
+    "medianLeadS": 54.0,
+    "p10LeadS": 19.0,
+    "quietRooms": 109,
+    "falseAlarmRooms": 92,
+    "falseAlarmRate": 0.8440366972477065,
+    "missed": []
+  },
+  "tff": {
+    "maeS": 79.47088845983728,
+    "n": 308
+  },
+  "plots": [
+    "ml\\report\\fsri-planB\\pr_curve.png",
+    "ml\\report\\fsri-planB\\lead_times.png"
+  ]
+}
