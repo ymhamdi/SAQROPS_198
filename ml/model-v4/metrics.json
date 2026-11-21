@@ -1,0 +1,94 @@
+{
+  "status": "TRAINED",
+  "trainedOn": "essais réels UL FSRI (2018, 2016, 2019), 162 essais",
+  "dataStatus": "OBSERVED (signaux de détecteurs DERIVED)",
+  "data": [
+    "C:\\Users\\youss\\OneDrive\\Desktop\\pnr-real\\ml\\data\\real_features.csv"
+  ],
+  "date": "2026-11-21T21:34",
+  "xgboost": "3.4.1",
+  "device": "cpu",
+  "contractVersion": 1,
+  "params": {
+    "max_depth": 4,
+    "eta": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 5,
+    "seed": 42,
+    "nthread": 8,
+    "tree_method": "hist",
+    "device": "cpu"
+  },
+  "rounds": 300,
+  "split": "grouped by configuration, 4 outer folds (>= 2 flashovers each), 3 inner folds for the thresholds",
+  "rows": {
+    "all": 203698,
+    "asInstrumented": 43413
+  },
+  "targetRecall": 0.95,
+  "thresholds": {
+    "p30": 0.0002990720333855279,
+    "p60": 0.001305738181599736
+  },
+  "foldThresholds": [
+    {
+      "fold": 0,
+      "v4": {
+        "p30": 0.0005916037480346859,
+        "p60": 0.009057361632585526
+      },
+      "v4PerRun": {
+        "p30": 0.036928191781044006,
+        "p60": 0.1700102686882019
+      },
+      "rule": 1.20113
+    },
+    {
+      "fold": 1,
+      "v4": {
+        "p30": 0.0006582283531315625,
+        "p60": 0.0026014959439635277
+      },
+      "v4PerRun": {
+        "p30": 0.006548735778778791,
+        "p60": 0.0755530446767807
+      },
+      "rule": 0.60713
+    },
+    {
+      "fold": 2,
+      "v4": {
+        "p30": 3.299888078345248e-07,
+        "p60": 8.686475894137402e-07
+      },
+      "v4PerRun": {
+        "p30": 0.079225093126297,
+        "p60": 0.8090690970420837
+      },
+      "rule": 0.60713
+    },
+    {
+      "fold": 3,
+      "v4": {
+        "p30": 6.540318736369954e-06,
+        "p60": 9.980419235944282e-06
+      },
+      "v4PerRun": {
+        "p30": 0.13154913485050201,
+        "p60": 0.37817320227622986
+      },
+      "rule": 1.20246
+    }
+  ],
+  "trees": {
+    "p30": 300,
+    "p60": 300,
+    "tff": 300
+  },
+  "secondaryThresholdsPerRun": {
+    "p30": 0.0580766424536705,
+    "p60": 0.2740917354822159
+  },
+  "secondaryNote": "analyse secondaire, décidée après le premier résultat : seuil qui annonce au moins 95 % des locaux qui s'embrasent (et non 95 % des pas de temps)"
+}

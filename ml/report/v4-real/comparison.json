@@ -1,0 +1,1759 @@
+{
+ "folds": {
+  "2016:Single_Story:1": 2,
+  "2016:Single_Story:2": 3,
+  "2016:Single_Story:3": 2,
+  "2016:Two_Story:4": 1,
+  "2016:Two_Story:5": 3,
+  "2016:Two_Story:6": 2,
+  "2018:100kWSB_Closed_Back": 3,
+  "2018:100kWSB_Closed_Center": 2,
+  "2018:100kWSB_Closed_Corner": 1,
+  "2018:100kWSB_Closed_Side": 3,
+  "2018:100kWSB_Open_Back": 2,
+  "2018:100kWSB_Open_Center": 0,
+  "2018:100kWSB_Open_Corner": 1,
+  "2018:100kWSB_Open_Side": 3,
+  "2018:100kW_Closed_Back": 2,
+  "2018:100kW_Closed_Center": 0,
+  "2018:100kW_Closed_Corner": 1,
+  "2018:100kW_Closed_Side": 3,
+  "2018:100kW_Open_Back": 2,
+  "2018:100kW_Open_Center": 0,
+  "2018:100kW_Open_Corner": 1,
+  "2018:100kW_Open_Side": 3,
+  "2018:250kW_Closed_Back": 2,
+  "2018:250kW_Closed_Center": 0,
+  "2018:250kW_Closed_Corner": 1,
+  "2018:250kW_Closed_Side": 3,
+  "2018:250kW_Open_Back": 2,
+  "2018:250kW_Open_Center": 0,
+  "2018:250kW_Open_Corner": 1,
+  "2018:250kW_Open_Side": 3,
+  "2018:500kW_Closed_Back": 2,
+  "2018:500kW_Closed_Center": 0,
+  "2018:500kW_Closed_Corner": 3,
+  "2018:500kW_Closed_Side": 1,
+  "2018:500kW_Open_Back": 3,
+  "2018:500kW_Open_Center": 2,
+  "2018:500kW_Open_Corner": 0,
+  "2018:500kW_Open_Side": 0,
+  "2018:Overstuffed_Closed_Back": 1,
+  "2018:Overstuffed_Closed_Center": 1,
+  "2018:Overstuffed_Closed_Corner": 3,
+  "2018:Overstuffed_Open_Back": 0,
+  "2018:Overstuffed_Open_Center": 3,
+  "2018:Overstuffed_Open_Corner": 1,
+  "2018:RedAccent_Closed_Back": 2,
+  "2018:RedAccent_Closed_Center": 2,
+  "2018:RedAccent_Closed_Corner": 0,
+  "2018:RedAccent_Open_Back": 3,
+  "2018:RedAccent_Open_Center": 3,
+  "2018:RedAccent_Open_Corner": 2,
+  "2019:Basement|0.192|Closed|Yes|Yes|Closed|Closed": 1,
+  "2019:Basement|0.192|Closed|Yes|Yes|Open|Closed": 0,
+  "2019:Basement|0.192|Open|Yes|Yes|Open|Closed": 3,
+  "2019:Basement|0.25|Closed|Yes|Yes|Closed|Closed": 0,
+  "2019:Basement|0.25|Closed|Yes|Yes|Open|Closed": 1,
+  "2019:Bedroom 1|.077|.192|Open|No|No|Open|Closed": 2,
+  "2019:Bedroom 1|0.077|Closed|No|No|Open|Closed": 1,
+  "2019:Bedroom 1|0.077|Closed|Yes|No|Open|Closed": 3,
+  "2019:Bedroom 1|0.077|Closed|Yes|Yes|Open|Closed": 0,
+  "2019:Bedroom 1|0.077|Open|No|No|Open|Closed": 0,
+  "2019:Bedroom 1|0.077|Open|No|No|Open|Open": 3,
+  "2019:Living Room|.077|.192|Closed|No|No|Closed|Closed": 2,
+  "2019:Living Room|.077|.25|Closed|Yes|Yes|Closed|Closed": 0,
+  "2019:Living Room|0.077|Closed|No|No|Closed|Closed": 1,
+  "2019:Living Room|0.077|Closed|No|No|Open|Closed": 1
+ },
+ "foldThresholds": [
+  {
+   "fold": 0,
+   "v4": {
+    "p30": 0.0005916037480346859,
+    "p60": 0.009057361632585526
+   },
+   "v4PerRun": {
+    "p30": 0.036928191781044006,
+    "p60": 0.1700102686882019
+   },
+   "rule": 1.20113
+  },
+  {
+   "fold": 1,
+   "v4": {
+    "p30": 0.0006582283531315625,
+    "p60": 0.0026014959439635277
+   },
+   "v4PerRun": {
+    "p30": 0.006548735778778791,
+    "p60": 0.0755530446767807
+   },
+   "rule": 0.60713
+  },
+  {
+   "fold": 2,
+   "v4": {
+    "p30": 3.299888078345248e-07,
+    "p60": 8.686475894137402e-07
+   },
+   "v4PerRun": {
+    "p30": 0.079225093126297,
+    "p60": 0.8090690970420837
+   },
+   "rule": 0.60713
+  },
+  {
+   "fold": 3,
+   "v4": {
+    "p30": 6.540318736369954e-06,
+    "p60": 9.980419235944282e-06
+   },
+   "v4PerRun": {
+    "p30": 0.13154913485050201,
+    "p60": 0.37817320227622986
+   },
+   "rule": 1.20246
+  }
+ ],
+ "results": {
+  "toutes les données réelles": {
+   "v4 (réel seul)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 11,
+     "detection": 1.0,
+     "medianLeadS": 129.0,
+     "p10LeadS": 90.0,
+     "quiet": 464,
+     "falseAlarms": 299,
+     "falseAlarmRate": 0.6443965517241379,
+     "recall": 1.0,
+     "precision": 0.0033129203895191244,
+     "prAuc": 0.22250545929531745,
+     "brier": 0.007802596395646453
+    },
+    "ci95": {
+     "flashovers": [
+      3.0,
+      22.0
+     ],
+     "detected": [
+      3.0,
+      22.0
+     ],
+     "detection": [
+      1.0,
+      1.0
+     ],
+     "medianLeadS": [
+      97.0,
+      318.0
+     ],
+     "p10LeadS": [
+      86.0,
+      298.74499999999995
+     ],
+     "quiet": [
+      307.0,
+      627.0749999999999
+     ],
+     "falseAlarms": [
+      208.975,
+      405.025
+     ],
+     "falseAlarmRate": [
+      0.48546487358728024,
+      0.8243279183438758
+     ],
+     "recall": [
+      1.0,
+      1.0
+     ],
+     "precision": [
+      0.0008747511021484749,
+      0.009117066975275073
+     ],
+     "prAuc": [
+      0.0782157790538562,
+      0.43674161269860584
+     ],
+     "brier": [
+      0.003749779078394654,
+      0.015856132897498425
+     ]
+    }
+   },
+   "v4, seuil par essai (secondaire)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 11,
+     "detection": 1.0,
+     "medianLeadS": 94.0,
+     "p10LeadS": 84.0,
+     "quiet": 464,
+     "falseAlarms": 55,
+     "falseAlarmRate": 0.11853448275862069,
+     "recall": 0.7575757575757576,
+     "precision": 0.08992805755395683,
+     "prAuc": 0.22250545929531745,
+     "brier": 0.007802596395646453
+    },
+    "ci95": {
+     "flashovers": [
+      3.0,
+      22.0
+     ],
+     "detected": [
+      3.0,
+      22.0
+     ],
+     "detection": [
+      1.0,
+      1.0
+     ],
+     "medianLeadS": [
+      85.0,
+      151.0
+     ],
+     "p10LeadS": [
+      70.0,
+      135.405
+     ],
+     "quiet": [
+      307.0,
+      627.0749999999999
+     ],
+     "falseAlarms": [
+      36.975,
+      75.0
+     ],
+     "falseAlarmRate": [
+      0.06654464553598216,
+      0.21204513908617903
+     ],
+     "recall": [
+      0.4367788461538462,
+      0.9166666666666666
+     ],
+     "precision": [
+      0.017713075172244096,
+      0.19371884315739374
+     ],
+     "prAuc": [
+      0.0782157790538562,
+      0.43674161269860584
+     ],
+     "brier": [
+      0.003749779078394654,
+      0.015856132897498425
+     ]
+    }
+   },
+   "v1 (simulateur, livrée)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 11,
+     "detection": 1.0,
+     "medianLeadS": 54.0,
+     "p10LeadS": 19.0,
+     "quiet": 464,
+     "falseAlarms": 121,
+     "falseAlarmRate": 0.2607758620689655,
+     "recall": 0.6060606060606061,
+     "precision": 0.010979961570134504,
+     "prAuc": 0.02278865922275695,
+     "brier": 0.06118027397198321
+    },
+    "ci95": {
+     "flashovers": [
+      3.0,
+      22.0
+     ],
+     "detected": [
+      3.0,
+      22.0
+     ],
+     "detection": [
+      1.0,
+      1.0
+     ],
+     "medianLeadS": [
+      34.0,
+      116.0
+     ],
+     "p10LeadS": [
+      10.0,
+      69.8
+     ],
+     "quiet": [
+      307.0,
+      627.0749999999999
+     ],
+     "falseAlarms": [
+      99.0,
+      145.0
+     ],
+     "falseAlarmRate": [
+      0.18569499649286883,
+      0.38920522217132386
+     ],
+     "recall": [
+      0.37248217468805705,
+      1.0
+     ],
+     "precision": [
+      0.0030431476216318857,
+      0.02255576202901102
+     ],
+     "prAuc": [
+      0.003810743455097115,
+      0.07917342429181466
+     ],
+     "brier": [
+      0.036398230180882285,
+      0.11665889597628173
+     ]
+    }
+   },
+   "v3 (simulateur, non livrée)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 10,
+     "detection": 0.9090909090909091,
+     "medianLeadS": 41.5,
+     "p10LeadS": 23.6,
+     "quiet": 464,
+     "falseAlarms": 84,
+     "falseAlarmRate": 0.1810344827586207,
+     "recall": 0.6212121212121212,
+     "precision": 0.019412878787878788,
+     "prAuc": 0.08620279326518264,
+     "brier": 0.029653775117015464
+    },
+    "ci95": {
+     "flashovers": [
+      3.0,
+      22.0
+     ],
+     "detected": [
+      2.0,
+      20.0
+     ],
+     "detection": [
+      0.5994117647058824,
+      1.0
+     ],
+     "medianLeadS": [
+      24.0,
+      111.0
+     ],
+     "p10LeadS": [
+      20.0,
+      109.01999999999998
+     ],
+     "quiet": [
+      307.0,
+      627.0749999999999
+     ],
+     "falseAlarms": [
+      65.0,
+      105.0
+     ],
+     "falseAlarmRate": [
+      0.11573655438389568,
+      0.29647028277392246
+     ],
+     "recall": [
+      0.38321428571428573,
+      1.0
+     ],
+     "precision": [
+      0.004914962114074136,
+      0.04093480258561205
+     ],
+     "prAuc": [
+      0.04142526662017751,
+      0.18438561365738154
+     ],
+     "brier": [
+      0.01623097681875193,
+      0.05861992773659445
+     ]
+    }
+   },
+   "règle simple (pente + pannes)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 11,
+     "detection": 1.0,
+     "medianLeadS": 104.0,
+     "p10LeadS": 82.0,
+     "quiet": 464,
+     "falseAlarms": 229,
+     "falseAlarmRate": 0.49353448275862066,
+     "recall": 0.9242424242424242,
+     "precision": 0.0036096810462157526,
+     "prAuc": 0.018766560661933974,
+     "brier": NaN
+    },
+    "ci95": {
+     "flashovers": [
+      3.0,
+      22.0
+     ],
+     "detected": [
+      3.0,
+      22.0
+     ],
+     "detection": [
+      1.0,
+      1.0
+     ],
+     "medianLeadS": [
+      90.0,
+      161.0
+     ],
+     "p10LeadS": [
+      46.0,
+      131.4
+     ],
+     "quiet": [
+      307.0,
+      627.0749999999999
+     ],
+     "falseAlarms": [
+      167.0,
+      311.025
+     ],
+     "falseAlarmRate": [
+      0.3989138260460222,
+      0.614505592703294
+     ],
+     "recall": [
+      0.7777777777777778,
+      1.0
+     ],
+     "precision": [
+      0.000930936783119615,
+      0.009442373656039145
+     ],
+     "prAuc": [
+      0.0017353885315573238,
+      0.05885677419698674
+     ],
+     "brier": [
+      NaN,
+      NaN
+     ]
+    }
+   },
+   "v4 − v1, taux de fausses alertes": [
+    0.23524749957619936,
+    0.5313703674374407
+   ],
+   "v4 − v1, embrasements annoncés": [
+    0.0,
+    0.0
+   ],
+   "v4 seuil par essai − v1, taux de fausses alertes": [
+    -0.21887670689557484,
+    -0.08623400862281874
+   ],
+   "v4 seuil par essai − v1, embrasements annoncés": [
+    0.0,
+    0.0
+   ]
+  },
+  "_oracle": {
+   "toutes les données réelles": {
+    "v4 (réel seul)": {
+     "falseAlarms": 35,
+     "quiet": 464
+    },
+    "v1 (simulateur, livrée)": {
+     "falseAlarms": 118,
+     "quiet": 464
+    },
+    "v3 (simulateur, non livrée)": {
+     "falseAlarms": 93,
+     "quiet": 464
+    },
+    "règle simple (pente + pannes)": {
+     "falseAlarms": 116,
+     "quiet": 464
+    }
+   },
+   "FSRI 2018 (un local)": {
+    "v4 (réel seul)": {
+     "falseAlarms": 35,
+     "quiet": 109
+    },
+    "v1 (simulateur, livrée)": {
+     "falseAlarms": 92,
+     "quiet": 109
+    },
+    "v3 (simulateur, non livrée)": {
+     "falseAlarms": 76,
+     "quiet": 109
+    },
+    "règle simple (pente + pannes)": {
+     "falseAlarms": 83,
+     "quiet": 109
+    }
+   }
+  },
+  "_rooms": {
+   "v4 (réel seul)": [
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 86.0,
+     "flashover_s": 276.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 104.0,
+     "flashover_s": 334.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 90.0,
+     "flashover_s": 260.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 222.0,
+     "flashover_s": 222.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 129.0,
+     "flashover_s": 279.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 104.0,
+     "flashover_s": 264.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 114.0,
+     "flashover_s": 254.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 305.0,
+     "flashover_s": 305.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 331.0,
+     "flashover_s": 331.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 296.0,
+     "flashover_s": 296.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 319.0,
+     "flashover_s": 319.0
+    }
+   ],
+   "v4, seuil par essai (secondaire)": [
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 86.0,
+     "flashover_s": 276.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 84.0,
+     "flashover_s": 334.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 70.0,
+     "flashover_s": 260.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 92.0,
+     "flashover_s": 222.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 109.0,
+     "flashover_s": 279.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 94.0,
+     "flashover_s": 264.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 94.0,
+     "flashover_s": 254.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 135.0,
+     "flashover_s": 305.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 151.0,
+     "flashover_s": 331.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 136.0,
+     "flashover_s": 296.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 169.0,
+     "flashover_s": 319.0
+    }
+   ],
+   "v1 (simulateur, livrée)": [
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 36.0,
+     "flashover_s": 276.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 44.0,
+     "flashover_s": 334.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 10.0,
+     "flashover_s": 260.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 32.0,
+     "flashover_s": 222.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 19.0,
+     "flashover_s": 279.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 54.0,
+     "flashover_s": 264.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 54.0,
+     "flashover_s": 254.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 105.0,
+     "flashover_s": 305.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 61.0,
+     "flashover_s": 331.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 116.0,
+     "flashover_s": 296.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 139.0,
+     "flashover_s": 319.0
+    }
+   ],
+   "v3 (simulateur, non livrée)": [
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 26.0,
+     "flashover_s": 276.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 24.0,
+     "flashover_s": 334.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 20.0,
+     "flashover_s": 260.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": false,
+     "lead": null,
+     "flashover_s": 222.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 39.0,
+     "flashover_s": 279.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 24.0,
+     "flashover_s": 264.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 44.0,
+     "flashover_s": 254.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 85.0,
+     "flashover_s": 305.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 111.0,
+     "flashover_s": 331.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 116.0,
+     "flashover_s": 296.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 109.0,
+     "flashover_s": 319.0
+    }
+   ],
+   "règle simple (pente + pannes)": [
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 46.0,
+     "flashover_s": 276.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 104.0,
+     "flashover_s": 334.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Back_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 90.0,
+     "flashover_s": 260.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 82.0,
+     "flashover_s": 222.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 119.0,
+     "flashover_s": 279.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 94.0,
+     "flashover_s": 264.0
+    },
+    {
+     "run": "real_features:compartments-2018~Overstuffed_Open_Corner_3~c0",
+     "room": "C18/room",
+     "config": "2018:Overstuffed_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 104.0,
+     "flashover_s": 254.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Back_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Back",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 115.0,
+     "flashover_s": 305.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Center_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Center",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 161.0,
+     "flashover_s": 331.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_1~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 156.0,
+     "flashover_s": 296.0
+    },
+    {
+     "run": "real_features:compartments-2018~RedAccent_Open_Corner_2~c0",
+     "room": "C18/room",
+     "config": "2018:RedAccent_Open_Corner",
+     "dataset": "compartments-2018",
+     "flashed": true,
+     "alerted": true,
+     "lead": 189.0,
+     "flashover_s": 319.0
+    }
+   ]
+  },
+  "FSRI 2018 (un local)": {
+   "v4 (réel seul)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 11,
+     "detection": 1.0,
+     "medianLeadS": 129.0,
+     "p10LeadS": 90.0,
+     "quiet": 109,
+     "falseAlarms": 109,
+     "falseAlarmRate": 1.0,
+     "recall": 1.0,
+     "precision": 0.01372712146422629,
+     "prAuc": 0.22285238781226938,
+     "brier": 0.04345816127324756
+    },
+    "ci95": {
+     "flashovers": [
+      2.0,
+      21.0
+     ],
+     "detected": [
+      2.0,
+      21.0
+     ],
+     "detection": [
+      1.0,
+      1.0
+     ],
+     "medianLeadS": [
+      97.0,
+      318.0
+     ],
+     "p10LeadS": [
+      86.0,
+      299.6
+     ],
+     "quiet": [
+      95.0,
+      121.0
+     ],
+     "falseAlarms": [
+      95.0,
+      121.0
+     ],
+     "falseAlarmRate": [
+      1.0,
+      1.0
+     ],
+     "recall": [
+      1.0,
+      1.0
+     ],
+     "precision": [
+      0.002659909288951192,
+      0.027866359629718326
+     ],
+     "prAuc": [
+      0.06026165354250568,
+      0.44574221432529915
+     ],
+     "brier": [
+      0.02860431189295092,
+      0.06085249990941839
+     ]
+    }
+   },
+   "v4, seuil par essai (secondaire)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 11,
+     "detection": 1.0,
+     "medianLeadS": 94.0,
+     "p10LeadS": 84.0,
+     "quiet": 109,
+     "falseAlarms": 54,
+     "falseAlarmRate": 0.4954128440366973,
+     "recall": 0.7575757575757576,
+     "precision": 0.09009009009009009,
+     "prAuc": 0.22285238781226938,
+     "brier": 0.04345816127324756
+    },
+    "ci95": {
+     "flashovers": [
+      2.0,
+      21.0
+     ],
+     "detected": [
+      2.0,
+      21.0
+     ],
+     "detection": [
+      1.0,
+      1.0
+     ],
+     "medianLeadS": [
+      85.0,
+      151.0
+     ],
+     "p10LeadS": [
+      70.0,
+      135.3
+     ],
+     "quiet": [
+      95.0,
+      121.0
+     ],
+     "falseAlarms": [
+      38.0,
+      72.0
+     ],
+     "falseAlarmRate": [
+      0.3565029264214047,
+      0.6372759103641455
+     ],
+     "recall": [
+      0.4166666666666667,
+      0.9166666666666666
+     ],
+     "precision": [
+      0.01275481672419066,
+      0.18594717166145736
+     ],
+     "prAuc": [
+      0.06026165354250568,
+      0.44574221432529915
+     ],
+     "brier": [
+      0.02860431189295092,
+      0.06085249990941839
+     ]
+    }
+   },
+   "v1 (simulateur, livrée)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 11,
+     "detection": 1.0,
+     "medianLeadS": 54.0,
+     "p10LeadS": 19.0,
+     "quiet": 109,
+     "falseAlarms": 92,
+     "falseAlarmRate": 0.8440366972477065,
+     "recall": 0.6060606060606061,
+     "precision": 0.01221001221001221,
+     "prAuc": 0.024286594509131884,
+     "brier": 0.3078299512145601
+    },
+    "ci95": {
+     "flashovers": [
+      2.0,
+      21.0
+     ],
+     "detected": [
+      2.0,
+      21.0
+     ],
+     "detection": [
+      1.0,
+      1.0
+     ],
+     "medianLeadS": [
+      34.0,
+      116.0
+     ],
+     "p10LeadS": [
+      10.0,
+      78.6
+     ],
+     "quiet": [
+      95.0,
+      121.0
+     ],
+     "falseAlarms": [
+      75.0,
+      109.0
+     ],
+     "falseAlarmRate": [
+      0.717626236335242,
+      0.9532710280373832
+     ],
+     "recall": [
+      0.3611111111111111,
+      1.0
+     ],
+     "precision": [
+      0.0022347096252805405,
+      0.02553173826927869
+     ],
+     "prAuc": [
+      0.0038039778241884233,
+      0.08455226907718473
+     ],
+     "brier": [
+      0.24505564598227392,
+      0.3786748595927638
+     ]
+    }
+   },
+   "v3 (simulateur, non livrée)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 10,
+     "detection": 0.9090909090909091,
+     "medianLeadS": 41.5,
+     "p10LeadS": 23.6,
+     "quiet": 109,
+     "falseAlarms": 72,
+     "falseAlarmRate": 0.6605504587155964,
+     "recall": 0.6212121212121212,
+     "precision": 0.02051025512756378,
+     "prAuc": 0.08741409565507657,
+     "brier": 0.1580722904987874
+    },
+    "ci95": {
+     "flashovers": [
+      2.0,
+      21.0
+     ],
+     "detected": [
+      2.0,
+      20.0
+     ],
+     "detection": [
+      0.6,
+      1.0
+     ],
+     "medianLeadS": [
+      24.0,
+      111.0
+     ],
+     "p10LeadS": [
+      20.0,
+      109.42999999999999
+     ],
+     "quiet": [
+      95.0,
+      121.0
+     ],
+     "falseAlarms": [
+      55.975,
+      89.0
+     ],
+     "falseAlarmRate": [
+      0.5267228675450764,
+      0.785171793694521
+     ],
+     "recall": [
+      0.3857675438596491,
+      1.0
+     ],
+     "precision": [
+      0.0037611258911328166,
+      0.0426127203191906
+     ],
+     "prAuc": [
+      0.04202688600391451,
+      0.18708966566235627
+     ],
+     "brier": [
+      0.12139829665120097,
+      0.19800938248923586
+     ]
+    }
+   },
+   "règle simple (pente + pannes)": {
+    "point": {
+     "flashovers": 11,
+     "detected": 11,
+     "detection": 1.0,
+     "medianLeadS": 104.0,
+     "p10LeadS": 82.0,
+     "quiet": 109,
+     "falseAlarms": 109,
+     "falseAlarmRate": 1.0,
+     "recall": 0.9242424242424242,
+     "precision": 0.008690696680438809,
+     "prAuc": 0.02441373589153498,
+     "brier": NaN
+    },
+    "ci95": {
+     "flashovers": [
+      2.0,
+      21.0
+     ],
+     "detected": [
+      2.0,
+      21.0
+     ],
+     "detection": [
+      1.0,
+      1.0
+     ],
+     "medianLeadS": [
+      90.0,
+      161.0
+     ],
+     "p10LeadS": [
+      46.0,
+      123.27499999999993
+     ],
+     "quiet": [
+      95.0,
+      121.0
+     ],
+     "falseAlarms": [
+      95.0,
+      121.0
+     ],
+     "falseAlarmRate": [
+      1.0,
+      1.0
+     ],
+     "recall": [
+      0.7772569444444445,
+      1.0
+     ],
+     "precision": [
+      0.0015498075327985766,
+      0.018057979783904957
+     ],
+     "prAuc": [
+      0.003049889103620944,
+      0.08096154081655908
+     ],
+     "brier": [
+      NaN,
+      NaN
+     ]
+    }
+   },
+   "v4 − v1, taux de fausses alertes": [
+    0.04672897196261683,
+    0.2823737636647579
+   ],
+   "v4 − v1, embrasements annoncés": [
+    0.0,
+    0.0
+   ],
+   "v4 seuil par essai − v1, taux de fausses alertes": [
+    -0.5478804347826086,
+    -0.136842105263158
+   ],
+   "v4 seuil par essai − v1, embrasements annoncés": [
+    0.0,
+    0.0
+   ]
+  },
+  "maisons 2016 et 2019 (négatifs)": {
+   "v4 (réel seul)": {
+    "point": {
+     "flashovers": 0,
+     "detected": 0,
+     "detection": NaN,
+     "medianLeadS": NaN,
+     "p10LeadS": NaN,
+     "quiet": 355,
+     "falseAlarms": 190,
+     "falseAlarmRate": 0.5352112676056338,
+     "recall": NaN,
+     "precision": 0.0,
+     "prAuc": NaN,
+     "brier": 7.914591667299048e-06
+    },
+    "ci95": {
+     "flashovers": [
+      0.0,
+      0.0
+     ],
+     "detected": [
+      0.0,
+      0.0
+     ],
+     "detection": [
+      NaN,
+      NaN
+     ],
+     "medianLeadS": [
+      NaN,
+      NaN
+     ],
+     "p10LeadS": [
+      NaN,
+      NaN
+     ],
+     "quiet": [
+      246.975,
+      485.0
+     ],
+     "falseAlarms": [
+      109.0,
+      275.07499999999993
+     ],
+     "falseAlarmRate": [
+      0.3367565364599661,
+      0.7209431884433504
+     ],
+     "recall": [
+      NaN,
+      NaN
+     ],
+     "precision": [
+      0.0,
+      0.0
+     ],
+     "prAuc": [
+      NaN,
+      NaN
+     ],
+     "brier": [
+      2.1407882361151397e-06,
+      1.7509779175289598e-05
+     ]
+    }
+   },
+   "v4, seuil par essai (secondaire)": {
+    "point": {
+     "flashovers": 0,
+     "detected": 0,
+     "detection": NaN,
+     "medianLeadS": NaN,
+     "p10LeadS": NaN,
+     "quiet": 355,
+     "falseAlarms": 1,
+     "falseAlarmRate": 0.0028169014084507044,
+     "recall": NaN,
+     "precision": 0.0,
+     "prAuc": NaN,
+     "brier": 7.914591667299048e-06
+    },
+    "ci95": {
+     "flashovers": [
+      0.0,
+      0.0
+     ],
+     "detected": [
+      0.0,
+      0.0
+     ],
+     "detection": [
+      NaN,
+      NaN
+     ],
+     "medianLeadS": [
+      NaN,
+      NaN
+     ],
+     "p10LeadS": [
+      NaN,
+      NaN
+     ],
+     "quiet": [
+      246.975,
+      485.0
+     ],
+     "falseAlarms": [
+      0.0,
+      3.0
+     ],
+     "falseAlarmRate": [
+      0.0,
+      0.010454795525398863
+     ],
+     "recall": [
+      NaN,
+      NaN
+     ],
+     "precision": [
+      0.0,
+      0.0
+     ],
+     "prAuc": [
+      NaN,
+      NaN
+     ],
+     "brier": [
+      2.1407882361151397e-06,
+      1.7509779175289598e-05
+     ]
+    }
+   },
+   "v1 (simulateur, livrée)": {
+    "point": {
+     "flashovers": 0,
+     "detected": 0,
+     "detection": NaN,
+     "medianLeadS": NaN,
+     "p10LeadS": NaN,
+     "quiet": 355,
+     "falseAlarms": 29,
+     "falseAlarmRate": 0.08169014084507042,
+     "recall": NaN,
+     "precision": 0.0,
+     "prAuc": NaN,
+     "brier": 0.007260058214363886
+    },
+    "ci95": {
+     "flashovers": [
+      0.0,
+      0.0
+     ],
+     "detected": [
+      0.0,
+      0.0
+     ],
+     "detection": [
+      NaN,
+      NaN
+     ],
+     "medianLeadS": [
+      NaN,
+      NaN
+     ],
+     "p10LeadS": [
+      NaN,
+      NaN
+     ],
+     "quiet": [
+      246.975,
+      485.0
+     ],
+     "falseAlarms": [
+      16.0,
+      44.0
+     ],
+     "falseAlarmRate": [
+      0.04987387369702204,
+      0.11653455284552845
+     ],
+     "recall": [
+      NaN,
+      NaN
+     ],
+     "precision": [
+      0.0,
+      0.0
+     ],
+     "prAuc": [
+      NaN,
+      NaN
+     ],
+     "brier": [
+      0.004130044184474701,
+      0.011322807148060018
+     ]
+    }
+   },
+   "v3 (simulateur, non livrée)": {
+    "point": {
+     "flashovers": 0,
+     "detected": 0,
+     "detection": NaN,
+     "medianLeadS": NaN,
+     "p10LeadS": NaN,
+     "quiet": 355,
+     "falseAlarms": 12,
+     "falseAlarmRate": 0.03380281690140845,
+     "recall": NaN,
+     "precision": 0.0,
+     "prAuc": NaN,
+     "brier": 0.0015801358807139981
+    },
+    "ci95": {
+     "flashovers": [
+      0.0,
+      0.0
+     ],
+     "detected": [
+      0.0,
+      0.0
+     ],
+     "detection": [
+      NaN,
+      NaN
+     ],
+     "medianLeadS": [
+      NaN,
+      NaN
+     ],
+     "p10LeadS": [
+      NaN,
+      NaN
+     ],
+     "quiet": [
+      246.975,
+      485.0
+     ],
+     "falseAlarms": [
+      6.0,
+      18.0
+     ],
+     "falseAlarmRate": [
+      0.014749262536873156,
+      0.05937663898601398
+     ],
+     "recall": [
+      NaN,
+      NaN
+     ],
+     "precision": [
+      0.0,
+      0.0
+     ],
+     "prAuc": [
+      NaN,
+      NaN
+     ],
+     "brier": [
+      0.000579427506286864,
+      0.0033292599630456924
+     ]
+    }
+   },
+   "règle simple (pente + pannes)": {
+    "point": {
+     "flashovers": 0,
+     "detected": 0,
+     "detection": NaN,
+     "medianLeadS": NaN,
+     "p10LeadS": NaN,
+     "quiet": 355,
+     "falseAlarms": 120,
+     "falseAlarmRate": 0.3380281690140845,
+     "recall": NaN,
+     "precision": 0.0,
+     "prAuc": NaN,
+     "brier": NaN
+    },
+    "ci95": {
+     "flashovers": [
+      0.0,
+      0.0
+     ],
+     "detected": [
+      0.0,
+      0.0
+     ],
+     "detection": [
+      NaN,
+      NaN
+     ],
+     "medianLeadS": [
+      NaN,
+      NaN
+     ],
+     "p10LeadS": [
+      NaN,
+      NaN
+     ],
+     "quiet": [
+      246.975,
+      485.0
+     ],
+     "falseAlarms": [
+      63.975,
+      187.04999999999995
+     ],
+     "falseAlarmRate": [
+      0.22737932059817528,
+      0.4282124522837962
+     ],
+     "recall": [
+      NaN,
+      NaN
+     ],
+     "precision": [
+      0.0,
+      0.0
+     ],
+     "prAuc": [
+      NaN,
+      NaN
+     ],
+     "brier": [
+      NaN,
+      NaN
+     ]
+    }
+   },
+   "v4 − v1, taux de fausses alertes": [
+    0.2536515326301912,
+    0.6280726464047443
+   ],
+   "v4 − v1, embrasements annoncés": null,
+   "v4 seuil par essai − v1, taux de fausses alertes": [
+    -0.11504918248511366,
+    -0.0465672024623803
+   ],
+   "v4 seuil par essai − v1, embrasements annoncés": null
+  }
+ }
+}

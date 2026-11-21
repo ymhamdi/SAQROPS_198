@@ -3,12 +3,15 @@
   NIST mds2-2258  P-Flash synthetic detector data, 1 000 CFAST runs, three rooms        (MODELED)
   NIST mds2-2479  P-Flash range-house data, 20 000 CFAST runs, six rooms, doors          (MODELED)
   UL FSRI         fsri-compartments-2018, full-scale compartment fire experiments        (OBSERVED)
+  UL FSRI         fsri-residential-gasburner-2016, gas burner in two houses (13 runs)    (OBSERVED)
+  UL FSRI         fsri-hvac-gasburner-2019, gas burner in a house with basement (29 runs) (OBSERVED)
 
 Standard library only, so it runs before the ML environment exists. Resumes partial files (HTTP Range), retries with
 exponential backoff until a deadline, checks each NIST file against its published .sha256. Run the sets in separate
 processes so a slow NIST server does not hold up FSRI:
 
   python ml/download.py fsri
+  python ml/download.py fsri2016 fsri2019 --until never
   python ml/download.py nist2258 nist2479 --parts 1 --until 21:00
 """
 
@@ -39,6 +42,11 @@ NIST = {
     ),
 }
 FSRI_REPO = "https://github.com/ulfsri/fsri-compartments-2018"
+# Real multi-room experiments for the v4 model (OBSERVED): gas burners in houses, negatives for the neighbour features.
+REPOS = {
+    "fsri2016": ("https://github.com/ulfsri/fsri-residential-gasburner-2016", "02_Info"),
+    "fsri2019": ("https://github.com/ulfsri/fsri-hvac-gasburner-2019", "02_Info"),
+}
 
 
 def log(msg: str) -> None:
@@ -144,9 +152,31 @@ def clone_fsri(until: dt.datetime | None) -> bool:
     return False
 
 
+def clone_repo(key: str, until: dt.datetime | None) -> bool:
+    """git clone --depth 1 of one of REPOS into ml/data/raw/<repo name>, retried until the deadline."""
+    url, marker = REPOS[key]
+    dest = RAW / url.rsplit("/", 1)[-1]
+    if (dest / ".git").exists() and (dest / marker).exists():
+        log(f"{dest.name} already cloned")
+        return True
+    delay = 30.0
+    while not deadline_passed(until):
+        if dest.exists():
+            shutil.rmtree(dest, ignore_errors=True)
+        log(f"git clone --depth 1 {url}")
+        r = subprocess.run(["git", "clone", "--depth", "1", url, str(dest)], capture_output=True, text=True)
+        if r.returncode == 0:
+            log(f"{dest.name} cloned")
+            return True
+        log(f"  clone failed: {r.stderr.strip()[-300:]}; retry in {int(delay)} s")
+        time.sleep(delay)
+        delay = min(delay * 1.6, 300.0)
+    return False
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("sets", nargs="+", choices=["nist2258", "nist2479", "fsri"])
+    ap.add_argument("sets", nargs="+", choices=["nist2258", "nist2479", "fsri", *REPOS])
     ap.add_argument("--parts", type=int, default=1, help="mds2-2479: how many 2 000-run data files after the summary file")
     ap.add_argument("--until", default="21:00", help="stop retrying at this local time (HH:MM), or 'never'")
     ap.add_argument("--timeout", type=float, default=180.0, help="socket timeout per request, s")
@@ -159,6 +189,9 @@ def main() -> int:
     for s in args.sets:
         if s == "fsri":
             ok &= clone_fsri(until)
+            continue
+        if s in REPOS:
+            ok &= clone_repo(s, until)
             continue
         base, files = NIST[s]
         if s == "nist2479":

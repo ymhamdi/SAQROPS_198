@@ -110,6 +110,14 @@
       "rapidPeakMaxS": { "value": 30, "unit": "s", "source": "Longest time to peak of a rapid fire. Team assumption", "status": "MODELED" },
       "leakageFactorMax": { "value": 20, "unit": "×", "source": "Room leakage drawn log-uniformly between 1× and this many times fire.leakageAreaM2PerM2Floor: building airtightness varies by more than an order of magnitude (NFPA 92 leakage area ratios, tight to loose construction)", "status": "MODELED" }
     },
+    "realData": {
+      "rtiMinMs05": { "value": 25, "unit": "(m·s)^(1/2)", "source": "Lowest detector response time index drawn when augmenting the real experiments (model v4): low end of the typical 25-100 range of fixed-temperature heat detectors already used for detectors.rtiMs05 (SFPE Handbook, detector response)", "status": "MODELED" },
+      "rtiMaxMs05": { "value": 100, "unit": "(m·s)^(1/2)", "source": "Highest detector response time index drawn when augmenting the real experiments: high end of the same typical 25-100 range (SFPE Handbook, detector response)", "status": "MODELED" },
+      "maxDetectorsPerRoom": { "value": 4, "unit": "1", "source": "Largest number of ceiling thermocouples kept as detectors in one room of an augmented copy (1 to this many, at random; UL FSRI 2018 has four per room). Team choice", "status": "MODELED" },
+      "windowOffsetMaxS": { "value": 9, "unit": "s", "source": "Largest random shift of the start of an augmented copy, so that its 10 s samples fall at other instants of the real record. Team choice", "status": "MODELED" },
+      "copiesCompartments2018": { "value": 8, "unit": "1", "source": "Versions of each UL FSRI 2018 experiment in the v4 training data: the experiment as instrumented plus 7 augmented copies. Team choice", "status": "MODELED" },
+      "copiesResidential": { "value": 4, "unit": "1", "source": "Versions of each UL FSRI 2016 and 2019 house experiment in the v4 training data: as instrumented plus 3 augmented copies. Team choice", "status": "MODELED" }
+    },
     "sim": {
       "tickS": { "value": 1, "unit": "s", "source": "Simulation step (CLAUDE.md §5)", "status": "MODELED" },
       "playbackSpeeds": { "value": [1, 5, 10, 20], "unit": "×", "source": "Playback speeds offered; ×10 for the video. Team choice", "status": "MODELED" },

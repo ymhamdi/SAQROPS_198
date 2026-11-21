@@ -6,6 +6,7 @@
 # Parquet next to them. Only the documented schema is committed.
 /ml/data/*
 !/ml/data/NIST_SCHEMA.md
+!/ml/data/REAL_SCHEMA.md
 /ml/data/raw/
 /ml/raw/
 *.xlsx

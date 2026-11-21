@@ -1,16 +1,19 @@
-// R8: the TypeScript evaluator reproduces the Python predictions to 1e-6 on ml/model/golden.csv, missing values included.
+// R8: the TypeScript evaluator reproduces the Python predictions to 1e-6 on golden.csv, missing values included, for the
+// shipped model (ml/model) and for every other exported model folder that has a golden.csv (ml/model-v4: real data).
 
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, test } from 'vitest'
 import contract from '../../../ml/model/contract.json' with { type: 'json' }
 import { FEATURE_NAMES } from './features'
 import { parseXgb, predict } from './xgb'
 
 const MODEL_DIR = new URL('../../../ml/model/', import.meta.url)
-const load = (file: string) => parseXgb(JSON.parse(readFileSync(new URL(file, MODEL_DIR), 'utf-8')))
+const MODEL_DIRS = ['model', 'model-v4'].map((d) => new URL(`../../../ml/${d}/`, import.meta.url)).filter((u) => existsSync(new URL('golden.csv', u)))
+const loadFrom = (dir: URL, file: string) => parseXgb(JSON.parse(readFileSync(new URL(file, dir), 'utf-8')))
+const load = (file: string) => loadFrom(MODEL_DIR, file)
 
-function readGolden() {
-  const [head, ...lines] = readFileSync(new URL('golden.csv', MODEL_DIR), 'utf-8').trim().split('\n')
+function readGolden(dir: URL) {
+  const [head, ...lines] = readFileSync(new URL('golden.csv', dir), 'utf-8').trim().split('\n')
   const cols = head.split(',')
   return {
     cols,
@@ -18,8 +21,12 @@ function readGolden() {
   }
 }
 
-describe('R8 model parity (ml/model/golden.csv)', () => {
-  const golden = readGolden()
+test('the shipped model folder has its golden.csv', () => {
+  expect(MODEL_DIRS.map((u) => u.href)).toContain(MODEL_DIR.href)
+})
+
+describe.each(MODEL_DIRS.map((u) => [u.pathname.split('/').at(-2)!, u] as const))('R8 model parity (ml/%s/golden.csv)', (_name, dir) => {
+  const golden = readGolden(dir)
   const nF = FEATURE_NAMES.length
 
   test('golden columns follow the contract', () => {
@@ -33,7 +40,7 @@ describe('R8 model parity (ml/model/golden.csv)', () => {
 
   for (const [key, spec] of Object.entries(contract.models)) {
     test(`${key} (${spec.file}) matches Python to 1e-6`, () => {
-      const model = load(spec.file)
+      const model = loadFrom(dir, spec.file)
       expect(model.objective).toBe(spec.objective)
       expect(model.nFeatures).toBe(nF)
       const col = golden.cols.indexOf(key)
