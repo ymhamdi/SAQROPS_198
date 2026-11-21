@@ -3,6 +3,7 @@
 // a synthetic first-person view of the building that follows the team in real time (scene/), labelled as what it is.
 
 import { H, v } from '../config'
+import { demoHref } from '../demo/links'
 import { Scene } from '../scene/Scene'
 import type { Snapshot } from '../sim/protocol'
 import type { Site } from '../site/site'
@@ -22,7 +23,15 @@ function topAlert(snap: Snapshot): { level: 'warning' | 'caution' | 'ok'; icon: 
 }
 
 export function Hud({ site, snap }: { site: Site; snap: Snapshot | null }) {
-  if (!snap) return <main className="hud2 crew-wait">HUD : en attente du PC.</main>
+  if (!snap)
+    return (
+      <main className="hud2 crew-wait">
+        <p>HUD : en attente du PC.</p>
+        <a className="demo-link" href={demoHref('hud')}>
+          Lancer la démonstration automatique
+        </a>
+      </main>
+    )
   const live = worstStatus('MODELED', snap.readingsStatus)
   const alert = topAlert(snap)
   const next = nextStep(site, snap)

@@ -33,7 +33,18 @@ function ReasonList({ reasons }: { reasons: Reason[] }) {
   )
 }
 
-export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud' | 'twin') => void }) {
+/** The self-playing demo as the PC sees it: on or off, and the narration of the current moment. */
+export interface PcDemo {
+  on: boolean
+  onToggle: () => void
+  onRestart: () => void
+  done: boolean
+  /** « Étape n/N » */
+  caption: string
+  text: string
+}
+
+export function Pc({ site, sim, onOpenCrew, demo }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud' | 'twin') => void; demo: PcDemo }) {
   const [truth, setTruth] = useState(false)
   const [mode, setMode] = useState<'doors' | 'fire'>('doors')
   const [card, setCard] = useState(false)
@@ -69,7 +80,21 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
           <button type="button" onClick={() => sim.reset()}>
             Réinitialiser
           </button>
+          <button type="button" className="pc-primary" aria-pressed={demo.on} onClick={demo.onToggle}>
+            {demo.on ? 'Arrêter la démo' : 'Démo automatique'}
+          </button>
         </div>
+        {demo.on && (
+          <p className="pc-demo" role="status" aria-live="polite">
+            <strong>{demo.caption}</strong>
+            {demo.text}{' '}
+            {demo.done && (
+              <button type="button" onClick={demo.onRestart}>
+                Recommencer
+              </button>
+            )}
+          </p>
+        )}
       </header>
 
       <section className="pc-map">

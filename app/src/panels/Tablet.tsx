@@ -4,6 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { H, v } from '../config'
+import { demoHref } from '../demo/links'
 import { LiveMap, type MapView } from '../scene/LiveMap'
 import { MISSION_STEPS, missionOf } from '../scene/mission'
 import type { Snapshot } from '../sim/protocol'
@@ -31,7 +32,15 @@ export function Tablet({ site, snap }: { site: Site; snap: Snapshot | null }) {
     }
     lastPlan.current = snap.planVersion
   }, [snap])
-  if (!snap) return <main className="crew-wait">Tablette : en attente du PC (ouvrez le PC dans une autre fenêtre).</main>
+  if (!snap)
+    return (
+      <main className="crew-wait">
+        <p>Tablette : en attente du PC (ouvrez le PC dans une autre fenêtre).</p>
+        <a className="demo-link" href={demoHref('tablet')}>
+          Lancer la démonstration automatique
+        </a>
+      </main>
+    )
   const live = worstStatus('MODELED', snap.readingsStatus)
   const next = nextStep(site, snap)
   const alerts = snap.shown.reasons.filter((r) => r.severity !== 'info')

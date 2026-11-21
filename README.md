@@ -137,7 +137,18 @@ Ouvrir <http://localhost:5173> (écrire `localhost`, pas `127.0.0.1`).
 
 Ces fenêtres doivent être ouvertes dans le **même navigateur** que le PC, ce que font aussi les boutons « Ouvrir la tablette », « Ouvrir le HUD » et « Ouvrir le jumeau numérique » du PC. Aucun téléchargement n'est nécessaire : toutes les données sont dans le dépôt, et l'application fonctionne hors-ligne.
 
-## Rejouer la démonstration
+## Démonstration automatique
+
+L'intervention se joue toute seule, sans clic, en environ 45 secondes (les temps de simulation sont accélérés ×5 à ×20 selon ce qui bouge) :
+
+- HUD : <http://localhost:5173/?view=hud&demo=1>
+- Tablette : <http://localhost:5173/?view=tablet&demo=1>
+- Jumeau numérique : <http://localhost:5173/?view=twin&demo=1>
+- PC du COS : <http://localhost:5173/?demo=1>, ou le bouton **Démo automatique** du PC (les fenêtres ouvertes depuis le PC bougent alors aussi)
+
+Une fenêtre `&demo=1` simule et joue le scénario elle-même : ne pas l'ouvrir à côté d'un autre PC. Un bandeau commente chaque étape ; **Espace** met en pause, **R** recommence (les boutons apparaissent quand on bouge la souris). Le script joue le COS : il déclenche le feu, le drone, l'engagement, ferme la porte et ré-engage le binôme, mais il ne lit jamais la vérité du simulateur (R5) et le NO-GO reste verrouillé jusqu'à son ré-engagement, journalisé comme une décision du COS (R6). Les allures (`demo.paceFastX`, `paceWalkX`, `paceOutX`) sont dans `data/config.json` : mettre `paceWalkX` à 1 donne une marche en temps réel.
+
+## Rejouer la démonstration à la main
 
 Sur le PC, régler la vitesse sur **×20** puis cliquer **Lecture**. Les temps ci-dessous sont en temps simulé. Ouvrir la tablette et le HUD côte à côte pour voir la liaison en direct.
 
@@ -157,7 +168,7 @@ Sur le PC, régler la vitesse sur **×20** puis cliquer **Lecture**. Les temps c
 À lancer dans `app/` :
 
 ```bash
-npm test           # plus de 170 tests (règles R1 à R8, moteur feu, scénario de la démonstration)
+npm test           # plus de 220 tests (règles R1 à R8, moteur feu, scénario de la démonstration, démo automatique)
 npm run typecheck  # vérification des types
 npm run build      # version de production dans app/dist
 npm run preview    # sert ce build sur localhost:4173
@@ -179,6 +190,7 @@ app/        application web : Vite + React + TypeScript, simulation dans un Web 
   src/sim     boucle de simulation (Web Worker)          src/live    liaison PC ↔ tablette ↔ HUD
   src/panels  PC du COS, tablette, HUD, fiche réflexe    src/site    plan de l'atelier (grille 0,5 m)
   src/scene   vue synthétique du HUD, carte de la tablette  src/twin   jumeau numérique
+  src/demo    démonstration automatique (?demo=1)
 data/       config.json (toutes les hypothèses), SOURCES.md, consignes.json, site/, weather/
 ml/         données, entraînement, évaluation, modèles exportés (model/), rapports (report/), MODEL_REPORT.md
 scripts/    fetch-weather.ts (vent Open-Meteo)

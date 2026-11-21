@@ -1,5 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { openChannel, type Channel } from './live/channel'
+import { useEffect, useMemo, useState } from 'react'
+import { DemoHost } from './demo/DemoHost'
+import { CAPTIONS, STEPS } from './demo/captions'
+import { useDemo } from './demo/useDemo'
+import { openChannel } from './live/channel'
+import { useBroadcast } from './live/useBroadcast'
 import { Hud } from './panels/Hud'
 import { Pc } from './panels/Pc'
 import { Tablet } from './panels/Tablet'
@@ -10,28 +14,26 @@ import { Twin } from './twin/Twin'
 
 type View = 'pc' | 'tablet' | 'hud' | 'twin'
 
-/** The PC simulates and broadcasts every snapshot to the crew windows. */
-function PcApp() {
+/** The PC simulates and broadcasts every snapshot to the crew windows; « Démo automatique » plays the COS by script. */
+function PcApp({ autoDemo }: { autoDemo: boolean }) {
   const site = useMemo(() => buildSite(), [])
   const sim = useSim()
-  const channel = useRef<Channel | null>(null)
-  const latest = useRef<Snapshot | null>(null)
-  useEffect(() => {
-    const ch = openChannel((m) => {
-      if (m.type === 'hello' && latest.current) ch.post({ type: 'snap', snap: latest.current })
-    })
-    channel.current = ch
-    return () => ch.close()
-  }, [])
-  useEffect(() => {
-    latest.current = sim.snap
-    if (sim.snap) channel.current?.post({ type: 'snap', snap: sim.snap })
-  }, [sim.snap])
+  const [demoOn, setDemoOn] = useState(autoDemo)
+  const demo = useDemo(sim, site, demoOn)
+  useBroadcast(sim.snap)
   const openCrew = (view: 'tablet' | 'hud' | 'twin') => {
     const url = `${window.location.pathname}?view=${view}`
     if (!window.open(url, `pnr-${view}`)) alert('Le navigateur a bloqué la nouvelle fenêtre : autorisez les fenêtres pour cette page.')
   }
-  return <Pc site={site} sim={sim} onOpenCrew={openCrew} />
+  const caption = CAPTIONS[demo.scene]
+  return (
+    <Pc
+      site={site}
+      sim={sim}
+      onOpenCrew={openCrew}
+      demo={{ on: demoOn, onToggle: () => setDemoOn((x) => !x), onRestart: demo.restart, done: demo.done, caption: `Étape ${caption.step}/${STEPS}`, text: caption.text }}
+    />
+  )
 }
 
 /** Tablet, HUD and digital twin only display what the PC broadcasts. */
@@ -48,6 +50,9 @@ function CrewApp({ view }: { view: 'tablet' | 'hud' | 'twin' }) {
 }
 
 export default function App() {
-  const view = (new URLSearchParams(window.location.search).get('view') ?? 'pc') as View
-  return view === 'pc' ? <PcApp /> : <CrewApp view={view} />
+  const params = new URLSearchParams(window.location.search)
+  const view = (params.get('view') ?? 'pc') as View
+  const demo = params.get('demo') === '1'
+  if (view === 'pc') return <PcApp autoDemo={demo} />
+  return demo ? <DemoHost view={view} /> : <CrewApp view={view} />
 }

@@ -66,6 +66,8 @@
     "fireRoom": "solvants",
     "fireAt": [3, 37],
     "entry": "sortie-ouest",
-    "objectives": ["victime-peinture", "coupure-tgbt"]
+    "objectives": ["victime-peinture", "coupure-tgbt"],
+    "closeDoor": "d-solvants-peinture",
+    "thenObjectives": ["coupure-tgbt"]
   }
 }

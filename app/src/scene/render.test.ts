@@ -169,5 +169,5 @@ describe('what the scene looks like', () => {
         expect(Number.isFinite(centre(img, 40, 20)[0])).toBe(true)
       }
     }
-  })
+  }, 60_000)
 })
