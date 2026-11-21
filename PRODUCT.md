@@ -8,59 +8,90 @@ web
 
 ## Users
 
-- **Astronaut crew (persona the tool is built for):** two suited astronauts plus a support rover on a Marswalk through the Mount Sharp boxwork, Gale Crater. They plan in the habitat on a large screen, carry a tablet on the walk, and see a helmet-visor HUD.
-- **NASA Space Apps 2026 judges:** they meet the product through a 2-3 minute demo video and a live demo. The screen must read as credible mission software an astronaut could actually use, and land its point within that demo.
+- **COS (commandant des opérations de secours), Protection civile tunisienne:** runs the intervention from the
+  command post next to the engine, on a laptop or a large screen. Decides whether a team goes in, where it goes, and
+  when it comes out. Primary user of the PC view.
+- **Chef de binôme:** leads the two-firefighter team inside the burning building, with a tablet strapped on and
+  gloves on, in smoke and heat. Reads the verdict, the next point, the air left and the PC's messages.
+- **Porteur ARI:** wears the breathing-apparatus mask; sees a HUD that must read in under one second.
+- **Challenge jury (Tunisian Aeroday Aero-Entrepreneur, with the Protection civile and INJAZ):** meets the product
+  through a 1-minute demo video, a 5-minute pitch and questions. Some jurors are Protection civile officers who know
+  the job; the screen must read as a credible operational tool, not a game or a sci-fi dashboard.
 
-Both audiences are confirmed as equal priority.
+All four audiences are equal priority for the PC view; the crew views serve the firefighters first.
 
 ## Product Purpose
 
-"Google Maps directions for one Marswalk." A hyperlocal route planner for the few square kilometres one crew covers on one excursion, at metre resolution. It plans a walk that stays on the boxwork ridges, avoids the sandy hollows, reaches the science stops, and always keeps the walk home inside the O2 budget. Success: a crew (or a judge) can see the route, the stops, and a GO / NO-GO verdict with its reasons, and trust where every number comes from.
+PNR · Point de Non-Retour is a decision aid for a fire on an industrial site. At every moment it tells the COS and the
+team leader whether the engagement is still tenable, which way out, and why: a GO / NO-GO verdict, always with its
+reasons, and « Décision : COS » because the decision belongs to the COS. Success: the COS sees a flashover coming
+before the detectors give up, gets the team out above the breathing-apparatus whistle, and can explain why.
 
 ## Positioning
 
-Mars Trek and the USGS geologic maps work at global and regional scale. This works at the scale of one walk: suit-speed walking times (Tobler's function × suit factor), a walk-home field from every cell, and a point-of-no-return check against O2. Every value is labelled OBSERVED, DERIVED, MODELED or MOCK.
+- Predicts a room's flashover 30 to 60 s ahead from the building's ordinary heat detectors, including after they fail
+  above 150 °C (the NIST P-Flash approach), with an XGBoost model evaluated in the browser.
+- Computes a point of no return on the team's air at every step of the route (exit before the EN 137 whistle, way back
+  counted 1.5× slower), carried over from Martian Map's oxygen point of no return.
+- A simulated reconnaissance drone flies round the building, outside the smoke plume, with the same point-of-no-return
+  logic on its battery.
+- Every number shows how it was obtained: OBSERVED, DERIVED, MODELED, SIMULATED or MOCK.
 
 ## Operating Context
 
-- Habitat planning view first (large screen): build and compare routes, review conditions, assign tasks. Tablet view and HUD view come later from the same data.
-- Site: boxwork on the sulfate-bearing unit of Mount Sharp, Gale Crater. Ridges 1-2 m tall, ~5 m wide, sandy hollows between.
-- Map base: real MRO HiRISE imagery via NASA Mars Trek. The site data is built from real NASA/USGS sources (see Evidence on Hand). The weather is Curiosity REMS for one sol (MODELED as a forecast).
-- On the walk, the crew carry a tablet and see a helmet-visor HUD. A voice copilot in both answers what-if questions spoken mid-walk ("Can we stay 20 more minutes?").
-- Hackathon: Nov 14-15, 2026.
+- Command post (PC du COS) at the engine: one screen with the site plan, the verdict, the team's air, the drone, the
+  objectives, the rooms and the log. The COS starts the demo fire, opens or closes doors, engages the team, removes
+  objectives, orders evacuation and is the only one who can re-engage after a NO-GO.
+- Team leader's tablet and mask HUD in two other windows of the same browser, linked live (standing in for the radio).
+- Printable A4 reflex card for the team.
+- Demo site: a fictional 60 × 40 m composite-parts workshop (offices, main switchboard, Li-ion charging room, solvent
+  store, paint booth, production hall with autoclave). The fire, detector readings and drone flight are simulated and
+  played at ×10 or ×20 for the video.
+- Seen in a screen recording at about 1600 px wide, on a projector during the pitch, and live on a laptop.
 
 ## Capabilities and Constraints
 
-- Static web app (Vite + React + TypeScript + Leaflet). Route engine (A*, walk-home Dijkstra) runs in a Web Worker on a 1000 x 1000 grid at 2 m cells.
-- Optional local copilot server (`server/`: FastAPI, Ollama qwen3:8b, faster-whisper on the CPU) on the same laptop, offline. The app works without it: typed questions, rule parser and fixed answer templates. The LLM only interprets words; every number comes from the route engine.
-- Built today: layer toggles and opacity, slope / terrain overlay, click to add stops (science targets or via points), route coloured by hazard, GO / NO-GO panel with reasons, stations table with arrival times, EVA line strip, Mars24 clock, saved plans and plan links, a printable card. On the walk: the tablet view with live warnings, the helmet HUD with abort, the simulated solar-storm drill, and the voice what-if copilot (stay longer, add or skip a stop, time left, way home).
-- Terms: Marswalk, EVA, habitat, support rover, science stop, via point, walk-home, point of no return, sol, LMST/LTST, Ls.
-- Data statuses must be visible in the UI; MOCK or MODELED is never presented as OBSERVED.
+- Static web app: Vite, React, TypeScript; the plan is drawn on a canvas; the simulation runs in a Web Worker; no
+  backend, no database, no authentication, no LLM, no 3D, one floor.
+- No new UI library. Interface in French; code and commits in English.
+- Safety rules, each with a test: the AI can only make a verdict worse; « Décision : COS » on the PC, tablet and card,
+  the HUD stays short; every number carries its status badge and SIMULATED or MOCK never looks OBSERVED; every
+  assumption lives in data/config.json with its source; the verdict reads detectors only, never the simulator's truth or
+  the drone's thermal image; a NO-GO is latched until the COS re-engages; the drone keeps its battery reserve, refuses
+  high wind and stays out of the plume.
+- Terms: COS, binôme, chef de binôme, ARI, sifflet, point de non-retour (PNR), embrasement, engin (FPT), TGBT, PC,
+  « Ré-engager (décision COS) », vérité simulateur.
 
 ## Brand Commitments
 
-Name "Martian Map". No logo, colours or team name fixed yet.
-
-The walk views (HUD, tablet, copilot) must read as mission-grade, calm and legible, like aviation HUD symbology and NASA spacesuit display concepts (NASA SUITS). They must not read as a sci-fi dashboard: no neon glows, gradients, decorative motion or cards inside cards.
+- Name: « PNR · Point de Non-Retour ». No logo, colours or typeface fixed beyond the current build.
+- No real company named on the site. No Protection civile, Aeroday or INJAZ logo or wording that implies an
+  endorsement: the Protection civile is the challenge's partner, not a customer.
+- The visual world of the PC is to be replaced (decided 21 Nov, paused): dark operations room, SITAC direction chosen.
 
 ## Evidence on Hand
 
-- Real: MRO HiRISE Curiosity roving-site mosaic tiles (Mars Trek). The USGS MSL Gale Merged DEM (terrain grid and slope). The Curiosity boxwork-campaign stops from the MMGIS traverse (science targets, DERIVED). Sand and boulders mapped from the HiRISE orthophoto (MODELED). Curiosity raw images at the stops (OBSERVED). THEMIS night infrared. Curiosity REMS weather for sol 4718. The Mars24 algorithm, verified against NASA GISS worked examples.
-- MODELED by team rules: the habitat placement, the suit and walking assumptions, the safety thresholds. The solar-storm drill is SIMULATED.
-- No real crew, mission, testimonials or partner endorsements exist; none may be implied.
+- Real: the outdoor wind at the site's coordinates from Open-Meteo (DERIVED, data/weather/open-meteo.json); published
+  fire-engineering correlations and standards, cited in data/SOURCES.md.
+- Model: XGBoost v1 trained on 5 000 scenarios of the team's own engine (MODELED); NIST P-Flash data planned when
+  data.nist.gov is reachable; UL FSRI full-scale tests (OBSERVED) planned for validation.
+- Everything shown in the demo (fire, readings, team position, drone flight, roof thermal image) is SIMULATED or MOCK.
+- No real intervention, user, testimonial, Protection civile validation or partner endorsement exists; none may be
+  implied. Reflex instructions are paraphrases of public references still to be validated by the Protection civile.
 
 ## Product Principles
 
-1. Safety reads first: a verdict always comes with its reasons.
-2. Honest provenance: every number shows how it was obtained.
-3. Hyperlocal over global: metre-scale detail of one walk beats planet-wide breadth.
-4. Calm under load: an astronaut in a suit, or a judge in a 2-minute demo, must not have to hunt.
+1. Safety reads first: a verdict always comes with its reasons, and the most dangerous fact is the most visible.
+2. The decision stays with the COS: the tool advises, never commands.
+3. Honest provenance: every number shows how it was obtained; simulated never passes for measured.
+4. Detectors are the truth the tool may use: what the simulator knows, the verdict does not.
+5. Calm under load: a COS mid-intervention, a team leader in smoke, or a juror in a one-minute video must not hunt.
 
 ## Accessibility & Inclusion
 
-- Legibility at a distance (habitat screen) and in a demo video is a practical requirement.
-- The HUD is read in under 1 second by a tired, suited crew, with glare and bright dusty terrain behind a transparent visor. One primary number per slot, nothing thin. The visor is see-through: no filled panels, only text, icons and thin strokes, each with a tight dark halo so it reads over bright sand and dark rock.
-- Red = warning (act now), amber = caution (watch). Never colour alone: always icon + word + colour. Only one warning takes over the visor at a time.
-- The tablet is used with gloves: touch targets at least 64 px with generous spacing.
-- Motion only for state changes and new alerts, and it respects `prefers-reduced-motion`.
-- Data statuses (OBSERVED / DERIVED / MODELED / MOCK / SIMULATED) stay visible. SIMULATED or MOCK never looks OBSERVED.
+- Legibility at a distance (command-post screen, projector) and in a compressed demo video is a practical requirement.
+- The HUD is read in under one second through a mask: one primary number per slot, nothing thin, one warning at a time.
+- Red = warning (act now), amber = caution (watch). Never colour alone: always icon + word + colour.
+- The tablet is used with gloves: touch targets of at least 64 px with generous spacing.
+- Motion only for state changes and new alerts, and it respects prefers-reduced-motion.
+- Status badges (OBSERVED / DERIVED / MODELED / SIMULATED / MOCK) stay visible and distinct.

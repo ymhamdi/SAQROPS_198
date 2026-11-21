@@ -76,7 +76,8 @@ Plan B dataset : node ml/generate.ts --n 5000 --seed 42 --out ml/data/scenarios.
 
 ## 7. Conventions
 - Interface en français ; code, identifiants et commits en anglais (feat:, fix:, test:, docs:, chore:).
-- Aucune nouvelle librairie UI, aucune refonte du design system : réutiliser les CSS existantes.
+- Aucune nouvelle librairie UI. Décision du 21/11 (EN PAUSE, rien de construit) : remplacer le monde visuel du PC du COS (« salle
+  opérationnelle sombre », direction choisie : SITAC, via le skill impeccable). Tablette, HUD et fiche suivent.
 - Pas de nombre magique dans app/src : tout passe par config.ts, qui lit data/config.json.
 - Chaque corrélation est citée en commentaire (auteur, année, SFPE Handbook / NIST) ET dans data/SOURCES.md.
 - Consignes : uniquement dans data/consignes.json, chacune avec une source et « à valider par la Protection civile ».
