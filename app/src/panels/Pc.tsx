@@ -16,6 +16,7 @@ import './pc.css'
 
 const MODE_LABEL = { standby: 'En attente', engaged: 'Engagé', evacuating: 'Évacuation', out: 'Sorti' } as const
 const CONDITION_LABEL = { clear: 'Clair', smoke: 'Fumées', hot: 'Fumées chaudes', failed: 'Détecteurs HS' } as const
+const DRONE_LABEL = { ground: 'au sol', flying: 'en vol', landed: 'posé', refused: 'vol refusé' } as const
 const SOURCE_LABEL: Record<Reason['source'], string> = { rules: 'Règles', ai: 'IA', air: 'Air', route: 'Itinéraire', latch: 'Verrou' }
 
 export const clock = (s: number) => `T+${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
@@ -83,10 +84,11 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
             <input type="checkbox" checked={truth} onChange={(e) => setTruth(e.target.checked)} /> Vérité simulateur <StatusBadge status="SIMULATED" />
           </label>
         </div>
-        <Plan site={site} snap={s} truth={truth} mode={mode} onDoor={(door) => sim.act({ type: 'door', door })} onFire={(at) => (sim.act({ type: 'fire', at }), setMode('doors'))} />
+        <Plan site={site} snap={s} truth={truth} mode={mode} showDrone onDoor={(door) => sim.act({ type: 'door', door })} onFire={(at) => (sim.act({ type: 'fire', at }), setMode('doors'))} />
         <p className="pc-legend">
           Locaux teintés d'après leurs détecteurs uniquement (gris fumées, orange fumées chaudes, rouge détecteurs hors service) · contour rouge pointillé : alerte IA · portes bleues
-          ouvertes, grises fermées · ◆ objectifs · ● binôme · ✕ détecteur hors service
+          ouvertes, grises fermées · ◆ objectifs · ● binôme · ✕ détecteur hors service · ◇ violet : drone, son trajet et l'image thermique des toits (SIMULATED, jamais utilisée pour le
+          verdict)
         </p>
       </section>
 
@@ -153,6 +155,46 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
             </button>
             <button type="button" onClick={() => onOpenCrew('hud')}>
               Ouvrir le HUD
+            </button>
+          </div>
+        </section>
+
+        <section className="pc-card">
+          <span className="pc-kick">Drone de reconnaissance · {DRONE_LABEL[s.drone.status]}</span>
+          <dl className="pc-gauges">
+            <div>
+              <dt>Batterie</dt>
+              <dd>
+                <Num value={s.drone.at?.batteryPct ?? (s.drone.status === 'ground' ? 100 : null)} unit="%" status="SIMULATED" />
+              </dd>
+            </div>
+            <div>
+              <dt>Marge PNR batterie</dt>
+              <dd>
+                <Num value={s.drone.status === 'flying' ? (s.drone.at?.marginPct ?? null) : null} unit="%" status="SIMULATED" />
+              </dd>
+            </div>
+            <div>
+              <dt>Vent (vers {Math.round((s.drone.wind.fromDeg + 180) % 360)}°)</dt>
+              <dd>
+                <Num value={s.drone.wind.speedMs} unit="m/s" status={s.drone.wind.status} digits={1} />
+              </dd>
+            </div>
+            <div>
+              <dt>Limite de vent</dt>
+              <dd>
+                <Num value={s.drone.maxWindMs} unit="m/s" status="MODELED" />
+              </dd>
+            </div>
+          </dl>
+          {s.drone.reason && <p className="pc-note">{s.drone.reason}</p>}
+          <p className="pc-note">
+            Retour à l'engin garanti avec <Num value={s.drone.reservePct} unit="%" status="MODELED" /> de réserve · vol simulé (tout vol réel en Tunisie exige une autorisation
+            préalable)
+          </p>
+          <div className="pc-actions">
+            <button type="button" className="pc-primary" disabled={s.drone.status === 'flying'} onClick={() => sim.act({ type: 'drone' })}>
+              {s.drone.status === 'ground' ? 'Décoller le drone' : 'Relancer le drone'}
             </button>
           </div>
         </section>

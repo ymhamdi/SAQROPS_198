@@ -5,6 +5,7 @@
 import { H, v } from '../config.ts'
 import { aiMultiplier, aiReasons, predictRooms, type RoomPrediction } from '../danger/ai.ts'
 import { mergeAi } from '../danger/merge.ts'
+import { droneAt, droneParams, loopAround, planFlight, plumeOf, type DroneParams, type Flight, type Wind } from '../drone/drone.ts'
 import { observeRoom, paceOf, ruleMultiplier, type RoomObservation } from '../danger/rules.ts'
 import { ignite, initFireState, setDoor, stepFire, type FireSetup, type FireState } from '../fire/engine.ts'
 import type { FireParams } from '../fire/params.ts'
@@ -18,6 +19,7 @@ import { airParams, airReasons, barAfter, buildTrack, checkPnr, type AirParams, 
 import { applyLatch, OPEN_LATCH, reengage as openLatch, type Latch } from '../stats/latch.ts'
 import { verdictOf, type Reason, type Verdict } from '../stats/verdict.ts'
 import type { DataStatus, Point } from '../types.ts'
+import weather from '../../../data/weather/open-meteo.json' with { type: 'json' }
 
 export interface SimContext {
   site: Site
@@ -29,6 +31,25 @@ export interface SimContext {
   detByRoom: number[][]
   /** status of the readings: SIMULATED here; OBSERVED with real detectors */
   readingsStatus: DataStatus
+  drone: DroneParams
+  /** outdoor wind from the Open-Meteo cache (DERIVED) */
+  wind: Wind
+  /** the reconnaissance loop around the building */
+  loop: Point[]
+  /** bounding box of each room, site metres (what the thermal camera can see) */
+  roomBox: { x0: number; y0: number; x1: number; y1: number }[]
+}
+
+export interface DroneState {
+  status: 'ground' | 'flying' | 'landed' | 'refused'
+  launchedAt: number | null
+  flight: Flight | null
+  /** rooms the thermal camera has seen */
+  seen: boolean[]
+  /** roof temperature of each seen room, °C: a SIMULATED image, PC only, never the verdict (R5) */
+  roofC: (number | null)[]
+  reason: string | null
+  noise: number
 }
 
 export type TeamMode = 'standby' | 'engaged' | 'evacuating' | 'out'
@@ -68,6 +89,7 @@ export interface SimState {
   notes: { t: number; text: string }[]
   /** bumps on every re-plan, so the views know the route changed */
   planVersion: number
+  drone: DroneState
 }
 
 export function makeContext(site: Site, setup: FireSetup, params: FireParams, predictor: Predictor): SimContext {
@@ -79,6 +101,24 @@ export function makeContext(site: Site, setup: FireSetup, params: FireParams, pr
     air: airParams(),
     detByRoom: site.rooms.map((r) => site.detectors.flatMap((d, i) => (d.room === r.index ? [i] : []))),
     readingsStatus: 'SIMULATED',
+    drone: droneParams(),
+    wind: { speedMs: weather.windSpeedMs, fromDeg: weather.windFromDeg, status: weather.status as DataStatus },
+    loop: loopAround({ x0: site.marginM, y0: site.marginM, x1: site.marginM + 60, y1: site.marginM + 40 }, droneParams().loopOffsetM),
+    roomBox: site.rooms.map((r) => {
+      let x0 = Infinity
+      let y0 = Infinity
+      let x1 = -Infinity
+      let y1 = -Infinity
+      for (const c of r.cells) {
+        const row = (c / site.width) | 0
+        const col = c - row * site.width
+        x0 = Math.min(x0, col * site.cellM)
+        y0 = Math.min(y0, row * site.cellM)
+        x1 = Math.max(x1, (col + 1) * site.cellM)
+        y1 = Math.max(y1, (row + 1) * site.cellM)
+      }
+      return { x0, y0, x1, y1 }
+    }),
   }
 }
 
@@ -104,6 +144,7 @@ export function initSim(ctx: SimContext, doors: boolean[], seed: number): SimSta
     latch: OPEN_LATCH,
     notes: [],
     planVersion: 0,
+    drone: { status: 'ground', launchedAt: null, flight: null, seen: site.rooms.map(() => false), roofC: site.rooms.map(() => null), reason: null, noise: 12345 },
   }
   observe(ctx, s)
   replan(ctx, s)
@@ -257,6 +298,7 @@ function judgeAfterReplan(ctx: SimContext, s: SimState) {
 /** One simulated second (or dt). */
 export function tick(ctx: SimContext, s: SimState, dt = v(H.sim.tickS)): void {
   stepFire(ctx.setup, ctx.params, s.fire, dt)
+  flyDrone(ctx, s)
   observe(ctx, s)
   const team = s.team
   if (team.mode === 'engaged' || team.mode === 'evacuating') {
@@ -282,6 +324,71 @@ export function tick(ctx: SimContext, s: SimState, dt = v(H.sim.tickS)): void {
     replan(ctx, s)
     judge(ctx, s)
   }
+}
+
+// ---------- Drone ----------
+
+/** Where the fire is, as the detectors tell it (R5): the first room whose detectors all failed, else the hottest. */
+function detectedFire(ctx: SimContext, s: SimState): Point | null {
+  let best = s.observations.findIndex((o) => o.condition === 'failed')
+  if (best < 0) {
+    let hottest = -Infinity
+    s.observations.forEach((o, r) => {
+      if (o.condition !== 'clear' && o.tLastC > hottest) {
+        hottest = o.tLastC
+        best = r
+      }
+    })
+  }
+  if (best < 0) return null
+  const b = ctx.roomBox[best]
+  return { x: (b.x0 + b.x1) / 2, y: (b.y0 + b.y1) / 2 }
+}
+
+/** Moves the drone along its flight; its thermal camera sees the roofs within its footprint (SIMULATED image). */
+function flyDrone(ctx: SimContext, s: SimState) {
+  const d = s.drone
+  if (d.status !== 'flying' || !d.flight || d.launchedAt === null) return
+  const elapsed = s.fire.t - d.launchedAt
+  const at = droneAt(d.flight, elapsed)
+  if (at?.aloft) {
+    ctx.roomBox.forEach((b, r) => {
+      const dx = Math.max(b.x0 - at.x, 0, at.x - b.x1)
+      const dy = Math.max(b.y0 - at.y, 0, at.y - b.y1)
+      if (Math.hypot(dx, dy) <= ctx.drone.footprintM) d.seen[r] = true
+    })
+  }
+  const ambient = ctx.params.ambientC
+  d.seen.forEach((seen, r) => {
+    if (!seen) return
+    d.noise = (Math.imul(d.noise, 1103515245) + 12345) | 0
+    const jitter = (((d.noise >>> 8) & 0xffff) / 0xffff - 0.5) * 2 * v(H.drone.roofNoiseSdC)
+    d.roofC[r] = ambient + v(H.drone.roofCoupling) * (s.fire.rooms[r].layerC - ambient) + jitter
+  })
+  if (elapsed >= d.flight.landedS) {
+    d.status = 'landed'
+    s.notes.push({ t: s.fire.t, text: 'Drone posé sur l’engin.' })
+  }
+}
+
+/** Take-off: the flight is planned now, around the plume as the detectors locate the fire and the wind orients it. */
+export function launchDrone(ctx: SimContext, s: SimState): void {
+  const d = s.drone
+  if (d.status === 'flying') return
+  const fire = detectedFire(ctx, s)
+  const plume = fire ? plumeOf(fire, ctx.wind, ctx.drone) : null
+  const flight = planFlight(ctx.loop, ctx.site.engine.at, plume, ctx.wind, ctx.drone)
+  d.flight = flight
+  d.reason = flight.reason
+  if (!flight.ok) {
+    d.status = 'refused'
+    s.notes.push({ t: s.fire.t, text: flight.reason ?? 'Vol refusé.' })
+    return
+  }
+  d.status = 'flying'
+  d.launchedAt = s.fire.t
+  d.seen = d.seen.map(() => false)
+  s.notes.push({ t: s.fire.t, text: flight.reason ? `Drone en vol : ${flight.reason}.` : 'Drone en vol : tour complet du bâtiment.' })
 }
 
 // ---------- PC actions ----------

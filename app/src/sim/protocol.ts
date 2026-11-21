@@ -4,6 +4,7 @@ import type { RoomCondition } from '../danger/rules'
 import type { LatchLogEntry } from '../stats/latch'
 import type { Verdict } from '../stats/verdict'
 import type { DataStatus, Point } from '../types'
+import { droneAt, type Plume } from '../drone/drone'
 import type { SimContext, SimState, TeamMode } from './sim'
 import { teamNow } from './sim'
 
@@ -45,6 +46,18 @@ export interface Snapshot {
   planVersion: number
   model: { dummy: boolean; trainedOn: string; thresholds: { p30: number; p60: number } }
   readingsStatus: DataStatus
+  drone: {
+    status: 'ground' | 'flying' | 'landed' | 'refused'
+    at: { x: number; y: number; aloft: boolean; batteryPct: number; marginPct: number } | null
+    reason: string | null
+    path: Point[]
+    plume: Plume | null
+    /** roof temperature per room seen by the thermal camera: SIMULATED, PC only (R5) */
+    roofC: (number | null)[]
+    wind: { speedMs: number; fromDeg: number; status: DataStatus }
+    reservePct: number
+    maxWindMs: number
+  }
 }
 
 export type Action =
@@ -54,6 +67,7 @@ export type Action =
   | { type: 'objectives'; ids: string[]; note: string }
   | { type: 'evacuate' }
   | { type: 'reengage' }
+  | { type: 'drone' }
 
 export type RequestBody = { type: 'reset'; seed: number } | { type: 'step'; n: number } | { type: 'act'; action: Action }
 
@@ -102,5 +116,24 @@ export function snapshot(ctx: SimContext, s: SimState): Snapshot {
     planVersion: s.planVersion,
     model: { dummy: ctx.predictor.dummy, trainedOn: ctx.predictor.trainedOn, thresholds: ctx.predictor.thresholds },
     readingsStatus: ctx.readingsStatus,
+    drone: droneView(ctx, s),
+  }
+}
+
+function droneView(ctx: SimContext, s: SimState): Snapshot['drone'] {
+  const d = s.drone
+  const f = d.flight
+  const elapsed = d.launchedAt === null ? 0 : s.fire.t - d.launchedAt
+  const at = f && d.status !== 'refused' ? droneAt(f, d.status === 'landed' ? f.landedS : elapsed) : null
+  return {
+    status: d.status,
+    at: at ? { x: at.x, y: at.y, aloft: at.aloft, batteryPct: at.batteryPct, marginPct: at.marginPct } : null,
+    reason: d.reason,
+    path: f ? f.points.map((p) => ({ x: p.x, y: p.y })) : [],
+    plume: f?.plume ?? null,
+    roofC: [...d.roofC],
+    wind: ctx.wind,
+    reservePct: ctx.drone.reservePct,
+    maxWindMs: ctx.drone.maxWindMs,
   }
 }

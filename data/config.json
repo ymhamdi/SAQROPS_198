@@ -88,6 +88,12 @@
       "batteryReservePct": { "value": 25, "unit": "%", "source": "Battery that must remain on landing back at the engine. Team assumption", "status": "MODELED" },
       "altitudeM": { "value": 30, "unit": "m", "source": "Fixed reconnaissance altitude. Team assumption", "status": "MODELED" },
       "thermalResolution": { "value": "640×512", "unit": "px", "source": "Thermal camera resolution of the class (manufacturer spec sheet)", "status": "MODELED" },
+      "climbMs": { "value": 4, "unit": "m/s", "source": "Climb and descent speed between the engine and the reconnaissance altitude. Team assumption (the class climbs at up to 6 m/s)", "status": "MODELED" },
+      "footprintM": { "value": 18, "unit": "m", "source": "Radius of ground seen by the thermal camera from 30 m (about 61° field of view). Team assumption", "status": "MODELED" },
+      "roofCoupling": { "value": 0.3, "unit": "1", "source": "Share of the hot-layer temperature rise seen on the roof by the thermal camera (simulated image). Team assumption", "status": "MODELED" },
+      "roofNoiseSdC": { "value": 2, "unit": "°C", "source": "Noise of the simulated thermal image. Team assumption", "status": "MODELED" },
+      "loopOffsetM": { "value": 3.5, "unit": "m", "source": "Distance of the reconnaissance loop outside the building walls. Team assumption", "status": "MODELED" },
+      "plumeCoreRadiusM": { "value": 8, "unit": "m", "source": "No-fly disc around the fire, whatever the wind (thermal updraft). Team assumption", "status": "MODELED" },
       "plumeExclusionLengthM": { "value": 80, "unit": "m", "source": "Length of the no-fly zone downwind of the fire. Team assumption", "status": "MODELED" },
       "plumeExclusionHalfAngleDeg": { "value": 25, "unit": "°", "source": "Half-angle of the downwind no-fly cone. Team assumption", "status": "MODELED" }
     },

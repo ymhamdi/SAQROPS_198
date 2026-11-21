@@ -3,7 +3,8 @@ import { defaultFireParams } from '../fire/params'
 import { fireSetupOf, initialDoors } from '../fire/siteSetup'
 import type { Predictor } from '../ml/predict'
 import { buildSite } from '../site/site'
-import { engage, initSim, judge, makeContext, observe, reengageTeam, setObjectives, startFire, tick, toggleDoor, teamNow, type SimState } from './sim'
+import { inPlume } from '../drone/drone'
+import { engage, initSim, judge, launchDrone, makeContext, observe, reengageTeam, setObjectives, startFire, tick, toggleDoor, teamNow, type SimState } from './sim'
 
 const site = buildSite()
 
@@ -90,11 +91,35 @@ describe('R5 the verdict reads detectors only', { timeout: 30_000 }, () => {
       r.layerZ = 0.1
       r.flashedAt = 0
     }
+    twin.drone.roofC = twin.drone.roofC.map(() => 999) // the drone's thermal image never feeds the verdict either
     for (const x of [s, twin]) {
       observe(ctx, x)
       judge(ctx, x)
     }
     expect(twin.shown).toEqual(s.shown)
     expect(twin.predictions).toEqual(s.predictions)
+  })
+})
+
+describe('drone in the scenario (R7)', { timeout: 30_000 }, () => {
+  test('launched once the detectors locate the fire: flies round the plume and lands with its reserve', () => {
+    const { ctx, s } = demo()
+    startFire(ctx, s, site.demo.fireAt)
+    runUntil(ctx, s, 60, () => false)
+    launchDrone(ctx, s)
+    expect(s.drone.status).toBe('flying')
+    expect(s.drone.flight!.plume).not.toBeNull()
+    for (const p of s.drone.flight!.points) expect(inPlume(s.drone.flight!.plume!, p)).toBe(false)
+    runUntil(ctx, s, 300, (x) => x.drone.status === 'landed')
+    expect(s.drone.status).toBe('landed')
+    expect(s.drone.flight!.points.at(-1)!.batteryPct).toBeGreaterThanOrEqual(ctx.drone.reservePct)
+    expect(s.drone.roofC.some((c) => c !== null)).toBe(true)
+  })
+
+  test('refused in high wind', () => {
+    const { ctx, s } = demo()
+    ctx.wind = { ...ctx.wind, speedMs: ctx.drone.maxWindMs + 1 }
+    launchDrone(ctx, s)
+    expect(s.drone.status).toBe('refused')
   })
 })

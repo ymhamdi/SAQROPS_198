@@ -33,6 +33,8 @@ export interface PlanProps {
   mode: 'doors' | 'fire' | 'view'
   onDoor: (door: number) => void
   onFire: (at: Point) => void
+  /** the drone layer and its thermal image: PC only (R5) */
+  showDrone?: boolean
 }
 
 function roomBoxes(site: Site) {
@@ -59,7 +61,7 @@ function readingColour(c: number): string {
   return `rgb(${Math.round(249 + (217 - 249) * f)}, ${Math.round(171 + (48 - 171) * f)}, ${Math.round(0 + 37 * f)})`
 }
 
-export function Plan({ site, snap, truth, mode, onDoor, onFire }: PlanProps) {
+export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = false }: PlanProps) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const boxes = useMemo(() => roomBoxes(site), [site])
   const base = useMemo(() => {
@@ -163,6 +165,70 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire }: PlanProps) {
       line(Math.min(snap.team.index, tr.length - 1), tr.length - 1, snap.team.mode === 'evacuating' ? '#d93025' : '#1a73e8', 4)
     }
 
+    // Drone (PC only): no-fly cone over the plume, flight path, the drone, and the roofs its thermal camera has seen.
+    const dr = snap.drone
+    if (showDrone && dr.plume) {
+      const pl = dr.plume
+      const src = at(pl.source)
+      const toRad = (deg: number) => ((deg - 90) * Math.PI) / 180 // bearing (clockwise from north) → canvas angle
+      const len = (pl.lengthM / site.cellM) * PX
+      ctx.save()
+      ctx.fillStyle = 'rgba(60, 64, 67, 0.18)'
+      ctx.strokeStyle = 'rgba(60, 64, 67, 0.6)'
+      ctx.setLineDash([4, 4])
+      ctx.beginPath()
+      ctx.moveTo(src.x, src.y)
+      ctx.arc(src.x, src.y, len, toRad(pl.towardDeg - pl.halfAngleDeg), toRad(pl.towardDeg + pl.halfAngleDeg))
+      ctx.closePath()
+      ctx.fill()
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.arc(src.x, src.y, (pl.coreM / site.cellM) * PX, 0, 2 * Math.PI)
+      ctx.fill()
+      ctx.stroke()
+      ctx.restore()
+      ctx.fillStyle = '#3c4043'
+      ctx.font = '600 11px Barlow, system-ui, sans-serif'
+      ctx.fillText('Zone interdite drone (panache)', src.x + 20, src.y - 20)
+    }
+    if (showDrone && dr.path.length > 1) {
+      ctx.save()
+      ctx.strokeStyle = '#a142f4'
+      ctx.lineWidth = 2
+      ctx.setLineDash([6, 4])
+      ctx.beginPath()
+      dr.path.forEach((p, i) => {
+        const q = at(p)
+        if (i === 0) ctx.moveTo(q.x, q.y)
+        else ctx.lineTo(q.x, q.y)
+      })
+      ctx.stroke()
+      ctx.restore()
+    }
+    if (showDrone) {
+      ctx.font = '600 11px Barlow, system-ui, sans-serif'
+      snap.drone.roofC.forEach((c, r) => {
+        if (c === null) return
+        const b = boxes[r]
+        ctx.fillStyle = 'rgba(161, 66, 244, 0.9)'
+        ctx.fillText(`Toit ${Math.round(c)} °C [SIMULATED]`, b.x + 6, b.y + b.h - 22)
+      })
+      if (dr.at && dr.status === 'flying') {
+        const q = at(dr.at)
+        ctx.fillStyle = '#a142f4'
+        ctx.strokeStyle = '#ffffff'
+        ctx.lineWidth = 2
+        ctx.beginPath()
+        ctx.moveTo(q.x, q.y - 9)
+        ctx.lineTo(q.x + 9, q.y)
+        ctx.lineTo(q.x, q.y + 9)
+        ctx.lineTo(q.x - 9, q.y)
+        ctx.closePath()
+        ctx.fill()
+        ctx.stroke()
+      }
+    }
+
     // Detectors.
     site.detectors.forEach((d, i) => {
       const p = at(d.at)
@@ -212,7 +278,7 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire }: PlanProps) {
       ctx.fill()
       ctx.stroke()
     }
-  }, [site, snap, truth, base, boxes])
+  }, [site, snap, truth, base, boxes, showDrone])
 
   function click(ev: React.MouseEvent<HTMLCanvasElement>) {
     const cv = canvas.current!

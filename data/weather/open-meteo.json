@@ -1,0 +1,12 @@
+{
+  "source": "Open-Meteo forecast API (current conditions), https://open-meteo.com — CC BY 4.0",
+  "url": "https://api.open-meteo.com/v1/forecast?latitude=36.6965&longitude=10.1955&current=temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=ms&timezone=Africa%2FTunis",
+  "status": "DERIVED",
+  "note": "Analysis of numerical weather models at the site coordinates, not a measurement on site.",
+  "fetchedAt": "2026-11-21T13:54:23.363Z",
+  "time": "2026-11-21T14:45",
+  "temperatureC": 24.7,
+  "windSpeedMs": 1.62,
+  "windGustMs": 4.1,
+  "windFromDeg": 248
+}

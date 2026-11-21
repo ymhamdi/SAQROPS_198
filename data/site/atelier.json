@@ -39,7 +39,7 @@
     { "id": "sortie-est", "name": "Sortie Est", "rect": [59.5, 18, 60, 20], "heightM": 2.1 },
     { "id": "sortie-nord", "name": "Portail Nord", "rect": [34, 0, 38, 0.5], "heightM": 4.0 }
   ],
-  "engine": { "name": "Engin (FPT)", "at": [63, 22] },
+  "engine": { "name": "Engin (FPT)", "at": [-3, 24], "note": "Parked by the west exit, upwind of the prevailing wind (Open-Meteo cache); the drone refuses to take off if the engine ends up under the plume." },
   "detectors": [
     { "id": "det-bureaux-1", "at": [3, 4] },
     { "id": "det-bureaux-2", "at": [7, 4] },

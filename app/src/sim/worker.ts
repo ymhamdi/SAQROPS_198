@@ -5,7 +5,7 @@ import { fireSetupOf, initialDoors } from '../fire/siteSetup'
 import { loadPredictor } from '../ml/predict'
 import { buildSite } from '../site/site'
 import { snapshot, type Action, type Request, type Response } from './protocol'
-import { engage, evacuate, initSim, makeContext, reengageTeam, setObjectives, startFire, tick, toggleDoor, type SimState } from './sim'
+import { engage, evacuate, initSim, launchDrone, makeContext, reengageTeam, setObjectives, startFire, tick, toggleDoor, type SimState } from './sim'
 
 const ctx = globalThis as unknown as { onmessage: ((e: MessageEvent<Request>) => void) | null; postMessage(m: Response): void }
 
@@ -20,6 +20,7 @@ function act(a: Action) {
   else if (a.type === 'objectives') setObjectives(sim, state, a.ids, a.note)
   else if (a.type === 'evacuate') evacuate(sim, state)
   else if (a.type === 'reengage') reengageTeam(sim, state)
+  else if (a.type === 'drone') launchDrone(sim, state)
 }
 
 ctx.onmessage = (e) => {
