@@ -30,7 +30,7 @@ export interface PlanProps {
   site: Site
   snap: Snapshot
   truth: boolean
-  mode: 'doors' | 'fire'
+  mode: 'doors' | 'fire' | 'view'
   onDoor: (door: number) => void
   onFire: (at: Point) => void
 }
@@ -220,6 +220,7 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire }: PlanProps) {
     const x = ((ev.clientX - rect.left) / rect.width) * cv.width
     const y = ((ev.clientY - rect.top) / rect.height) * cv.height
     const p = { x: (x / PX) * site.cellM, y: (y / PX) * site.cellM }
+    if (mode === 'view') return
     if (mode === 'fire') return onFire(p)
     // The nearest door within 1.5 m of the click.
     let best = -1
