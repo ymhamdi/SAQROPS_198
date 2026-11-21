@@ -35,7 +35,7 @@ export interface PcDemo {
   text: string
 }
 
-export function Pc({ site, sim, onOpenCrew, demo }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud' | 'twin') => void; demo: PcDemo }) {
+export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud' | 'twin') => void; demo: PcDemo; demoPlan?: RehearsalPlan | null }) {
   const [truth, setTruth] = useState(false)
   const [mode, setMode] = useState<'doors' | 'fire'>('doors')
   const [card, setCard] = useState(false)
@@ -130,7 +130,7 @@ export function Pc({ site, sim, onOpenCrew, demo }: { site: Site; sim: SimContro
           <PlanCard
             site={site}
             snap={s}
-            plan={rehearsal}
+            plan={demoPlan ?? rehearsal}
             onRehearse={() => setRehearsal(rehearse(site, knownInputOf(site, s)))}
             onValidate={(plan) => sim.act({ type: 'plan-validate', plan })}
           />

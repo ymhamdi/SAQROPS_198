@@ -2,7 +2,7 @@
 // or a key moves, then fade out so that the HUD stays clean on camera. Space pauses, R starts again.
 
 import { useEffect, useState } from 'react'
-import { CAPTIONS, STEPS } from './captions'
+import { captionOf } from './captions'
 import type { DemoScene } from './script'
 import './demo.css'
 
@@ -11,6 +11,8 @@ const AWAKE_MS = 3500
 
 interface Props {
   scene: DemoScene
+  /** the story includes the rehearsal (two more steps) */
+  rehearsal: boolean
   done: boolean
   playing: boolean
   onToggle: () => void
@@ -19,9 +21,9 @@ interface Props {
   view: 'tablet' | 'hud' | 'twin'
 }
 
-export function DemoBar({ scene, done, playing, onToggle, onRestart, view }: Props) {
+export function DemoBar({ scene, rehearsal, done, playing, onToggle, onRestart, view }: Props) {
   const [awake, setAwake] = useState(true)
-  const caption = CAPTIONS[scene]
+  const caption = captionOf(scene, rehearsal)
 
   useEffect(() => {
     let timer = window.setTimeout(() => setAwake(false), AWAKE_MS)
@@ -59,12 +61,12 @@ export function DemoBar({ scene, done, playing, onToggle, onRestart, view }: Pro
     <aside className={`demo-bar is-${view}${awake ? ' is-awake' : ''}`} aria-label="Démonstration automatique">
       <p className="demo-caption" role="status" aria-live="polite">
         <span className="demo-step">
-          Étape {caption.step}/{STEPS}
+          Étape {caption.step}/{caption.steps}
         </span>
         {caption.text}
       </p>
       <div className="demo-dots" aria-hidden="true">
-        {Array.from({ length: STEPS }, (_, i) => (
+        {Array.from({ length: caption.steps }, (_, i) => (
           <span key={i} className={i + 1 < caption.step ? 'is-past' : i + 1 === caption.step ? 'is-now' : ''} />
         ))}
       </div>

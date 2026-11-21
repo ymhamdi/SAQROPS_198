@@ -7,16 +7,36 @@
 
 import { H, v } from '../config'
 import { nextStep } from '../panels/crew'
+import { rehearse, type RehearsalPlan } from '../rehearsal/engine'
+import { knownInputOf } from '../rehearsal/input'
 import type { Action, Snapshot } from '../sim/protocol'
 import type { Site } from '../site/site'
 
-/** The moments of the story, in order; each has a caption in captions.ts. */
-export const DEMO_SCENES = ['fire', 'drone', 'engaged', 'nogo', 'door', 'out', 'reengaged', 'end'] as const
+/** The moments of the story, in order; each has a caption in captions.ts. `indoor` and `rehearsal` only with the rehearsal. */
+export const DEMO_SCENES = ['fire', 'drone', 'indoor', 'rehearsal', 'engaged', 'nogo', 'door', 'out', 'reengaged', 'end'] as const
 export type DemoScene = (typeof DEMO_SCENES)[number]
+
+/** What the script does, besides the story of the video: with the rehearsal (the new step between the drones and the engagement). */
+export interface DemoOptions {
+  /** the indoor drone goes in first, PNR rehearses, and the COS validates the plan instead of engaging directly */
+  rehearsal: boolean
+  /** the screen shows the rehearsal (PC, twin): the simulation waits while it replays. The HUD and the tablet never show it (R12). */
+  hold: boolean
+}
+
+export const DEFAULT_OPTIONS: DemoOptions = { rehearsal: false, hold: false }
 
 export interface DemoState {
   fired: boolean
   droned: boolean
+  /** the indoor drone has been sent in */
+  indoored: boolean
+  /** the rehearsed plan, once PNR has played it */
+  plan: RehearsalPlan | null
+  /** the simulation is held while the rehearsal replays */
+  holding: boolean
+  /** the hold is over (the COS has read the plan): it can be validated */
+  released: boolean
   engaged: boolean
   /** simulated time of the NO-GO latch, as the log of the latch records it */
   noGoAt: number | null
@@ -36,12 +56,18 @@ export interface DemoStep {
   speed: number
   scene: DemoScene
   done: boolean
+  /** hold the simulation (paused) until the host says the rehearsal has been shown */
+  hold: boolean
   state: DemoState
 }
 
 export const initialDemo = (): DemoState => ({
   fired: false,
   droned: false,
+  indoored: false,
+  plan: null,
+  holding: false,
+  released: false,
   engaged: false,
   noGoAt: null,
   doorClosed: false,
@@ -71,6 +97,8 @@ function sceneOf(snap: Snapshot, st: DemoState): DemoScene {
   if (st.doorClosed) return 'door'
   if (st.noGoAt !== null) return 'nogo'
   if (st.engaged) return 'engaged'
+  if (st.plan) return 'rehearsal'
+  if (st.indoored) return 'indoor'
   if (st.droned || snap.drone.status !== 'ground') return 'drone'
   return 'fire'
 }
@@ -82,7 +110,7 @@ function retargetNote(site: Site, snap: Snapshot, keep: string[]): string {
   return names.length > 0 ? names.map((n) => `Objectif « ${n} » retiré par le PC`).join(' · ') : 'Objectifs mis à jour par le PC'
 }
 
-export function demoStep(site: Site, snap: Snapshot, prev: DemoState): DemoStep {
+export function demoStep(site: Site, snap: Snapshot, prev: DemoState, opts: DemoOptions = DEFAULT_OPTIONS): DemoStep {
   const st: DemoState = { ...prev }
   const act: Action[] = []
   const t = snap.t
@@ -97,10 +125,29 @@ export function demoStep(site: Site, snap: Snapshot, prev: DemoState): DemoStep 
     act.push({ type: 'drone' })
     st.droned = true
   }
-  // 3. The team is engaged towards its objectives.
-  if (!st.engaged && t >= v(H.demo.engageAtS)) {
-    act.push({ type: 'engage' })
-    st.engaged = true
+  // 2b. With the rehearsal: the indoor drone goes in next, through the doors that are already open.
+  if (opts.rehearsal && !st.indoored && t >= v(H.demo.indoorAtS)) {
+    act.push({ type: 'indoor' })
+    st.indoored = true
+  }
+  // 3. The team is engaged towards its objectives. With the rehearsal, PNR first plays the mission on what it knows (it takes
+  // a few milliseconds), the screens that show it hold the simulation while it replays, and then the COS validates the plan
+  // (the decision that engages the team); the plan is built from the snapshot's non-truth fields only (R11).
+  if (!st.engaged && t >= v(H.demo.engageAtS) && (!opts.rehearsal || st.indoored)) {
+    if (!opts.rehearsal) {
+      act.push({ type: 'engage' })
+      st.engaged = true
+    } else {
+      if (!st.plan) {
+        st.plan = rehearse(site, knownInputOf(site, snap))
+        st.holding = opts.hold
+        st.released = !opts.hold
+      }
+      if (st.released) {
+        act.push({ type: 'plan-validate', plan: st.plan })
+        st.engaged = true
+      }
+    }
   }
   // 4. The NO-GO is the system's own; the script only notes when it happened.
   if (st.noGoAt === null && snap.latched) st.noGoAt = snap.latchLog.filter((l) => l.action === 'NO-GO').at(-1)?.t ?? t
@@ -122,5 +169,5 @@ export function demoStep(site: Site, snap: Snapshot, prev: DemoState): DemoStep 
   if (st.retargeted && st.backIn && snap.team.mode === 'out') st.done = true
   if (t >= v(H.demo.maxS)) st.done = true
 
-  return { act, speed: paceOf(site, snap, st), scene: sceneOf(snap, st), done: st.done, state: st }
+  return { act, speed: paceOf(site, snap, st), scene: sceneOf(snap, st), done: st.done, hold: st.holding && !st.released, state: st }
 }

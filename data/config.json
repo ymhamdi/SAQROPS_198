@@ -117,7 +117,9 @@
     },
     "demo": {
       "droneAtS": { "value": 60, "unit": "s", "source": "Simulated time at which the automatic demo launches the drone, once the detectors locate the fire. Video script, CLAUDE.md §9 step 2. Team choice", "status": "MODELED" },
-      "engageAtS": { "value": 100, "unit": "s", "source": "Simulated time at which the automatic demo engages the team. Video script, CLAUDE.md §9 step 3. Team choice", "status": "MODELED" },
+      "engageAtS": { "value": 100, "unit": "s", "source": "Simulated time at which the automatic demo engages the team (with the rehearsal: rehearses, then the COS validates the plan). Video script, CLAUDE.md §9 step 3. Team choice", "status": "MODELED" },
+      "indoorAtS": { "value": 62, "unit": "s", "source": "Simulated time at which the automatic demo sends the indoor drone in, just after the outdoor one: its flight lasts under 40 s, so that the rehearsal can start at engageAtS. Video script, CLAUDE.md §9 step 2b. Team choice", "status": "MODELED" },
+      "rehearsalHoldS": { "value": 9, "unit": "s", "source": "Wall-clock seconds the automatic demo holds the simulation while the rehearsal replays (rehearsal.playbackS) and the COS reads the plan: under 10 s, so that the video fits a minute. Team choice", "status": "MODELED" },
       "closeDoorAfterNoGoS": { "value": 8, "unit": "s", "source": "Delay between the NO-GO and the COS closing the store-booth door in the automatic demo. Video script, CLAUDE.md §9 step 5. Team choice", "status": "MODELED" },
       "reengageAfterOutS": { "value": 6, "unit": "s", "source": "Delay between the team being out and the PC re-engaging it on the remaining objective in the automatic demo. Video script, CLAUDE.md §9 step 6. Team choice", "status": "MODELED" },
       "paceFastX": { "value": 20, "unit": "×", "source": "Playback speed of the automatic demo while nothing moves on the crew screens (fire growing, work at an objective), so that the demo lasts about a minute. Team choice", "status": "MODELED" },

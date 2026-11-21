@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { captionOf } from './demo/captions'
 import { DemoHost } from './demo/DemoHost'
-import { CAPTIONS, STEPS } from './demo/captions'
 import { useDemo } from './demo/useDemo'
 import { openChannel } from './live/channel'
 import { useBroadcast } from './live/useBroadcast'
@@ -15,23 +15,26 @@ import { Twin } from './twin/Twin'
 type View = 'pc' | 'tablet' | 'hud' | 'twin'
 
 /** The PC simulates and broadcasts every snapshot to the crew windows; « Démo automatique » plays the COS by script. */
-function PcApp({ autoDemo }: { autoDemo: boolean }) {
+function PcApp({ autoDemo, rehearsal }: { autoDemo: boolean; rehearsal: boolean }) {
   const site = useMemo(() => buildSite(), [])
   const sim = useSim()
   const [demoOn, setDemoOn] = useState(autoDemo)
-  const demo = useDemo(sim, site, demoOn)
+  // The PC shows the plan the rehearsal produced, so the simulation waits while the COS reads it.
+  const opts = useMemo(() => ({ rehearsal, hold: rehearsal }), [rehearsal])
+  const demo = useDemo(sim, site, demoOn, opts)
   useBroadcast(sim.snap)
   const openCrew = (view: 'tablet' | 'hud' | 'twin') => {
     const url = `${window.location.pathname}?view=${view}`
     if (!window.open(url, `pnr-${view}`)) alert('Le navigateur a bloqué la nouvelle fenêtre : autorisez les fenêtres pour cette page.')
   }
-  const caption = CAPTIONS[demo.scene]
+  const caption = captionOf(demo.scene, demo.rehearsal)
   return (
     <Pc
       site={site}
       sim={sim}
       onOpenCrew={openCrew}
-      demo={{ on: demoOn, onToggle: () => setDemoOn((x) => !x), onRestart: demo.restart, done: demo.done, caption: `Étape ${caption.step}/${STEPS}`, text: caption.text }}
+      demoPlan={demoOn ? demo.plan : null}
+      demo={{ on: demoOn, onToggle: () => setDemoOn((x) => !x), onRestart: demo.restart, done: demo.done, caption: `Étape ${caption.step}/${caption.steps}`, text: caption.text }}
     />
   )
 }
@@ -53,6 +56,8 @@ export default function App() {
   const params = new URLSearchParams(window.location.search)
   const view = (params.get('view') ?? 'pc') as View
   const demo = params.get('demo') === '1'
-  if (view === 'pc') return <PcApp autoDemo={demo} />
-  return demo ? <DemoHost view={view} /> : <CrewApp view={view} />
+  // The story of the video includes the rehearsal; &rehearsal=0 plays the shorter one without it.
+  const rehearsal = params.get('rehearsal') !== '0'
+  if (view === 'pc') return <PcApp autoDemo={demo} rehearsal={rehearsal} />
+  return demo ? <DemoHost view={view} rehearsal={rehearsal} /> : <CrewApp view={view} />
 }

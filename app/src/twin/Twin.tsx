@@ -42,9 +42,11 @@ function roomAt(site: Site, ev: MouseEvent<HTMLElement>): number | null {
   return room >= 0 ? room : null
 }
 
-export function Twin({ site, snap }: { site: Site; snap: Snapshot | null }) {
+export function Twin({ site, snap, forceTab, autoPlayRehearsal = false }: { site: Site; snap: Snapshot | null; forceTab?: 'live' | 'rehearsal'; autoPlayRehearsal?: boolean }) {
   const [picked, setPicked] = useState<number | null>(null)
-  const [tab, setTab] = useState<'live' | 'rehearsal'>(queryParam('tab') === 'rehearsal' ? 'rehearsal' : 'live')
+  const [chosenTab, setTab] = useState<'live' | 'rehearsal'>(queryParam('tab') === 'rehearsal' ? 'rehearsal' : 'live')
+  // The self-playing demo drives the tab; otherwise it is the viewer's.
+  const tab = forceTab ?? chosenTab
   const [history, setHistory] = useState<TwinSample[]>([])
   const boxes = useMemo(() => roomBoxes(site), [site])
   useEffect(() => {
@@ -140,7 +142,7 @@ export function Twin({ site, snap }: { site: Site; snap: Snapshot | null }) {
       </header>
 
       {tab === 'rehearsal' ? (
-        <RehearsalTab site={site} snap={s} autoPlay={queryParam('play') === '1'} />
+        <RehearsalTab site={site} snap={s} autoPlay={autoPlayRehearsal || queryParam('play') === '1'} />
       ) : (
       <>
       <section className="twin-worlds">
