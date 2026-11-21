@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { H, v } from '../config'
+import { DEFAULT_THRESHOLD_RULE } from '../ml/thresholdRule'
 import type { Snapshot } from '../sim/protocol'
 import type { Site } from '../site/site'
 import { verdictLine } from '../stats/verdict'
@@ -131,7 +132,7 @@ export function Chain({ site, snap, room }: { site: Site; snap: Snapshot; room: 
             ) : null}
             <p className={pred?.alert ? 'stage-alert' : 'stage-note'}>{pred?.alert ? '⚠ ' : ''}{aiLine}</p>
             <p className="stage-note">
-              Seuils (rappel ≥ 0,95) : P30 {snap.model.thresholds.p30.toFixed(2)} · P60 {snap.model.thresholds.p60.toFixed(2)} <StatusBadge status="MODELED" />
+              Seuils ({snap.model.thresholdRule ?? DEFAULT_THRESHOLD_RULE}) : P30 {snap.model.thresholds.p30.toFixed(2)} · P60 {snap.model.thresholds.p60.toFixed(2)} <StatusBadge status="MODELED" />
             </p>
           </Stage>
           <Stage step={4} title="Règles sur détecteurs" what="Des seuils sur ce que disent les détecteurs." signature={`${c.rules.counts.failed}-${c.rules.counts.hot}-${c.rules.counts.smoke}`}>

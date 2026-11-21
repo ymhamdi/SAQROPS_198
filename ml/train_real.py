@@ -134,11 +134,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default=str(DATA / "real_features.csv"))
     ap.add_argument("--runs", default=str(DATA / "real_runs.csv"))
-    ap.add_argument("--v1", default=str(ROOT / "model"))
+    ap.add_argument("--v1", default=str(ROOT / "model-v1"))
     ap.add_argument("--v3", default=str(ROOT / "runs" / "planB-v3"))
     ap.add_argument("--out", default=str(ROOT / "model-v4"))
     ap.add_argument("--report", default=str(ROOT / "report" / "v4-real"))
     ap.add_argument("--boot", type=int, default=1000)
+    ap.add_argument("--ship", default=None, help="also write the final v4 here (ml/model) with the SECONDARY per-run thresholds")
     args = ap.parse_args()
     out, rep_dir = Path(args.out), Path(args.report)
     out.mkdir(parents=True, exist_ok=True)
@@ -281,9 +282,24 @@ def main() -> None:
         "rows": {"all": int(len(d["t"])), "asInstrumented": int(base.sum())}, "targetRecall": TARGET_RECALL,
         "thresholds": thr_final, "foldThresholds": fold_thr, "trees": {k: len(m.get_dump()) for k, m in final.items()},
         "secondaryThresholdsPerRun": thr_final_run,
+        "thresholdRule": "rappel ≥ 0,95 par pas de temps, validation croisée imbriquée sur essais réels",
         "secondaryNote": "analyse secondaire, décidée après le premier résultat : seuil qui annonce au moins 95 % des locaux qui s'embrasent (et non 95 % des pas de temps)",
     }
     (out / "metrics.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if args.ship:
+        # The shipped copy (team decision of 21/11, after the checkpoint): same trees and golden.csv, thresholds = the
+        # secondary per-run ones, chosen after seeing the first result (post hoc), kept next to the prescribed ones.
+        ship = Path(args.ship)
+        for key in final:
+            name = CONTRACT["models"][key]["file"]
+            (ship / name).write_bytes((out / name).read_bytes())
+        (ship / "golden.csv").write_bytes((out / "golden.csv").read_bytes())
+        shipped = dict(meta, thresholds=thr_final_run, prescribedThresholds=thr_final,
+                       thresholdRule="≥ 95 % des embrasements annoncés en validation croisée sur essais réels ; règle choisie après coup",
+                       thresholdChoice="seuils secondaires par essai (annoncer au moins 95 % des locaux qui s'embrasent), choisis APRÈS le premier résultat ; "
+                       "les seuils prescrits (rappel >= 0,95 par pas de temps) sont dans prescribedThresholds")
+        (ship / "metrics.json").write_text(json.dumps(shipped, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"shipped to {ship} with thresholds {thr_final_run}")
     (rep_dir / "comparison.json").write_text(json.dumps({"folds": {c: outer[c] for c in configs}, "foldThresholds": fold_thr, "results": results}, indent=1, ensure_ascii=False, default=float) + "\n", encoding="utf-8")
     write_markdown(results, fold_thr, thr_final, rep_dir, configs, pos, outer, args.boot, thr_final_run)
     plot(d, models, idx_base, results, rep_dir)

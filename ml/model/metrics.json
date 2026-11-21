@@ -1,258 +1,100 @@
 {
   "status": "TRAINED",
-  "trainedOn": "plan B : moteur PNR, 5 000 sc\u00e9narios al\u00e9atoires (graine 42)",
-  "dataStatus": "MODELED",
+  "trainedOn": "essais réels UL FSRI (2018, 2016, 2019), 162 essais",
+  "dataStatus": "OBSERVED (signaux de détecteurs DERIVED)",
   "data": [
-    "data/scenarios.csv"
+    "C:\\Users\\youss\\OneDrive\\Desktop\\pnr-real\\ml\\data\\real_features.csv"
   ],
-  "date": "2026-11-21T14:38",
+  "date": "2026-11-21T21:45",
   "xgboost": "3.4.1",
+  "device": "cpu",
   "contractVersion": 1,
-  "split": "by run, crc32(run) % 100: <70 train, <85 validation, else test",
+  "params": {
+    "max_depth": 4,
+    "eta": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 5,
+    "seed": 42,
+    "nthread": 8,
+    "tree_method": "hist",
+    "device": "cpu"
+  },
+  "rounds": 300,
+  "split": "grouped by configuration, 4 outer folds (>= 2 flashovers each), 3 inner folds for the thresholds",
   "rows": {
-    "train": 253918,
-    "val": 59207,
-    "test": 51865
+    "all": 203698,
+    "asInstrumented": 43413
   },
   "targetRecall": 0.95,
   "thresholds": {
-    "p30": 0.4096306562423706,
-    "p60": 0.48982319235801697
+    "p30": 0.0580766424536705,
+    "p60": 0.2740917354822159
   },
-  "trees": {
-    "p30": 263,
-    "p60": 256,
-    "tff": 375
-  },
-  "test": {
-    "p30": {
-      "threshold": 0.4096306562423706,
-      "recall": 0.9572744014732965,
-      "falseNegativeRate": 0.0427255985267035,
-      "precision": 0.3079748785401114,
-      "prAuc": 0.5595266275486347,
-      "brier": 0.07438968854310564,
-      "positives": 2715,
-      "n": 51865,
-      "calibration": [
-        {
-          "bin": "0.0-0.1",
-          "n": 41422,
-          "predicted": 0.002827499760314822,
-          "observed": 0.0007725363333494278
-        },
-        {
-          "bin": "0.1-0.2",
-          "n": 852,
-          "predicted": 0.14539003372192383,
-          "observed": 0.03051643192488263
-        },
-        {
-          "bin": "0.2-0.3",
-          "n": 594,
-          "predicted": 0.2478829324245453,
-          "observed": 0.04040404040404041
-        },
-        {
-          "bin": "0.3-0.4",
-          "n": 509,
-          "predicted": 0.35007980465888977,
-          "observed": 0.060903732809430254
-        },
-        {
-          "bin": "0.4-0.5",
-          "n": 517,
-          "predicted": 0.44929471611976624,
-          "observed": 0.05415860735009671
-        },
-        {
-          "bin": "0.5-0.6",
-          "n": 610,
-          "predicted": 0.5529493093490601,
-          "observed": 0.09672131147540984
-        },
-        {
-          "bin": "0.6-0.7",
-          "n": 782,
-          "predicted": 0.6540374755859375,
-          "observed": 0.12915601023017903
-        },
-        {
-          "bin": "0.7-0.8",
-          "n": 1274,
-          "predicted": 0.7546331286430359,
-          "observed": 0.1781789638932496
-        },
-        {
-          "bin": "0.8-0.9",
-          "n": 2810,
-          "predicted": 0.8591212034225464,
-          "observed": 0.2868327402135231
-        },
-        {
-          "bin": "0.9-1.0",
-          "n": 2495,
-          "predicted": 0.938758373260498,
-          "observed": 0.5535070140280561
-        }
-      ]
+  "foldThresholds": [
+    {
+      "fold": 0,
+      "v4": {
+        "p30": 0.0005916037480346859,
+        "p60": 0.009057361632585526
+      },
+      "v4PerRun": {
+        "p30": 0.036928191781044006,
+        "p60": 0.1700102686882019
+      },
+      "rule": 1.20113
     },
-    "p60": {
-      "threshold": 0.48982319235801697,
-      "recall": 0.9462246777163904,
-      "falseNegativeRate": 0.053775322283609574,
-      "precision": 0.5165895837522623,
-      "prAuc": 0.7611473955837234,
-      "brier": 0.06950317788855244,
-      "positives": 5430,
-      "n": 51865,
-      "calibration": [
-        {
-          "bin": "0.0-0.1",
-          "n": 39248,
-          "predicted": 0.003659688401967287,
-          "observed": 0.0014013452914798206
-        },
-        {
-          "bin": "0.1-0.2",
-          "n": 969,
-          "predicted": 0.1437460035085678,
-          "observed": 0.054695562435500514
-        },
-        {
-          "bin": "0.2-0.3",
-          "n": 618,
-          "predicted": 0.24824239313602448,
-          "observed": 0.0744336569579288
-        },
-        {
-          "bin": "0.3-0.4",
-          "n": 574,
-          "predicted": 0.35068997740745544,
-          "observed": 0.11672473867595819
-        },
-        {
-          "bin": "0.4-0.5",
-          "n": 575,
-          "predicted": 0.4499547779560089,
-          "observed": 0.1443478260869565
-        },
-        {
-          "bin": "0.5-0.6",
-          "n": 587,
-          "predicted": 0.552247941493988,
-          "observed": 0.13969335604770017
-        },
-        {
-          "bin": "0.6-0.7",
-          "n": 759,
-          "predicted": 0.6535962820053101,
-          "observed": 0.21870882740447958
-        },
-        {
-          "bin": "0.7-0.8",
-          "n": 1196,
-          "predicted": 0.7542057037353516,
-          "observed": 0.2734113712374582
-        },
-        {
-          "bin": "0.8-0.9",
-          "n": 2670,
-          "predicted": 0.8605644106864929,
-          "observed": 0.4370786516853933
-        },
-        {
-          "bin": "0.9-1.0",
-          "n": 4669,
-          "predicted": 0.9436655640602112,
-          "observed": 0.7247804669094025
-        }
-      ],
-      "leadTimes": {
-        "rooms": 905,
-        "missed": 12,
-        "medianLeadS": 94.0,
-        "p10LeadS": 52.0,
-        "p90LeadS": 174.80000000000007
-      }
+    {
+      "fold": 1,
+      "v4": {
+        "p30": 0.0006582283531315625,
+        "p60": 0.0026014959439635277
+      },
+      "v4PerRun": {
+        "p30": 0.006548735778778791,
+        "p60": 0.0755530446767807
+      },
+      "rule": 0.60713
     },
-    "tff": {
-      "maeS": 46.12479828348445,
-      "n": 16180
+    {
+      "fold": 2,
+      "v4": {
+        "p30": 3.299888078345248e-07,
+        "p60": 8.686475894137402e-07
+      },
+      "v4PerRun": {
+        "p30": 0.079225093126297,
+        "p60": 0.8090690970420837
+      },
+      "rule": 0.60713
     },
-    "baselineSlopeRule": {
-      "p60": {
-        "threshold": 0.5492800311991058,
-        "recall": 0.9742173112338858,
-        "falseNegativeRate": 0.02578268876611418,
-        "precision": 0.32058663111326585,
-        "prAuc": 0.31492203485616477,
-        "brier": 0.09118957746630932,
-        "positives": 5430,
-        "n": 51865,
-        "calibration": [
-          {
-            "bin": "0.0-0.1",
-            "n": 34873,
-            "predicted": 0.010075724670779641,
-            "observed": 0.002924898918934419
-          },
-          {
-            "bin": "0.1-0.2",
-            "n": 221,
-            "predicted": 0.11800664586585441,
-            "observed": 0.14479638009049775
-          },
-          {
-            "bin": "0.2-0.3",
-            "n": 107,
-            "predicted": 0.27085850492495,
-            "observed": 0.009345794392523364
-          },
-          {
-            "bin": "0.3-0.4",
-            "n": 111,
-            "predicted": 0.3385053788494479,
-            "observed": 0.009009009009009009
-          },
-          {
-            "bin": "0.4-0.5",
-            "n": 7,
-            "predicted": 0.427292783127373,
-            "observed": 0.14285714285714285
-          },
-          {
-            "bin": "0.5-0.6",
-            "n": 14924,
-            "predicted": 0.5504276097932297,
-            "observed": 0.3249128919860627
-          },
-          {
-            "bin": "0.6-0.7",
-            "n": 1519,
-            "predicted": 0.6434561728694693,
-            "observed": 0.25279789335088876
-          },
-          {
-            "bin": "0.7-0.8",
-            "n": 100,
-            "predicted": 0.7191858571377567,
-            "observed": 0.6
-          },
-          {
-            "bin": "0.8-0.9",
-            "n": 3,
-            "predicted": 0.8326030655318543,
-            "observed": 0.0
-          },
-          {
-            "bin": "0.9-1.0",
-            "n": 0,
-            "predicted": null,
-            "observed": null
-          }
-        ]
-      }
+    {
+      "fold": 3,
+      "v4": {
+        "p30": 6.540318736369954e-06,
+        "p60": 9.980419235944282e-06
+      },
+      "v4PerRun": {
+        "p30": 0.13154913485050201,
+        "p60": 0.37817320227622986
+      },
+      "rule": 1.20246
     }
-  }
+  ],
+  "trees": {
+    "p30": 300,
+    "p60": 300,
+    "tff": 300
+  },
+  "secondaryThresholdsPerRun": {
+    "p30": 0.0580766424536705,
+    "p60": 0.2740917354822159
+  },
+  "thresholdRule": "≥ 95 % des embrasements annoncés en validation croisée sur essais réels ; règle choisie après coup",
+  "secondaryNote": "analyse secondaire, décidée après le premier résultat : seuil qui annonce au moins 95 % des locaux qui s'embrasent (et non 95 % des pas de temps)",
+  "prescribedThresholds": {
+    "p30": 0.0002990720333855279,
+    "p60": 0.001305738181599736
+  },
+  "thresholdChoice": "seuils secondaires par essai (annoncer au moins 95 % des locaux qui s'embrasent), choisis APRÈS le premier résultat ; les seuils prescrits (rappel >= 0,95 par pas de temps) sont dans prescribedThresholds"
 }

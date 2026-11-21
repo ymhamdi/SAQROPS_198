@@ -112,11 +112,12 @@ Python reste hors repo : venv C:\dev\pnr-venv, wheels C:\dev\wheels, données NI
 2. Le drone décolle de l'engin, fait le tour du bâtiment en évitant le panache, affiche son PNR batterie et l'image
    thermique de la toiture au PC.
 3. Un binôme est engagé vers un point de sauvetage : itinéraire, air, PNR, GO.
-4. Le feu grandit, des détecteurs tombent en panne, l'IA annonce l'embrasement du local voisin : NO-GO, nouvel
-   itinéraire vers la sortie, alerte sur tablette et HUD, air à la sortie au-dessus du sifflet. Le calque « vérité
-   simulateur » montre ensuite l'embrasement réel et le délai d'anticipation obtenu.
-5. On referme une porte : le délai d'embrasement prédit remonte, le verdict reste NO-GO (R6) ; le PC voit
-   « Ré-engager (décision COS) ».
+4. Le feu grandit, les détecteurs du local voisin (cabine de peinture) tombent en panne sous la chaleur : NO-GO par la
+   règle sur détecteurs (T+226 s), nouvel itinéraire vers la sortie, alerte sur tablette et HUD, air à la sortie
+   au-dessus du sifflet. Le calque « vérité simulateur » montre ensuite l'embrasement réel (T+286 s, 60 s après le
+   NO-GO). Modèle livré depuis le 21/11 : v4, entraîné sur essais réels ; sur nos relevés simulés (moteur ~105 °C trop
+   froid) l'IA n'alerte pas sur la cabine, c'est la règle qui donne le NO-GO (app/src/sim/demo.test.ts).
+5. On referme une porte : le verdict reste NO-GO (R6) ; le PC voit « Ré-engager (décision COS) ».
 6. Le PC retire un objectif ; la tablette reçoit le nouvel itinéraire en direct.
 7. Impression de la fiche réflexe.
 

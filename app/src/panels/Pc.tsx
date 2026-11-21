@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import { H, v } from '../config'
+import { DEFAULT_THRESHOLD_RULE } from '../ml/thresholdRule'
 import type { SimControls } from '../sim/client'
 import type { Snapshot } from '../sim/protocol'
 import type { Site } from '../site/site'
@@ -301,7 +302,7 @@ export function Pc({ site, sim, onOpenCrew, demo }: { site: Site; sim: SimContro
             </tbody>
           </table>
           <p className="pc-note">
-            Modèle : {s.model.trainedOn} · seuils P30 {s.model.thresholds.p30.toFixed(2)} / P60 {s.model.thresholds.p60.toFixed(2)} (rappel ≥ 0,95 en validation){' '}
+            Modèle : {s.model.trainedOn} · seuils P30 {s.model.thresholds.p30.toFixed(2)} / P60 {s.model.thresholds.p60.toFixed(2)} ({s.model.thresholdRule ?? DEFAULT_THRESHOLD_RULE}){' '}
             {s.model.dummy && <strong>· MODÈLE FACTICE</strong>}
           </p>
         </section>

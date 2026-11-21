@@ -207,6 +207,8 @@ export function Twin({ site, snap }: { site: Site; snap: Snapshot | null }) {
                 <>
                   <Num value={lead} unit="s avant l’embrasement" status="SIMULATED" />
                 </>
+              ) : fr.truth.flashedAt !== null ? (
+                'aucune : l’IA n’a pas alerté avant l’embrasement'
               ) : (
                 '— (connue après l’embrasement)'
               )}

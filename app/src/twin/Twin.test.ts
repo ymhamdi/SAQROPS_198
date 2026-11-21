@@ -1,12 +1,13 @@
 // The twin's window: it renders from a snapshot, carries « Décision : COS » (R2) and a label on every number (R3), and
-// says plainly when the AI is the one that turned a GO into a NO-GO (R1).
+// says plainly when the AI is the one that turned a GO into a NO-GO (R1). Fixture model: ml/model-v1, which alerts on the
+// paint booth in the video scenario; the shipped v4 does not on our simulated readings, so it cannot exercise that display.
 
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, test } from 'vitest'
 import { defaultFireParams } from '../fire/params'
 import { fireSetupOf, initialDoors } from '../fire/siteSetup'
-import { loadPredictor } from '../ml/predict'
+import { loadPredictorFrom } from '../ml/loadModelDir.node'
 import { snapshot } from '../sim/protocol'
 import { engage, initSim, makeContext, startFire, tick } from '../sim/sim'
 import { buildSite } from '../site/site'
@@ -28,7 +29,7 @@ Object.assign(globalThis, { ImageData: ImageDataStub })
 
 describe('the digital twin window', { timeout: 120_000 }, () => {
   const site = buildSite()
-  const ctx = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictor())
+  const ctx = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictorFrom('model-v1'))
   const s = initSim(ctx, initialDoors(site), 42)
   startFire(ctx, s, site.demo.fireAt)
   // Run to the moment the AI, alone, turns the verdict to NO-GO (the booth is flagged before its detectors fail).

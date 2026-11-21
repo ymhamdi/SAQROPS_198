@@ -1,5 +1,6 @@
 // R8: the TypeScript evaluator reproduces the Python predictions to 1e-6 on golden.csv, missing values included, for the
-// shipped model (ml/model) and for every other exported model folder that has a golden.csv (ml/model-v4: real data).
+// shipped model (ml/model, v4 since 21/11) and for every other exported model folder that has a golden.csv (ml/model-v1:
+// the earlier simulator-trained model, kept for comparison; ml/model-v4: the v4 export with its prescribed thresholds).
 
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, test } from 'vitest'
@@ -8,7 +9,7 @@ import { FEATURE_NAMES } from './features'
 import { parseXgb, predict } from './xgb'
 
 const MODEL_DIR = new URL('../../../ml/model/', import.meta.url)
-const MODEL_DIRS = ['model', 'model-v4'].map((d) => new URL(`../../../ml/${d}/`, import.meta.url)).filter((u) => existsSync(new URL('golden.csv', u)))
+const MODEL_DIRS = ['model', 'model-v1', 'model-v4'].map((d) => new URL(`../../../ml/${d}/`, import.meta.url)).filter((u) => existsSync(new URL('golden.csv', u)))
 const loadFrom = (dir: URL, file: string) => parseXgb(JSON.parse(readFileSync(new URL(file, dir), 'utf-8')))
 const load = (file: string) => loadFrom(MODEL_DIR, file)
 

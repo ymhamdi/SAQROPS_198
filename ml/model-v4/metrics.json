@@ -5,7 +5,7 @@
   "data": [
     "C:\\Users\\youss\\OneDrive\\Desktop\\pnr-real\\ml\\data\\real_features.csv"
   ],
-  "date": "2026-11-21T21:34",
+  "date": "2026-11-21T21:45",
   "xgboost": "3.4.1",
   "device": "cpu",
   "contractVersion": 1,
@@ -90,5 +90,6 @@
     "p30": 0.0580766424536705,
     "p60": 0.2740917354822159
   },
+  "thresholdRule": "rappel ≥ 0,95 par pas de temps, validation croisée imbriquée sur essais réels",
   "secondaryNote": "analyse secondaire, décidée après le premier résultat : seuil qui annonce au moins 95 % des locaux qui s'embrasent (et non 95 % des pas de temps)"
 }

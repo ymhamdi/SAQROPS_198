@@ -48,7 +48,7 @@ export interface Snapshot {
   latchLog: LatchLogEntry[]
   notes: { t: number; text: string }[]
   planVersion: number
-  model: { dummy: boolean; trainedOn: string; thresholds: { p30: number; p60: number } }
+  model: { dummy: boolean; trainedOn: string; thresholds: { p30: number; p60: number }; thresholdRule?: string }
   readingsStatus: DataStatus
   drone: {
     status: 'ground' | 'flying' | 'landed' | 'refused'
@@ -119,7 +119,7 @@ export function snapshot(ctx: SimContext, s: SimState): Snapshot {
     latchLog: s.latch.log,
     notes: s.notes,
     planVersion: s.planVersion,
-    model: { dummy: ctx.predictor.dummy, trainedOn: ctx.predictor.trainedOn, thresholds: ctx.predictor.thresholds },
+    model: { dummy: ctx.predictor.dummy, trainedOn: ctx.predictor.trainedOn, thresholds: ctx.predictor.thresholds, thresholdRule: ctx.predictor.thresholdRule },
     readingsStatus: ctx.readingsStatus,
     drone: droneView(ctx, s),
   }

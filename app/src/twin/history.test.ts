@@ -1,10 +1,12 @@
 // The digital twin's logic: the rolling record, the room it follows, and R1 made visible (the verdict without the AI).
+// Fixture model: ml/model-v1, which alerts on the paint booth in the video scenario (the shipped v4 does not on our
+// simulated readings, so it cannot exercise the alert, the followed room or the lead time).
 
 import { describe, expect, test } from 'vitest'
 import { defaultFireParams } from '../fire/params'
 import { fireSetupOf, initialDoors } from '../fire/siteSetup'
 import { FEATURE_NAMES } from '../ml/features'
-import { loadPredictor } from '../ml/predict'
+import { loadPredictorFrom } from '../ml/loadModelDir.node'
 import { snapshot, type Snapshot } from '../sim/protocol'
 import { engage, initSim, makeContext, startFire, tick } from '../sim/sim'
 import { buildSite } from '../site/site'
@@ -16,7 +18,7 @@ import { aiWorsened, leadS, pickFocus, pushSample, sampleOf, withoutAi } from '.
 /** The video scenario (fire at the solvent store, team engaged at 100 s): one snapshot per simulated second. */
 function runScenario(untilS: number): Snapshot[] {
   const site = buildSite()
-  const ctx = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictor())
+  const ctx = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictorFrom('model-v1'))
   const s = initSim(ctx, initialDoors(site), 42)
   startFire(ctx, s, site.demo.fireAt)
   const out: Snapshot[] = []

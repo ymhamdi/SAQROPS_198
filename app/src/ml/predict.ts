@@ -8,6 +8,7 @@ import raw30 from '../../../ml/model/model-30s.json?raw'
 import raw60 from '../../../ml/model/model-60s.json?raw'
 import rawTff from '../../../ml/model/model-tff.json?raw'
 import { H, v } from '../config'
+import { DEFAULT_THRESHOLD_RULE } from './thresholdRule'
 import { parseXgb, predict, type XgbModel } from './xgb'
 
 export interface Prediction {
@@ -24,12 +25,15 @@ export interface Predictor {
   dummy: boolean
   /** what the model was trained on, for the interface */
   trainedOn: string
+  /** how its thresholds were chosen, for the interface (metrics.json thresholdRule) */
+  thresholdRule?: string
 }
 
 interface Metrics {
   status?: string
   trainedOn?: string
   thresholds?: { p30?: number; p60?: number }
+  thresholdRule?: string
 }
 
 export function makePredictor(models: { p30: XgbModel; p60: XgbModel; tff: XgbModel }, m: Metrics): Predictor {
@@ -44,6 +48,7 @@ export function makePredictor(models: { p30: XgbModel; p60: XgbModel; tff: XgbMo
     thresholds: { p30: m.thresholds?.p30 ?? fallback, p60: m.thresholds?.p60 ?? fallback },
     dummy: m.status === 'DUMMY',
     trainedOn: m.trainedOn ?? (m.status === 'DUMMY' ? 'modèle factice (format seulement)' : 'inconnu'),
+    thresholdRule: m.thresholdRule ?? DEFAULT_THRESHOLD_RULE,
   }
 }
 
