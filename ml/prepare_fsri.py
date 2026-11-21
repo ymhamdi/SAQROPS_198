@@ -16,6 +16,7 @@ import csv
 import datetime as dt
 import json
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -56,6 +57,9 @@ def cut_time(name: str, ignition: dt.datetime) -> float | None:
     ev = pd.read_csv(RAW / f"{name}_Events.csv")
     ends = [dt.datetime.strptime(t, "%Y-%m-%d-%H:%M:%S") for t, e in zip(ev["Time"], ev["Event"]) if e.strip() in ("Suppression", "Burner Off")]
     return (min(ends) - ignition).total_seconds() if ends else None
+
+
+sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252
 
 
 def main() -> None:

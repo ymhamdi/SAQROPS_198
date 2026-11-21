@@ -40,3 +40,6 @@ Thumbs.db
 # Claude Code plugin state
 .omc/
 .impeccable/
+
+# Model experiments (each ml/train.py --out run); key numbers go to ml/MODEL_REPORT.md, the shipped model is ml/model/
+/ml/runs/

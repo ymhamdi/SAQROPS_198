@@ -7,6 +7,7 @@ Flashover proxy = first time the upper layer reaches config.json fire.flashoverC
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -28,6 +29,9 @@ def ceiling(df: pd.DataFrame) -> pd.Series:
 
 def upper_layer(df: pd.DataFrame) -> pd.Series:
     return df[[f"Quadrant {q} Temperature 0.3 m Below Ceiling" for q in QUADS]].mean(axis=1)
+
+
+sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252
 
 
 def main() -> None:

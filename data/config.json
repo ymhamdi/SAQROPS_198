@@ -98,6 +98,18 @@
       "plumeExclusionLengthM": { "value": 80, "unit": "m", "source": "Length of the no-fly zone downwind of the fire. Team assumption", "status": "MODELED" },
       "plumeExclusionHalfAngleDeg": { "value": 25, "unit": "°", "source": "Half-angle of the downwind no-fly cone. Team assumption", "status": "MODELED" }
     },
+    "dataset": {
+      "fuelLimitedShare": { "value": 0.5, "unit": "1", "source": "Share of generated fires limited by their fuel (growth, plateau, burnout) rather than by ventilation. Team assumption, added after the UL FSRI check showed the model treating every detector failure as a coming flashover; not fitted on FSRI", "status": "MODELED" },
+      "peakKwMin": { "value": 50, "unit": "kW", "source": "Smallest peak of a fuel-limited fire (a wastebasket). SFPE Handbook, heat release rates of burning items", "status": "MODELED" },
+      "peakKwMax": { "value": 3000, "unit": "kW", "source": "Largest peak of a fuel-limited fire (an upholstered sofa). SFPE Handbook, heat release rates of furnishings; NIST Fire Calorimetry Database", "status": "MODELED" },
+      "plateauMinS": { "value": 120, "unit": "s", "source": "Shortest time a fuel-limited fire holds its peak. Team assumption", "status": "MODELED" },
+      "plateauMaxS": { "value": 600, "unit": "s", "source": "Longest time a fuel-limited fire holds its peak. Team assumption", "status": "MODELED" },
+      "decayS": { "value": 180, "unit": "s", "source": "Burnout time of a fuel-limited fire after its plateau. Team assumption", "status": "MODELED" },
+      "rapidPeakShare": { "value": 0.33, "unit": "1", "source": "Share of fuel-limited fires that reach their peak within seconds: flammable-liquid pool fires (the site's solvent store) and gas leaks. SFPE Handbook, pool fires", "status": "MODELED" },
+      "rapidPeakMinS": { "value": 5, "unit": "s", "source": "Shortest time to peak of a rapid fire. Team assumption", "status": "MODELED" },
+      "rapidPeakMaxS": { "value": 30, "unit": "s", "source": "Longest time to peak of a rapid fire. Team assumption", "status": "MODELED" },
+      "leakageFactorMax": { "value": 20, "unit": "×", "source": "Room leakage drawn log-uniformly between 1× and this many times fire.leakageAreaM2PerM2Floor: building airtightness varies by more than an order of magnitude (NFPA 92 leakage area ratios, tight to loose construction)", "status": "MODELED" }
+    },
     "sim": {
       "tickS": { "value": 1, "unit": "s", "source": "Simulation step (CLAUDE.md §5)", "status": "MODELED" },
       "playbackSpeeds": { "value": [1, 5, 10, 20], "unit": "×", "source": "Playback speeds offered; ×10 for the video. Team choice", "status": "MODELED" },

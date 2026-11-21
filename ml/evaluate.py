@@ -14,6 +14,7 @@ import argparse
 import csv
 import json
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -156,6 +157,9 @@ def strip(rep: dict) -> dict:
     r["scenario"].pop("leads", None)
     r["scenario"]["missed"] = [{"run": m["run"], "room": m["room"], "flashover_s": m["flashover_s"]} for m in r["scenario"]["missed"]]
     return r
+
+
+sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252
 
 
 def main() -> None:
