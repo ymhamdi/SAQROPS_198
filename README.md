@@ -2,214 +2,344 @@
 
 # PNR · Point de Non-Retour
 
-### À chaque seconde : l'engagement est-il encore tenable, par où sortir, et pourquoi ?
+### Le binôme peut-il encore ressortir ? PNR répond à chaque seconde.
 
-Aide à la décision pour la Protection civile lors d'un incendie sur site industriel.
-Prévision de l'embrasement par IA · point de non-retour sur l'air de l'ARI · drone de reconnaissance simulé.
+Aide à la décision pour la Protection civile, lors d'un incendie sur site industriel.<br>
+Une IA prévoit l'embrasement d'un local d'après les détecteurs de chaleur. Un calcul de point de non-retour surveille l'air de l'ARI. Un drone simulé fait la reconnaissance.
 
 **Challenge Aero-Entrepreneur · Tunisian Aeroday × Protection civile × INJAZ**
 
-[Lancer l'application](#lancer-lapplication) · [Rapport du modèle IA](ml/MODEL_REPORT.md) · [Données et sources](data/SOURCES.md) · [Crédits et usage de l'IA](CREDITS.md)
+[Démarrage rapide](#démarrage-rapide) · [Rapport du modèle IA](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/ml/MODEL_REPORT.md) · [Données et sources](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/data/SOURCES.md) · [Crédits et usage de l'IA](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/CREDITS.md)
+
+</div>
+
+![Le PC du COS, la tablette du chef de binôme et le HUD du masque au même instant : NO-GO « Embrasement prévu Cabine de peinture sous 60 s », itinéraire rouge vers la sortie Ouest, 279 bar dans la bouteille](assets/readme/hero-no-go.jpg)
+
+<div align="center">
+
+**5** écrans reliés en direct · **3** modèles XGBoost sur **13** variables · **72 s** d'avance sur l'embrasement dans la démo (SIMULATED) · **120** essais réels pour juger l'IA · **232** tests automatiques
 
 </div>
 
 ---
 
-> *« Le point de non-retour, l'aviation le calcule pour chaque vol. Nous le calculons pour chaque pompier qui entre dans le feu. »*
+## Entrer dans le feu, et en ressortir
 
-**Prototype de démonstration.** Le site, le feu, les relevés des détecteurs, la position du binôme et le vol du drone sont **simulés**, et l'application l'affiche partout. Il n'y a eu aucun test en intervention réelle et aucune validation par la Protection civile à ce jour. Le verdict est une aide : **Décision : COS**.
+<img src="assets/readme/screen-tablet.jpg" align="right" width="42%" alt="Tablette du chef de binôme : NO-GO, phase « Sortie », message du PC, sortie Ouest à 24 m, 279 bar">
 
-## Le problème
+Un binôme de sapeurs-pompiers entre dans un atelier en feu. Deux questions comptent, et on ne peut pas y répondre à l'œil :
 
-Quand un binôme de sapeurs-pompiers entre dans une usine en feu, il ne sait pas si le local voisin va **s'embraser** (*flashover*), ni s'il lui reste **assez d'air** pour ressortir. Le chef de binôme et le COS décident à l'aveugle.
+- **Le local voisin va-t-il s'embraser ?** L'embrasement (*flashover*), c'est le moment où tout le local prend feu d'un coup. Dans PNR, il est daté à l'instant où les gaz chauds sous le plafond atteignent 600 °C.
+- **Reste-t-il assez d'air pour ressortir ?** Il faut être dehors avant le sifflet de l'ARI, à 55 bar, même si le retour est 1,5 fois plus lent que prévu.
 
-PNR répond en continu à trois questions : **l'engagement est-il encore tenable, par où sortir, et pourquoi ?**
+PNR répond en continu, avec ses raisons, sur le PC du COS, la tablette du chef de binôme et le masque. Le verdict est une aide : **« Décision : COS »**.
 
-- Une **IA** lit les détecteurs de chaleur du bâtiment, même quand ils tombent en panne, et prévoit l'embrasement d'un local **30 à 60 s à l'avance**.
-- Un calcul de **point de non-retour** sur l'air de l'ARI vérifie que le binôme ressort avant le sifflet (55 bar), en comptant un retour 1,5 fois plus lent que prévu.
-- Le verdict **GO / NO-GO** s'affiche avec ses raisons sur le PC du COS, la tablette du chef de binôme et le masque (HUD). Un NO-GO reste verrouillé : **seul le COS peut ré-engager**.
-- Un **drone** de reconnaissance (simulé) part de l'engin, fait le tour du bâtiment hors du panache et surveille sa batterie avec la même logique de point de non-retour.
+**Prototype de démonstration.** Le site, le feu, les relevés des détecteurs et le vol du drone sont simulés, et l'application l'affiche à côté de chaque nombre. Il n'y a eu aucun test en intervention réelle, et aucune validation par la Protection civile à ce jour.
 
-## Cinq fenêtres, un seul verdict
+<br clear="right">
 
-Le site de démonstration est un atelier fictif de pièces composites aéronautiques (60 × 40 m) : bureaux, TGBT, local de charge Li-ion, stockage de solvants, cabine de peinture, halle avec autoclave, 3 sorties, 15 détecteurs de chaleur. Aucune entreprise réelle n'est nommée.
+---
 
-| Écran | Pour qui | Contenu |
-|---|---|---|
-| **PC du COS** | le COS, au poste de commandement | Plan en direct (locaux teintés d'après les détecteurs, alertes IA, portes, binôme, drone), verdict et raisons, air et PNR, objectifs, journal. Le COS peut déclencher un départ de feu, ouvrir ou fermer une porte, engager, ajouter ou retirer un objectif, ordonner l'évacuation et ré-engager. |
-| **Tablette** | le chef de binôme | Verdict, phase de la mission, prochain point, distance, pression, sortie prévue, marge PNR, alertes, messages du PC, et une **carte en direct** qui suit le binôme (cap en haut, nord en haut ou plan complet) avec les locaux teintés d'après leurs détecteurs. Gros boutons, pour les gants. |
-| **HUD du masque ARI** | le porteur | Une seule alerte à la fois (icône + mot + couleur), air et PNR, lisibles en moins d'une seconde, sur une **vue synthétique** en première personne : le bâtiment reconstruit à partir du plan, avec portes, fumée et chaleur d'après les seuls détecteurs, chevrons de route au sol et alertes de l'IA. Elle est dessinée, pas filmée, et étiquetée SIMULATED. |
-| **Fiche réflexe** | le binôme | Une page A4 imprimable : verdict, mission, air, plan, sorties, dangers de l'itinéraire avec des consignes sourcées. |
-| **Jumeau numérique** | le jury, le COS | La réalité simulée à côté de ce que PNR en sait, la chaîne de décision en direct (détecteurs → 13 variables → IA et règles → fusion → verdict) et les courbes du local suivi. |
+## 01 · Le feu grandit. L'IA prévient.
 
-La tablette, le HUD et le jumeau numérique sont d'autres fenêtres du **même navigateur**, reliées en direct au PC (elles remplacent la radio).
+<table>
+<tr>
+<td width="50%" align="center"><img src="assets/readme/go-route.jpg" alt="PC du COS à T+1:56 : verdict GO, itinéraire bleu vers la cabine de peinture puis le TGBT, sortie prévue à 239 bar"><br><b>T+1:56 · GO</b><br><sub>itinéraire vers la victime puis le TGBT, sortie prévue à 239 bar</sub></td>
+<td width="50%" align="center"><img src="assets/readme/screen-pc.jpg" alt="PC du COS à T+3:34 : verdict NO-GO « Embrasement prévu Cabine de peinture sous 60 s », itinéraire rouge vers la sortie Ouest, bouton « Ré-engager (décision COS) »"><br><b>T+3:34 · NO-GO</b><br><sub>« Embrasement prévu Cabine de peinture sous 60 s » : demi-tour vers la sortie</sub></td>
+</tr>
+</table>
 
-## Comment ça marche
+Le feu part dans le stockage de solvants. Les détecteurs de chaleur du bâtiment chauffent, puis tombent en panne au-delà de 150 °C. L'IA lit leurs relevés, pannes comprises, et annonce l'embrasement de la cabine de peinture voisine. Le verdict passe à **NO-GO**. Le binôme reçoit un nouvel itinéraire vers la sortie, et il ressort à **272 bar**, loin au-dessus du sifflet.
 
-À chaque seconde de simulation, le PC est maître et diffuse le résultat ; la tablette et le HUD affichent sans simuler.
+<table>
+<tr>
+<td width="58%"><img src="assets/readme/truth-twin.jpg" alt="Jumeau numérique à T+4:52 : à gauche la réalité simulée, cabine embrasée à T+4:46 ; à droite ce que PNR en sait ; « Avance de l'IA : 72 s avant l'embrasement »"></td>
+<td>
+
+**Combien d'avance ?** Le jumeau numérique montre côte à côte la réalité simulée et ce que PNR en sait. Porte laissée ouverte, la cabine s'embrase à T+4:46. L'IA l'avait annoncé à T+3:34 : **72 s d'avance** (SIMULATED).
+
+PNR ne lit jamais cette réalité. Le verdict vient des seuls détecteurs et de l'IA (règle R5, testée). La case « Vérité simulateur » du PC sert seulement à mesurer l'avance, après coup.
+
+</td>
+</tr>
+</table>
+
+<details>
+<summary><b>La chronologie complète de la démo</b> (temps simulé, graine 42)</summary>
+<br>
+
+| T+ | Ce qui se passe |
+|---|---|
+| 0 s | Départ de feu dans le stockage de solvants |
+| 60 s | Le drone décolle de l'engin |
+| 100 s | Le COS engage le binôme : **GO**, sortie prévue à 239 bar |
+| 214 s | L'IA annonce l'embrasement de la cabine sous 60 s : **NO-GO**. Le COS fait fermer la porte stockage ↔ cabine |
+| 226 s | Tous les détecteurs de la cabine sont en panne |
+| 229 s | Le score P60 de la cabine est passé de 0,50 à 0,01 ; le verdict reste **NO-GO** |
+| 259 s | Binôme dehors à **272 bar** ; le COS le ré-engage vers le TGBT : **GO**, sortie prévue à 242 bar |
+| 286 s | Embrasement réel de la cabine, dans la variante où la porte reste ouverte |
+
+Ces temps sont imprimés par le test [`app/src/sim/demo.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/sim/demo.test.ts).
+
+</details>
+
+---
+
+## 02 · Une porte se ferme. Le NO-GO reste.
+
+<table>
+<tr>
+<td width="50%" align="center"><img src="assets/readme/door-open.jpg" alt="Jumeau numérique, porte ouverte : « IA : embrasement sous 60 s, délai ≈ 105 s », verdict NO-GO"><br><b>Porte ouverte</b><br><sub>« IA : embrasement sous 60 s, délai ≈ 105 s »</sub></td>
+<td width="50%" align="center"><img src="assets/readme/door-closed.jpg" alt="Jumeau numérique, 15 s après la fermeture de la porte : « IA : pas d'alerte (P60 1 %) », verdict toujours NO-GO"><br><b>Porte fermée, 15 s plus tard</b><br><sub>« IA : pas d'alerte (P60 1 %) » · verdict toujours NO-GO</sub></td>
+</tr>
+</table>
+
+Le COS fait fermer la porte entre le stockage et la cabine. La cabine reçoit moins de chaleur, et en 15 s son score d'embrasement sous 60 s tombe de 0,50 à 0,01. Pourtant **le verdict reste NO-GO**. PNR ne revient jamais tout seul au GO : seul le COS peut ré-engager, avec le bouton « Ré-engager (décision COS) », et l'action est journalisée (règle R6).
+
+<table>
+<tr>
+<td width="50%"><img src="assets/readme/reengage-tablet.jpg" alt="Tablette après le ré-engagement : GO, « Ré-engagement : décision COS », prochain objectif Coupure électrique — TGBT, sortie prévue à 242 bar"></td>
+<td>
+
+**Le COS change la mission, la tablette suit.** Pendant l'évacuation, le PC retire l'objectif « Victime signalée — cabine de peinture ». Une fois le binôme dehors, le COS le ré-engage vers le TGBT.
+
+La tablette reçoit le nouvel itinéraire en direct, avec le message « Ré-engagement : décision COS ». Le calcul repart de la position du binôme et de l'air qu'il lui reste : **GO**, sortie prévue à 242 bar.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 03 · L'air compte. Jusqu'au sifflet.
+
+<p align="center"><img src="assets/readme/diagram-air-pnr.svg" width="100%" alt="Point de non-retour de l'air au NO-GO : pression 279 bar, 55 bar de réserve du sifflet, environ 10 bar pour sortir à 1,5 fois le temps prévu, 214 bar de marge"></p>
+
+L'itinéraire est calculé par **A\*** sur le plan de l'usine, découpé en cases de 0,5 m. Chaque local coûte plus cher à traverser quand les détecteurs ou l'IA y signalent un danger. Le temps de sortie est connu depuis chaque case.
+
+Le point de non-retour est vérifié **en chaque point** de l'itinéraire prévu. NO-GO si la sortie prévue tombe sous le sifflet, ou si la marge passe sous zéro quelque part. Ce moteur de route et ce calcul viennent de [Martian Map](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/CREDITS.md), un planificateur de sorties sur Mars : l'oxygène du scaphandre est devenu l'air de l'ARI, l'habitat est devenu les sorties.
+
+---
+
+## 04 · Un drone. Hors du panache.
+
+<table>
+<tr>
+<td width="60%"><img src="assets/readme/drone-plume.jpg" alt="PC du COS à T+1:24 : le drone en vol le long du bâtiment, la zone grise « Zone interdite drone (panache) » sous le vent, la marge PNR batterie à 74 %"></td>
+<td>
+
+L'élément aéronautique : un drone thermique **simulé** décolle de l'engin et fait le tour du bâtiment à 30 m. Quand le panache barre une partie du tour, il fait l'aller-retour de chaque côté.
+
+- Il reste **hors du panache**, une zone orientée par le vent du site (analyse Open-Meteo, DERIVED).
+- Il surveille sa **batterie** avec la même règle de point de non-retour que l'air : retour à l'engin garanti avec 25 % de réserve.
+- Il **refuse de voler** au-delà de 12 m/s de vent.
+- Son image thermique des toits s'affiche sur le PC seulement. Elle ne nourrit jamais le verdict.
+
+En Tunisie, tout vol réel de drone exige une autorisation préalable.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 05 · Cinq écrans. Un seul verdict.
+
+Le PC du COS simule et diffuse. Les autres écrans affichent sans simuler : ce sont d'autres fenêtres du même navigateur, reliées en direct au PC. Elles tiennent le rôle de la radio.
+
+<table>
+<tr>
+<td width="50%"><img src="assets/readme/screen-hud.jpg" alt="HUD du masque ARI : vue synthétique du couloir, chevrons rouges vers la sortie, alerte « SORTIE », AIR 279 bar, PNR +214 bar"></td>
+<td width="50%"><img src="assets/readme/screen-twin.jpg" alt="Jumeau numérique : réalité simulée, ce que PNR en sait, les 13 variables de la cabine de peinture et la chaîne de décision en direct"></td>
+</tr>
+<tr>
+<td><b>HUD du masque ARI.</b> Une seule alerte à la fois (icône, mot, couleur), l'air et la marge PNR, pensés pour être lus en moins d'une seconde. La vue est dessinée d'après le plan et les détecteurs, pas filmée.</td>
+<td><b>Jumeau numérique.</b> La réalité simulée à côté de ce que PNR en sait, les 13 variables reçues par l'IA, et la chaîne de décision en direct.</td>
+</tr>
+<tr>
+<td><img src="assets/readme/screen-card.jpg" alt="Fiche réflexe A4 imprimée : GO · Décision : COS, mission TGBT, air, plan, sorties, dangers de l'itinéraire avec consignes sourcées"></td>
+<td>
+
+**PC du COS** (en haut de page). Le plan en direct, le verdict et ses raisons, l'air, le drone et les objectifs. Le COS déclenche un feu, ouvre ou ferme une porte, engage, retire un objectif, fait évacuer et ré-engage.
+
+**Tablette du chef de binôme** (plus haut). Verdict, phase de la mission, prochain point, air, messages du PC et carte qui suit le binôme. Gros boutons, pour les gants.
+
+**Fiche réflexe** (à gauche). Une page A4 imprimable : verdict, mission, air, plan, sorties et dangers de l'itinéraire, avec des consignes sourcées à faire valider par la Protection civile.
+
+</td>
+</tr>
+</table>
+
+Un seul moteur décide pour tous les écrans. À chaque seconde simulée, le PC fait tourner toute la chaîne :
 
 ```mermaid
-flowchart LR
+flowchart TB
   F["Moteur feu<br/>un modèle par local, pas de 1 s"] --> D["Détecteurs<br/>retard · bruit · pannes au-delà de 150 °C"]
   D --> RG["Règles sur détecteurs"]
   D --> IA["IA XGBoost<br/>embrasement sous 30 / 60 s"]
   RG --> M["Fusion<br/>l'IA ne peut qu'aggraver (R1)"]
   IA --> M
-  M --> C["Coût par local"]
-  C --> A["A* : itinéraire<br/>et temps de sortie"]
-  A --> AIR["Air ARI<br/>point de non-retour"]
-  AIR --> V{"Verdict GO / NO-GO<br/>raisons · verrou (R6)"}
+  M --> RA["A* : itinéraire et temps de sortie, coût par local<br/>air ARI : point de non-retour"]
+  RA --> V{"Verdict GO / NO-GO<br/>raisons · verrou (R6)"}
   M --> V
   V --> PC["PC du COS"]
   V --> T["Tablette"]
   V --> H["HUD du masque"]
   V --> K["Fiche réflexe"]
+  V --> J["Jumeau numérique"]
 ```
 
-- **Moteur feu** : un seul moteur, utilisé par l'application et par la génération des données d'entraînement. Corrélations publiées et citées (NFPA 72, Kawagoe, MQH, Heskestad, Alpert, CFAST pour les jets de porte) dans [`data/SOURCES.md`](data/SOURCES.md).
-- **Route et air** : le code vient de *Martian Map* (planificateur de sorties sur Mars avec réserve d'O₂), adapté à l'air de l'ARI : réserve d'O₂ → air de l'ARI, habitat → sorties, walk-home → temps de sortie.
-- **Tout tourne dans le navigateur** : Vite, React, TypeScript, simulation dans un Web Worker. Pas de serveur, pas de base de données, pas d'authentification.
+Tout tourne dans le navigateur : Vite, React, TypeScript, et la simulation dans un Web Worker. Pas de serveur, pas de base de données, pas de compte.
 
-## L'IA en bref
+---
 
-Trois modèles **XGBoost**, évalués dans le navigateur par un évaluateur TypeScript sans dépendance, prédisent pour chaque local : P(embrasement ≤ 30 s), P(embrasement ≤ 60 s) et le délai avant l'embrasement, à partir de 13 variables tirées des seuls détecteurs de chaleur, détecteurs en panne compris.
+## 06 · Une IA qui ne peut qu'aggraver
 
-| | Chiffre | Données |
+Trois modèles **XGBoost** donnent, pour chaque local : un score d'embrasement sous 30 s, un score sous 60 s, et le délai estimé. Ils lisent **13 variables** tirées des seuls détecteurs de chaleur, détecteurs en panne compris. Ils tournent dans le navigateur, avec un évaluateur TypeScript sans dépendance.
+
+L'IA peut ajouter un NO-GO ; elle ne peut jamais en retirer un (règle R1). Les seuils sont choisis pour annoncer au moins 95 % des embrasements en validation.
+
+| Test | Résultat | Données |
 |---|---|---|
-| Embrasement sous 60 s, rappel | **0,95** (PR-AUC 0,76 contre 0,31 pour une règle sur la pente de température) | notre simulateur, SIMULATED |
-| Embrasements annoncés / manqués | 893 / 12 sur 905, avance médiane **94 s** | notre simulateur, SIMULATED |
-| Essais réels UL FSRI (120 expériences) | 11 embrasements sur 11 annoncés, avance médiane 54 s, **mais 92 locaux sur 109 qui ne s'embrasent pas déclenchent aussi une alerte** | essais réels, OBSERVED |
+| Notre simulateur, alerte « sous 60 s » | rappel **0,946**, précision 0,517, PR-AUC **0,761** (une règle simple sur la pente : 0,315) | 5 000 scénarios de notre moteur, SIMULATED |
+| Notre simulateur, par local | 893 embrasements annoncés sur 905, avance médiane **94 s** | idem |
+| Essais réels UL FSRI | 11 embrasements annoncés sur 11, avance médiane 54 s, **mais 92 fausses alertes sur 109** locaux qui ne s'embrasent pas | 120 essais en laboratoire, OBSERVED |
 
-**Limite à dire franchement :** le modèle livré est entraîné sur notre propre simulateur, donc il en apprend les habitudes. Les jeux NIST P-Flash prévus n'étaient pas accessibles le 21 novembre, et le test sur essais réels montre trop de fausses alertes. Tous les détails (données, variables, étalonnage, limites, plan de validation avec la Protection civile) sont dans **[ml/MODEL_REPORT.md](ml/MODEL_REPORT.md)**.
+<p align="center"><img src="assets/readme/diagram-fsri.svg" width="100%" alt="Le modèle livré face à 120 essais réels UL FSRI : 11 embrasements sur 11 annoncés, mais 92 fausses alertes sur 109 locaux qui ne s'embrasent pas"></p>
 
-## Le drone de reconnaissance
+**À dire franchement :** le modèle livré apprend sur notre propre simulateur. Les données NIST P-Flash prévues n'étaient pas accessibles le 21 novembre. Sur les essais réels, il ne rate aucun embrasement, mais il alerte beaucoup trop. Tout le détail, et le plan de validation avec la Protection civile, sont dans le [rapport du modèle](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/ml/MODEL_REPORT.md).
 
-L'élément aéronautique : un drone thermique **simulé** qui décolle de l'engin et fait le tour du bâtiment à altitude fixe (30 m).
+<details>
+<summary><b>Le moteur feu face aux essais réels</b></summary>
+<br>
 
-- Il reste **hors du panache** : un cône d'exclusion sous le vent, orienté par le vent réel du site (Open-Meteo, DERIVED).
-- Il surveille sa **batterie** avec la même logique de point de non-retour que l'air de l'ARI : retour à l'engin garanti avec 25 % de réserve.
-- Le vol est **refusé** au-delà de 12 m/s de vent.
-- Son image thermique de toiture (SIMULATED) s'affiche sur le PC seulement et ne nourrit jamais le verdict.
-- Autonomie, vitesse, vent maximal et résolution thermique sont ceux d'une classe de drones thermiques industriels (`data/config.json`, MODELED). Aucune marque n'est mise en avant. En Tunisie, **tout vol réel exige une autorisation préalable**.
+<table>
+<tr>
+<td width="50%"><img src="assets/readme/fsri-engine-open.png" alt="Essai UL FSRI 500 kW porte ouverte : la mesure monte vers 430 °C, notre moteur plafonne vers 285 °C"></td>
+<td width="50%"><img src="assets/readme/fsri-engine-closed.png" alt="Essai UL FSRI 500 kW porte fermée : la mesure culmine vers 460 °C, notre moteur plafonne vers 185 °C"></td>
+</tr>
+</table>
 
-## Huit règles de sécurité, chacune avec un test
+Nous avons rejoué 105 essais UL FSRI dans notre moteur feu. L'écart quadratique moyen sur la température des gaz chauds est de 105 °C porte ouverte et 110 °C porte fermée. Porte fermée, notre moteur plafonne vers 185 °C, alors que les mesures montent de 264 à 465 °C. Courbes noires : mesures (OBSERVED). Courbes rouges : notre moteur (SIMULATED).
+
+</details>
+
+---
+
+## 07 · Huit règles. Chacune a son test.
 
 | | Règle | Test |
 |---|---|---|
-| R1 | L'IA ne peut que dégrader un verdict (GO → NO-GO), jamais l'inverse | `app/src/danger/merge.test.ts` |
-| R2 | Tout verdict affiché sur le PC, la tablette et la fiche porte « Décision : COS » ; le HUD ne montre que des alertes courtes | `app/src/stats/verdict.test.ts` |
-| R3 | Tout nombre affiché porte son étiquette ; SIMULATED et MOCK ne ressemblent jamais à OBSERVED | `app/src/ui/labels.test.ts` |
-| R4 | Toute hypothèse vit dans `data/config.json`, avec sa source et son statut | `app/src/config.test.ts` |
-| R5 | Le verdict ne lit jamais la vérité du simulateur ni l'image thermique du drone : seulement les détecteurs (bruités, en panne) et l'IA | `app/src/sim/sim.test.ts` |
-| R6 | Un NO-GO est verrouillé : seul le COS peut ré-engager, et l'action est journalisée | `app/src/stats/latch.test.ts` |
-| R7 | Drone : retour garanti avec la réserve de batterie, vol refusé par vent fort, jamais dans la zone du panache | `app/src/drone/drone.test.ts` |
-| R8 | L'évaluateur du navigateur reproduit les prédictions Python à 10⁻⁶ près, détecteurs en panne compris | `app/src/ml/xgb.test.ts` |
+| R1 | L'IA ne peut que dégrader un verdict (GO → NO-GO), jamais l'inverse | [`merge.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/danger/merge.test.ts) |
+| R2 | Tout verdict sur le PC, la tablette et la fiche porte « Décision : COS » ; le HUD ne montre que des alertes courtes | [`verdict.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/stats/verdict.test.ts) |
+| R3 | Tout nombre affiché porte son étiquette ; SIMULATED et MOCK ne ressemblent jamais à OBSERVED | [`labels.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/ui/labels.test.ts) |
+| R4 | Toute hypothèse vit dans `data/config.json`, avec sa source et son statut | [`config.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/config.test.ts) |
+| R5 | Le verdict ne lit que les détecteurs et l'IA, jamais la vérité du simulateur ni l'image thermique du drone | [`sim.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/sim/sim.test.ts) |
+| R6 | Un NO-GO est verrouillé : seul le COS peut ré-engager, et l'action est journalisée | [`latch.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/stats/latch.test.ts) |
+| R7 | Drone : retour garanti avec la réserve de batterie, vol refusé par vent fort, jamais dans le panache | [`drone.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/drone/drone.test.ts) |
+| R8 | Le navigateur reproduit les prédictions Python à 10⁻⁶ près, détecteurs en panne compris | [`xgb.test.ts`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/app/src/ml/xgb.test.ts) |
 
-## Des données affichées honnêtement
+---
 
-Chaque nombre porte son étiquette, et une valeur vaut son entrée la plus faible.
+## Démarrage rapide
 
-| Étiquette | Signification |
-|---|---|
-| `OBSERVED` | Mesure réelle (essais UL FSRI) |
-| `DERIVED` | Calculée à partir de mesures (le vent Open-Meteo est une analyse de modèle météo, pas une mesure sur site) |
-| `MODELED` | Nos hypothèses, corrélations et valeurs normatives, et les données d'entraînement de notre moteur |
-| `SIMULATED` | Produit par le moteur feu pendant la démonstration : relevés, prédictions de l'IA, image thermique du drone, liaison entre fenêtres |
-| `MOCK` | Valeur factice (la position du binôme) |
-
-Les références de chaque corrélation et de chaque jeu de données sont dans [`data/SOURCES.md`](data/SOURCES.md). Les consignes de la fiche réflexe sont des paraphrases de références publiques (ERG 2024, OSHA, NFPA 70E, EN 137) : elles doivent être relues contre leurs sources et **validées par la Protection civile** avant tout usage réel.
-
-## Lancer l'application
-
-Il faut **Node.js 22.12 ou plus récent** (24 recommandé), vérifiable avec `node --version`.
+Il faut **Node.js 22.12 ou plus récent** (24 recommandé) : vérifier avec `node --version`. Le code est sur la branche `feat/digital-twin`.
 
 ```bash
+git clone https://github.com/ymhamdi/SAQROPS_198.git
+cd SAQROPS_198
+git checkout feat/digital-twin
 cd app
-npm install
+npm ci
 npm run dev
 ```
 
-Ouvrir <http://localhost:5173> (écrire `localhost`, pas `127.0.0.1`).
+Ouvrir <http://localhost:5173>. Aucun téléchargement de plus : toutes les données sont dans le dépôt, et l'application marche hors-ligne. Arrêter le serveur avec `Ctrl+C`.
 
-- Tablette : <http://localhost:5173/?view=tablet>
-- HUD : <http://localhost:5173/?view=hud>
-- Jumeau numérique : <http://localhost:5173/?view=twin>
+### Essayez en 5 minutes
 
-Ces fenêtres doivent être ouvertes dans le **même navigateur** que le PC, ce que font aussi les boutons « Ouvrir la tablette », « Ouvrir le HUD » et « Ouvrir le jumeau numérique » du PC. Aucun téléchargement n'est nécessaire : toutes les données sont dans le dépôt, et l'application fonctionne hors-ligne.
+1. **Regarder la démo en une minute.** Cliquer **Démo automatique** sur le PC, ou ouvrir <http://localhost:5173/?demo=1>. L'intervention se joue toute seule, commentée étape par étape ; **Pause** l'arrête. Vue du masque : <http://localhost:5173/?view=hud&demo=1>, où **Espace** met en pause et **R** recommence.
+2. **Ouvrir les autres écrans.** Sur le PC, cliquer « Ouvrir la tablette », « Ouvrir le HUD » et « Ouvrir le jumeau numérique ». Ces fenêtres doivent rester dans le **même navigateur** que le PC.
+3. **Jouer le COS à la main.** Cliquer « Arrêter la démo » si elle tourne, puis **Réinitialiser**. Cliquer « Départ de feu (scénario : stockage solvants) », choisir **×20** et lancer la **Lecture**. Puis « Décoller le drone » vers T+1:00 et « Engager le binôme » vers T+1:40.
+4. **Après le NO-GO** (vers T+3:34) : cliquer sur la porte entre le stockage et la cabine pour la fermer, et décocher l'objectif « Victime signalée — cabine de peinture ». Une fois le binôme sorti, cliquer « Ré-engager (décision COS) ».
+5. **Finir.** Cocher « Vérité simulateur » pour voir la réalité simulée, puis ouvrir la **Fiche réflexe** et cliquer **Imprimer**.
 
-## Démonstration automatique
-
-L'intervention se joue toute seule, sans clic, en environ 45 secondes (les temps de simulation sont accélérés ×5 à ×20 selon ce qui bouge) :
-
-- HUD : <http://localhost:5173/?view=hud&demo=1>
-- Tablette : <http://localhost:5173/?view=tablet&demo=1>
-- Jumeau numérique : <http://localhost:5173/?view=twin&demo=1>
-- PC du COS : <http://localhost:5173/?demo=1>, ou le bouton **Démo automatique** du PC (les fenêtres ouvertes depuis le PC bougent alors aussi)
-
-Une fenêtre `&demo=1` simule et joue le scénario elle-même : ne pas l'ouvrir à côté d'un autre PC. Un bandeau commente chaque étape ; **Espace** met en pause, **R** recommence (les boutons apparaissent quand on bouge la souris). Le script joue le COS : il déclenche le feu, le drone, l'engagement, ferme la porte et ré-engage le binôme, mais il ne lit jamais la vérité du simulateur (R5) et le NO-GO reste verrouillé jusqu'à son ré-engagement, journalisé comme une décision du COS (R6). Les allures (`demo.paceFastX`, `paceWalkX`, `paceOutX`) sont dans `data/config.json` : mettre `paceWalkX` à 1 donne une marche en temps réel.
-
-## Rejouer la démonstration à la main
-
-Sur le PC, régler la vitesse sur **×20** puis cliquer **Lecture**. Les temps ci-dessous sont en temps simulé. Ouvrir la tablette et le HUD côte à côte pour voir la liaison en direct.
-
-| T+ | Action | Ce qu'on voit |
-|---|---|---|
-| 0 s | **Départ de feu** (scénario : stockage de solvants) | Le local se teinte au fil des relevés des détecteurs |
-| 60 s | **Décoller** le drone | Boucle autour du bâtiment, demi-tour de chaque côté du panache, batterie et marge de retour |
-| 100 s | **Engager** le binôme (victime dans la cabine de peinture, puis coupure du TGBT) | **GO** et itinéraire |
-| ≈ 214 s | rien, cela arrive tout seul | **NO-GO** « Embrasement prévu Cabine de peinture sous 60 s » ; itinéraire vers la sortie, alerte sur la tablette et le HUD |
-| ensuite | Fermer la porte stockage ↔ cabine | Le score de l'IA retombe ; **le verdict reste NO-GO**, et le PC propose « Ré-engager (décision COS) » |
-| ≈ 259 s | le binôme est dehors, à 272 bar | Cocher **Vérité simulateur** : l'embrasement réel de la cabine (286 s si la porte reste ouverte) montre que l'IA avait **72 s d'avance** |
-| ensuite | Décocher l'objectif « Victime – cabine » puis **Ré-engager** | Nouvel itinéraire vers le TGBT, reçu en direct sur la tablette |
-| fin | **Fiche réflexe** puis **Imprimer** | La fiche A4 avec les consignes sourcées |
-
-## Commandes
+<details>
+<summary><b>Autres commandes</b></summary>
 
 À lancer dans `app/` :
 
 ```bash
-npm test           # plus de 220 tests (règles R1 à R8, moteur feu, scénario de la démonstration, démo automatique)
+npm test           # 228 tests : règles R1 à R8, moteur feu, scénario de la démo, démo automatique
 npm run typecheck  # vérification des types
 npm run build      # version de production dans app/dist
-npm run preview    # sert ce build sur localhost:4173
+npm run preview    # sert ce build sur http://localhost:4173
 ```
 
-Rafraîchir le vent réel (facultatif, l'application lit un cache) : `node scripts/fetch-weather.ts`.
+Les 4 tests Python et les commandes pour réentraîner et valider le modèle sont au [§9 du rapport du modèle](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/ml/MODEL_REPORT.md#9-reproduire). Les données brutes restent hors du dépôt.
 
-## Réentraîner et valider le modèle
+</details>
 
-Les commandes complètes (génération des données, entraînement, évaluation sur les essais réels UL FSRI, validation du moteur feu) sont au [§9 du rapport du modèle](ml/MODEL_REPORT.md#9-reproduire). Les scripts `ml/*.ts` s'exécutent directement avec Node 24 ; la partie Python demande `pip install -r ml/requirements.txt`. Les données brutes restent hors du dépôt (`ml/data/raw/`).
+---
 
-## Organisation du dépôt
+## Étiqueté honnêtement
 
-```text
-app/        application web : Vite + React + TypeScript, simulation dans un Web Worker (Vitest)
-  src/fire    moteur feu, un modèle par local            src/danger  règles, IA, fusion « ne peut qu'aggraver »
-  src/ml      évaluateur XGBoost, variables du modèle    src/stats   air ARI, point de non-retour, verdict, verrou
-  src/route   A*, temps de sortie, re-itinéraire         src/drone   reconnaissance, batterie, zone du panache
-  src/sim     boucle de simulation (Web Worker)          src/live    liaison PC ↔ tablette ↔ HUD
-  src/panels  PC du COS, tablette, HUD, fiche réflexe    src/site    plan de l'atelier (grille 0,5 m)
-  src/scene   vue synthétique du HUD, carte de la tablette  src/twin   jumeau numérique
-  src/demo    démonstration automatique (?demo=1)
-data/       config.json (toutes les hypothèses), SOURCES.md, consignes.json, site/, weather/
-ml/         données, entraînement, évaluation, modèles exportés (model/), rapports (report/), MODEL_REPORT.md
-scripts/    fetch-weather.ts (vent Open-Meteo)
-docs/       notes de conception du HUD
-CLAUDE.md   règles du projet (sécurité, conventions)       PRODUCT.md  produit, utilisateurs, principes
-```
+Chaque nombre affiché porte son étiquette. Une valeur vaut son entrée la plus faible : une prédiction de l'IA faite sur des relevés simulés est donc SIMULATED.
+
+| Étiquette | Sens | Exemples |
+|---|---|---|
+| `OBSERVED` | Mesure réelle | Les 120 essais UL FSRI |
+| `DERIVED` | Calculée depuis des mesures | Le vent Open-Meteo : une analyse météo, pas une mesure sur le site |
+| `MODELED` | Nos hypothèses, normes et corrélations | Le plan de l'atelier, la bouteille de 300 bar, le sifflet à 55 bar (EN 137), le retour ×1,5, les caractéristiques du drone |
+| `SIMULATED` | Produit par notre moteur pendant la démo | Le feu, les relevés, les prédictions de l'IA, l'image thermique, la liaison entre fenêtres |
+| `MOCK` | Valeur factice | La position du binôme |
+
+| Donnée | Source | Étiquette |
+|---|---|---|
+| Site : 60 × 40 m, 6 locaux, 3 sorties, 15 détecteurs | Atelier fictif de pièces composites aéronautiques ; aucune entreprise réelle | MODELED |
+| Entraînement de l'IA | 5 000 scénarios de notre moteur feu | MODELED |
+| Validation de l'IA et du moteur | UL FSRI, jeu de données fsri-compartments-2018 | OBSERVED |
+| Vent au site | Open-Meteo, 1,6 m/s, cache du 21/11/2026 | DERIVED |
+| Consignes de la fiche réflexe | Paraphrases d'ERG 2024, OSHA, NFPA 70E, EN 137 ; à valider par la Protection civile | MODELED |
+
+Chaque hypothèse vit dans `data/config.json` avec sa source. Toutes les références sont dans [`data/SOURCES.md`](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/data/SOURCES.md).
 
 ## Limites assumées
 
-- Le site, le feu, les relevés des détecteurs et le vol du drone sont **simulés** ; c'est affiché partout.
-- Le modèle livré est entraîné sur notre simulateur, et il donne trop de fausses alertes sur les essais réels (voir le rapport).
-- Les hypothèses d'air et de vitesse (bouteille ARI, consommation, progression en fumée, retour ×1,5) sont des **ordres de grandeur à valider** par la Protection civile.
-- La position du binôme est **simulée** (`MOCK`) ; en vrai, il faudrait un système de localisation des pompiers en intérieur.
-- La vue du HUD est **dessinée à partir du plan** (lancer de rayons sur la grille de l'atelier, un seul niveau, sans moteur 3D) : ce n'est pas une image de caméra, et elle ne lit jamais la vérité du simulateur.
-- En Tunisie, tout vol réel de drone exige une autorisation préalable.
-- PNR **aide** à décider ; il ne décide pas : **Décision : COS**.
+- Le site, le feu, les relevés et le vol du drone sont **simulés**, et c'est affiché partout.
+- L'IA est entraînée sur notre simulateur, et elle donne trop de fausses alertes sur les essais réels.
+- Les hypothèses d'air et de vitesse sont des **ordres de grandeur à valider** par la Protection civile.
+- La position du binôme est factice (`MOCK`). En vrai, il faudrait localiser les pompiers à l'intérieur du bâtiment.
+- La vue du HUD est dessinée d'après le plan : ce n'est pas une caméra.
+- PNR **aide** à décider ; il ne décide pas : « Décision : COS ».
+
+<details>
+<summary><b>Organisation du dépôt</b> (branche <code>feat/digital-twin</code>)</summary>
+
+```text
+app/            application web : Vite + React + TypeScript, tests Vitest
+  src/fire        moteur feu, un modèle par local
+  src/danger      règles, IA, fusion « ne peut qu'aggraver »
+  src/ml          évaluateur XGBoost, variables du modèle
+  src/route       A*, temps de sortie, re-itinéraire
+  src/stats       air ARI, point de non-retour, verdict, verrou
+  src/drone       reconnaissance, batterie, zone du panache
+  src/sim         boucle de simulation (Web Worker)
+  src/live        liaison PC ↔ tablette ↔ HUD
+  src/panels      PC du COS, tablette, HUD, fiche réflexe
+  src/scene       vue du HUD, carte de la tablette
+  src/twin        jumeau numérique
+  src/demo        démonstration automatique (?demo=1)
+  src/site        plan de l'atelier (grille 0,5 m)
+data/           config.json (toutes les hypothèses), SOURCES.md, consignes.json
+ml/             données, entraînement, évaluation, modèles, MODEL_REPORT.md
+scripts/        fetch-weather.ts (vent Open-Meteo)
+```
+
+</details>
 
 ## Crédits et licence
 
-Ce dépôt part d'un instantané de **Martian Map** (NASA Space Apps Challenge 2026) dont il reprend le moteur de route et la logique de point de non-retour. Le code, les tests et la documentation ont été écrits avec l'aide d'un assistant IA (Claude Code). Toutes les sources, les données, les polices et l'usage de l'IA sont détaillés dans **[CREDITS.md](CREDITS.md)**.
+PNR part d'un instantané de **Martian Map** (NASA Space Apps Challenge 2026), dont il reprend le moteur de route et la logique de point de non-retour. Le code, les tests et la documentation ont été écrits avec l'aide d'un assistant IA (Claude Code). Les images de cette page sont des captures de l'application et des graphiques du projet ; aucune n'est générée par IA. Les sources, les données, les polices et l'usage de l'IA sont détaillés dans [CREDITS.md](https://github.com/ymhamdi/SAQROPS_198/blob/feat/digital-twin/CREDITS.md).
 
 Ce projet n'est approuvé ni par la Protection civile, ni par Tunisian Aeroday, ni par INJAZ, ni par la NASA. Licence [MIT](LICENSE).
