@@ -9,6 +9,8 @@ import type { LatchLogEntry } from '../stats/latch'
 import type { Verdict } from '../stats/verdict'
 import type { DataStatus, Point } from '../types'
 import { droneAt, type Plume } from '../drone/drone'
+import type { HardwareEvent, HwStatus } from '../hardware/ingest'
+import type { CriticalRoom } from '../hardware/state'
 import type { RehearsalPlan } from '../rehearsal/engine'
 import type { SimContext, SimState, TeamMode, ValidatedPlan } from './sim'
 import { teamNow } from './sim'
@@ -82,6 +84,14 @@ export interface Snapshot {
   known: Known
   /** the intervention plan the COS validated (R12), or null */
   plan: ValidatedPlan | null
+  /** what the USB hardware has raised (R13: it only aggravates) and the cylinder's live pressure */
+  hardware: {
+    critical: CriticalRoom[]
+    mayday: { atS: number; status: HwStatus } | null
+    ari: { bar: number; status: HwStatus } | null
+    /** the pressure on the team's gauges is the cylinder's, because it is lower than the model's */
+    ariBinding: boolean
+  }
 }
 
 export type Action =
@@ -93,6 +103,7 @@ export type Action =
   | { type: 'reengage' }
   | { type: 'drone' }
   | { type: 'indoor' }
+  | { type: 'hardware'; event: HardwareEvent }
   | { type: 'engage-direct' }
   | { type: 'plan-validate'; plan: RehearsalPlan }
 
@@ -148,6 +159,7 @@ export function snapshot(ctx: SimContext, s: SimState): Snapshot {
     indoor: indoorView(ctx, s),
     known: s.known,
     plan: s.plan,
+    hardware: { critical: s.hardware.critical, mayday: s.hardware.mayday, ari: s.hardware.ari, ariBinding: now.ariBinding },
   }
 }
 
