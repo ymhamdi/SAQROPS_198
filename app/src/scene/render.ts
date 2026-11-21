@@ -7,7 +7,7 @@
 // accumulated through each room's smoke, then surfaces drawn far to near over a per-pixel floor.
 
 import type { RoomCondition } from '../danger/rules'
-import type { Snapshot } from '../sim/protocol'
+import type { TeamMode } from '../sim/sim'
 import type { Site } from '../site/site'
 import { CELL } from '../types'
 import type { Pose } from './camera'
@@ -290,8 +290,18 @@ function hazeAt(segs: readonly Seg[], at: Haze, rawM: number): void {
   at.rank = b.rank
 }
 
+/**
+ * All the view reads: the doors, what the detectors and the model say about each room, and the team's route. A `Snapshot`
+ * satisfies it, and so does any state built from these fields alone: the type leaves no room for the simulator's truth (R5).
+ */
+export interface SceneState {
+  doorOpen: readonly boolean[]
+  rooms: readonly { condition: RoomCondition; pred: { alert: boolean } | null }[]
+  team: { mode: TeamMode; objectives: readonly string[]; track: readonly number[]; index: number; cell: number }
+}
+
 /** What the detectors and the model say about each room, as the scene uses it. */
-export function sceneRooms(snap: Snapshot): { cond: RoomCondition[]; alert: boolean[] } {
+export function sceneRooms(snap: SceneState): { cond: RoomCondition[]; alert: boolean[] } {
   return { cond: snap.rooms.map((r) => r.condition), alert: snap.rooms.map((r) => r.pred?.alert === true) }
 }
 
@@ -302,7 +312,7 @@ const mix = (c: number, to: number, a: number) => c * (1 - a) + to * a
  * snapshot and pose give the same pixels, and only the plan, the door states, the rooms' conditions and the AI's alerts
  * are read (never `truth`).
  */
-export function renderScene(img: Surface, site: Site, snap: Snapshot, pose: Pose): Column[] {
+export function renderScene(img: Surface, site: Site, snap: SceneState, pose: Pose): Column[] {
   const W = img.width
   const H = img.height
   const px = img.data

@@ -54,6 +54,47 @@
   font-variant-numeric: tabular-nums;
 }
 
+.twin-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.twin-tabs button,
+.twin-rehearsal button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.twin-tabs button[aria-pressed='true'] {
+  background: var(--blue-bg);
+  border-color: var(--blue);
+  color: var(--blue-text);
+}
+
+/* The rehearsal tab is a simulation: its tab wears the rehearsal's violet, never the live colours. */
+.twin-tabs button.is-rehearsal {
+  border-style: dashed;
+  border-color: #6a40b8;
+}
+
+.twin-tabs button.is-rehearsal[aria-pressed='true'] {
+  background: #6a40b8;
+  color: #fff;
+}
+
+.twin-rehearsal {
+  display: grid;
+  gap: 8px;
+}
+
 .twin-focus {
   display: flex;
   flex-wrap: wrap;

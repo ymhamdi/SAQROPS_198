@@ -106,6 +106,10 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
       }
     })
 
+    // Passages the indoor drone found blocked (a SIMULATED observation): the plan does not show them.
+    ctx.fillStyle = '#9a5b2a'
+    for (const cell of snap.known.blockedCells) ctx.fillRect((cell % site.width) * PX, ((cell / site.width) | 0) * PX, PX, PX)
+
     const at = (p: Point) => ({ x: (p.x / site.cellM) * PX, y: (p.y / site.cellM) * PX })
     const centre = (cell: number) => at(cellCentre(site, cell))
 

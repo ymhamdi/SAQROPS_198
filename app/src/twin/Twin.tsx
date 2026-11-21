@@ -14,6 +14,7 @@ import { cellAt, type Site } from '../site/site'
 import { Num } from '../ui/Num'
 import { StatusBadge } from '../ui/StatusBadge'
 import { Chain } from './Chain'
+import { RehearsalTab } from './RehearsalTab'
 import { niceTicks } from './chartMath'
 import { featureRows } from './featureLabels'
 import { leadS, pickFocus, pushSample, type TwinSample } from './history'
@@ -22,6 +23,9 @@ import { RealityPlan } from './RealityPlan'
 import './twin.css'
 
 const noop = () => {}
+
+/** A query parameter of the page's address (null when there is no page, as in a test render). */
+const queryParam = (name: string) => (typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get(name))
 
 /** The last tick of a nice scale covering `max`, so curves end on a labelled gridline. */
 const niceMax = (max: number) => niceTicks(max, 4).at(-1) ?? max
@@ -40,6 +44,7 @@ function roomAt(site: Site, ev: MouseEvent<HTMLElement>): number | null {
 
 export function Twin({ site, snap }: { site: Site; snap: Snapshot | null }) {
   const [picked, setPicked] = useState<number | null>(null)
+  const [tab, setTab] = useState<'live' | 'rehearsal'>(queryParam('tab') === 'rehearsal' ? 'rehearsal' : 'live')
   const [history, setHistory] = useState<TwinSample[]>([])
   const boxes = useMemo(() => roomBoxes(site), [site])
   useEffect(() => {
@@ -110,7 +115,15 @@ export function Twin({ site, snap }: { site: Site; snap: Snapshot | null }) {
         <div className="twin-clock">
           <strong>{clock(s.t)}</strong> <StatusBadge status="SIMULATED" />
         </div>
-        <nav className="twin-focus" aria-label="Local suivi">
+        <nav className="twin-tabs" aria-label="Vue du jumeau">
+          <button type="button" aria-pressed={tab === 'live'} onClick={() => setTab('live')}>
+            Direct
+          </button>
+          <button type="button" className="is-rehearsal" aria-pressed={tab === 'rehearsal'} onClick={() => setTab('rehearsal')}>
+            Répétition
+          </button>
+        </nav>
+        {tab === 'live' && <nav className="twin-focus" aria-label="Local suivi">
           <span className="twin-kick">Local suivi</span>
           <button type="button" aria-pressed={picked === null} onClick={() => setPicked(null)}>
             Auto
@@ -123,9 +136,13 @@ export function Twin({ site, snap }: { site: Site; snap: Snapshot | null }) {
                 {r.short}
               </button>
             ))}
-        </nav>
+        </nav>}
       </header>
 
+      {tab === 'rehearsal' ? (
+        <RehearsalTab site={site} snap={s} autoPlay={queryParam('play') === '1'} />
+      ) : (
+      <>
       <section className="twin-worlds">
         <figure className="twin-panel is-real">
           <figcaption>
@@ -313,6 +330,8 @@ export function Twin({ site, snap }: { site: Site; snap: Snapshot | null }) {
       <p className="twin-foot">
         Le jumeau ne voit que les détecteurs. La réalité n’est affichée que pour comparer : elle ne nourrit jamais le verdict (R5). Historique des courbes depuis l’ouverture de cette fenêtre.
       </p>
+      </>
+      )}
     </main>
   )
 }

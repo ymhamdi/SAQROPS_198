@@ -70,6 +70,10 @@ export interface RehearsalPlan {
   /** objectives no route reaches */
   unreachable: string[]
   track: TrackPoint[]
+  /** the track point of each objective, in `order` */
+  objectiveIndex: number[]
+  /** margin before the point of no return at each track point, bar above what the way out at ×returnFactor needs */
+  marginBar: number[]
   timeline: RehearsalEvent[]
   /** T+ by which the team must have turned back for the way out to stay guaranteed; null with no objective */
   turnBackS: number | null
@@ -296,6 +300,8 @@ export function rehearse(site: Site, input: KnownInput): RehearsalPlan {
     order: kept,
     unreachable,
     track,
+    objectiveIndex: objectivePoints.map((o) => o.index),
+    marginBar: track.map((p) => (usableL(ap, barAfter(ap, p.airUsedL)) - ap.returnFactor * exitTravel[p.cell] * exitRate) / ap.cylinderL),
     timeline,
     turnBackS,
     turnBackAt,

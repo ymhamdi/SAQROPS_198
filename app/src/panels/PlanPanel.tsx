@@ -84,7 +84,9 @@ export function PlanCard({ snap, plan, onRehearse, onValidate }: { snap: Snapsho
             {validated ? `Plan validé à ${clock(validated.validatedAtS)} (décision COS)` : `Calculée à ${clock(shown.builtAtS)}, maintenant ${clock(snap.t)}`} · <StatusBadge status={shown.status} />
           </p>
           <ol className="rehearsal-timeline">
-            {shown.timeline.map((e, k) => (
+            {shown.timeline
+              .filter((e) => e.kind !== 'turn-back')
+              .map((e, k) => (
               <li key={k}>
                 <time>{clock(e.tS)}</time> {e.label}
                 {e.bar !== null && <Num value={Math.round(e.bar)} unit="bar" status={shown.status} />}

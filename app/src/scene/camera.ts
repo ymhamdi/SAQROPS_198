@@ -2,9 +2,9 @@
 // the PC broadcast: position = the team's cell, heading = towards a point a few metres further along the route. The
 // views only display; nothing here feeds the verdict (R5).
 
-import type { Snapshot } from '../sim/protocol'
 import { cellAt, cellCentre, type Site } from '../site/site'
 import { CELL } from '../types'
+import type { SceneState } from './render'
 
 /** A viewpoint on the plan (site metres, x eastwards, y southwards). `heading` is a math angle: 0 = east, π/2 = south. */
 export interface Pose {
@@ -35,7 +35,7 @@ export function angleDiff(a: number, b: number): number {
 const OUTSIDE_STANDOFF_M = 4
 
 /** The first-person viewpoint: the team's, along its route; once the team is out, outside the exit looking back at the door. */
-export function poseTarget(site: Site, s: Snapshot, previous: Pose | null): Pose | null {
+export function poseTarget(site: Site, s: SceneState, previous: Pose | null): Pose | null {
   const { track, cell, mode } = s.team
   if (mode === 'out' && cell >= 0 && track.length > 1) {
     const here = cellCentre(site, cell)
@@ -73,7 +73,7 @@ function intoTheRoom(site: Site, pose: Pose): Pose {
 }
 
 /** Where the team is on the plan and which way its route leads, or null when there is no route yet. `previous` keeps the heading when there is no direction. */
-export function routePose(site: Site, s: Snapshot, previous: Pose | null): Pose | null {
+export function routePose(site: Site, s: Pick<SceneState, 'team'>, previous: Pose | null): Pose | null {
   const { track, index, cell } = s.team
   if (cell < 0) return previous
   const here = cellCentre(site, cell)

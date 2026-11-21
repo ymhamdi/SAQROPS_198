@@ -85,6 +85,90 @@
   border-left-color: var(--green, #188038);
 }
 
+/* The replay: the HUD's first-person view, with the rehearsal's own overlays. */
+.rehearsal-view {
+  max-width: 1100px;
+}
+
+.rehearsal-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #10161c;
+}
+
+.rehearsal-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rehearsal-scene-tag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(106, 64, 184, 0.94);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rehearsal-readout {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding: 6px 10px;
+  border: 2px dashed var(--rehearsal);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #202124;
+  font-size: 17px;
+}
+
+.rehearsal-minimap {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 30%;
+  height: auto;
+  border: 2px dashed var(--rehearsal);
+  background: #fff;
+}
+
+.rehearsal-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.rehearsal-controls input[type='range'] {
+  flex: 1 1 220px;
+  accent-color: var(--rehearsal);
+}
+
+.rehearsal-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+}
+
+.rehearsal-timeline li.is-past {
+  opacity: 0.55;
+}
+
 .rehearsal-obs {
   margin: 0;
   padding: 0;
@@ -94,7 +178,13 @@
   font-size: 13px;
 }
 
-.rehearsal-obs li small {
+/* Only the time line is a block: the unit inside a number (Num) stays inline. */
+.rehearsal-obs li > small {
   display: block;
   color: var(--text-2, #5f6368);
+}
+
+.rehearsal-obs .num strong,
+.rehearsal-timeline .num strong {
+  font-size: 14px;
 }

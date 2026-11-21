@@ -5,10 +5,9 @@
 // Display only: nothing here feeds the verdict (R5).
 
 import { useEffect, useRef } from 'react'
-import type { Snapshot } from '../sim/protocol'
 import { cellCentre, type Site } from '../site/site'
 import { approach, poseTarget, type Pose } from './camera'
-import { project, renderScene, type Column } from './render'
+import { project, renderScene, type Column, type SceneState } from './render'
 
 /** Screen pixels per pixel of the rendered view. */
 const PIXEL = 3
@@ -46,7 +45,7 @@ interface Mark {
 }
 
 /** The things the view points out, in site metres: the next objective, the exit the route ends at, the rooms the AI flags. */
-export function marksOf(site: Site, s: Snapshot): Mark[] {
+export function marksOf(site: Site, s: SceneState): Mark[] {
   const marks: Mark[] = []
   const { track, mode, objectives } = s.team
   const goal = mode === 'engaged' ? site.objectives.find((o) => o.id === objectives[0]) : undefined
@@ -61,7 +60,7 @@ export function marksOf(site: Site, s: Snapshot): Mark[] {
   return marks
 }
 
-function drawOverlays(ctx: CanvasRenderingContext2D, w: number, h: number, site: Site, s: Snapshot, pose: Pose, cols: readonly Column[]) {
+function drawOverlays(ctx: CanvasRenderingContext2D, w: number, h: number, site: Site, s: SceneState, pose: Pose, cols: readonly Column[]) {
   const hiddenAt = (sx: number, forward: number) => {
     const col = cols[Math.min(cols.length - 1, Math.max(0, Math.floor((sx / w) * cols.length)))]
     return col !== undefined && forward > col.blockM + 0.4
@@ -148,7 +147,7 @@ function drawOverlays(ctx: CanvasRenderingContext2D, w: number, h: number, site:
   ctx.textAlign = 'start'
 }
 
-export function Scene({ site, snap, className }: { site: Site; snap: Snapshot; className?: string }) {
+export function Scene({ site, snap, className }: { site: Site; snap: SceneState; className?: string }) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const latest = useRef(snap)
   useEffect(() => {
