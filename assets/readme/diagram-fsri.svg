@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 354" width="960" height="354" role="img" aria-labelledby="t d" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title id="t">Le modèle livré face à 120 essais réels UL FSRI</title>
+  <desc id="d">Un carré par expérience. 11 embrasements sur 11 annoncés, avance médiane 54 s. Mais 92 des 109 locaux qui ne s'embrasent pas déclenchent aussi une alerte.</desc>
+  <rect x="0" y="0" width="960" height="354" rx="14" fill="#fbfaf7"/>
+  <rect x="0.5" y="0.5" width="959" height="353" rx="14" fill="none" stroke="#d9d6cf"/>
+  <text x="40" y="44" font-size="20" font-weight="700" fill="#1f1f1f">Le modèle livré face à 120 essais réels (UL FSRI, OBSERVED)</text>
+  <text x="40" y="68" font-size="14" fill="#5f5b54">Un carré par expérience en local réel · alerte « embrasement sous 60 s »</text>
+  <g>
+    <rect x="40" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="70" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="100" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="130" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="160" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="190" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="220" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="250" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="280" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="310" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="340" y="104" width="24" height="24" rx="4" fill="#c5221f"/>
+    <rect x="370" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="400" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="430" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="460" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="490" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="520" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="550" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="580" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="610" y="104" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="40" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="70" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="100" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="130" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="160" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="190" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="220" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="250" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="280" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="310" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="340" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="370" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="400" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="430" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="460" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="490" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="520" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="550" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="580" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="610" y="134" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="40" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="70" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="100" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="130" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="160" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="190" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="220" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="250" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="280" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="310" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="340" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="370" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="400" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="430" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="460" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="490" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="520" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="550" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="580" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="610" y="164" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="40" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="70" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="100" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="130" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="160" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="190" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="220" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="250" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="280" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="310" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="340" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="370" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="400" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="430" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="460" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="490" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="520" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="550" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="580" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="610" y="194" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="40" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="70" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="100" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="130" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="160" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="190" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="220" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="250" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="280" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="310" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="340" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="370" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="400" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="430" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="460" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="490" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="520" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="550" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="580" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="610" y="224" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="40" y="254" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="70" y="254" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="100" y="254" width="24" height="24" rx="4" fill="#f2b33d"/>
+    <rect x="130" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="160" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="190" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="220" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="250" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="280" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="310" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="340" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="370" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="400" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="430" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="460" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="490" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="520" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="550" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="580" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+    <rect x="610" y="254" width="24" height="24" rx="4" fill="#d6d3cc"/>
+  </g>
+  <g font-size="14" fill="#1f1f1f">
+    <rect x="660" y="104" width="18" height="18" rx="3" fill="#c5221f"/>
+    <text x="688" y="118"><tspan font-weight="700">11 / 11</tspan> embrasements annoncés</text>
+    <text x="688" y="138" fill="#5f5b54">avance médiane 54 s (P10 19 s)</text>
+    <rect x="660" y="160" width="18" height="18" rx="3" fill="#f2b33d"/>
+    <text x="688" y="174"><tspan font-weight="700">92 / 109</tspan> fausses alertes</text>
+    <text x="688" y="194" fill="#5f5b54">locaux qui ne s'embrasent pas</text>
+    <rect x="660" y="216" width="18" height="18" rx="3" fill="#d6d3cc"/>
+    <text x="688" y="230"><tspan font-weight="700">17 / 109</tspan> sans alerte, à raison</text>
+  </g>
+  <text x="40" y="314" font-size="14" fill="#1f1f1f">Il ne rate aucun embrasement, mais il alerte beaucoup trop. Il est entraîné sur notre simulateur, pas encore sur des feux réels.</text>
+  <text x="40" y="336" font-size="12.5" fill="#5f5b54">Source : ml/report/fsri-planB/report.json · essais UL FSRI fsri-compartments-2018 · détail dans ml/MODEL_REPORT.md</text>
+</svg>

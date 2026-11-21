@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" width="960" height="360" role="img" aria-labelledby="t d" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title id="t">Point de non-retour de l'air ARI, au moment du NO-GO de la démonstration</title>
+  <desc id="d">Barre de 0 à 300 bar. Pression ARI 279 bar : 55 bar de réserve du sifflet, environ 10 bar pour sortir en comptant 1,5 fois le temps prévu, et 214 bar de marge avant le point de non-retour. 21 bar déjà consommés.</desc>
+  <rect x="0" y="0" width="960" height="360" rx="14" fill="#fbfaf7"/>
+  <rect x="0.5" y="0.5" width="959" height="359" rx="14" fill="none" stroke="#d9d6cf"/>
+
+  <text x="40" y="44" font-size="20" font-weight="700" fill="#1f1f1f">Point de non-retour de l'air (ARI)</text>
+  <text x="40" y="68" font-size="14" fill="#5f5b54">Au moment du NO-GO de la démonstration, T+3:34 · valeurs du PC du COS (SIMULATED)</text>
+
+  <!-- scale: 40 px = 0 bar, 920 px = 300 bar (2.933 px/bar) -->
+  <g font-size="12" fill="#5f5b54" text-anchor="middle">
+    <line x1="40" y1="112" x2="40" y2="186" stroke="#8a857c"/>
+    <text x="40" y="104">0</text>
+    <line x1="201.3" y1="112" x2="201.3" y2="186" stroke="#8a857c"/>
+    <text x="201.3" y="104">55</text>
+    <line x1="920" y1="112" x2="920" y2="186" stroke="#8a857c"/>
+    <text x="920" y="104">300 bar</text>
+  </g>
+
+  <rect x="40" y="120" width="161.3" height="58" fill="#f6d5d1"/>
+  <rect x="201.3" y="120" width="28.5" height="58" fill="#f9c97c"/>
+  <rect x="229.8" y="120" width="628.6" height="58" fill="#cde8d4"/>
+  <rect x="858.4" y="120" width="61.6" height="58" fill="#e4e2dd"/>
+  <rect x="40" y="120" width="880" height="58" fill="none" stroke="#3c3a36" stroke-width="1.5"/>
+
+  <text x="120.6" y="155" font-size="15" font-weight="700" fill="#a5281d" text-anchor="middle">Sifflet</text>
+  <text x="544" y="148" font-size="18" font-weight="700" fill="#0d5c2b" text-anchor="middle">Marge PNR : 214 bar</text>
+  <text x="544" y="168" font-size="12.5" fill="#0d5c2b" text-anchor="middle">ce qui reste avant le point de non-retour</text>
+  <text x="889.2" y="154" font-size="12" fill="#5f5b54" text-anchor="middle">utilisé</text>
+
+  <!-- current pressure marker -->
+  <line x1="858.4" y1="86" x2="858.4" y2="186" stroke="#1f1f1f" stroke-width="2.5"/>
+  <text x="852" y="92" font-size="14" font-weight="700" fill="#1f1f1f" text-anchor="end">Pression ARI : 279 bar</text>
+
+  <!-- callouts under the bar -->
+  <g font-size="13" fill="#3c3a36">
+    <text x="40" y="208" font-weight="700" fill="#a5281d">Réserve du sifflet : 55 bar</text>
+    <text x="40" y="226">alarme basse pression, EN 137 (MODELED)</text>
+    <path d="M215.5 180 L215.5 196 L290 196 L290 200" fill="none" stroke="#b7791f" stroke-width="1.5"/>
+    <text x="290" y="214" font-weight="700" fill="#8a5a0f">Sortir à ×1,5 : ≈ 10 bar</text>
+    <text x="290" y="232">44 s jusqu'à la sortie la plus proche, à 60 L/min,</text>
+    <text x="290" y="250">comptés 1,5 fois plus lents que prévu (MODELED)</text>
+  </g>
+
+  <line x1="40" y1="276" x2="920" y2="276" stroke="#e4e2dd"/>
+  <g font-size="14" fill="#1f1f1f">
+    <text x="40" y="302"><tspan font-weight="700">Marge PNR</tspan> = pression − sifflet − 1,5 × l'air qu'il faut pour atteindre la sortie la plus proche.</text>
+    <text x="40" y="326">Elle est vérifiée en chaque point de l'itinéraire prévu. Si elle passe sous 0 quelque part : NO-GO,</text>
+    <text x="40" y="346">« Point de non-retour dépassé ». Le drone applique la même règle à sa batterie, avec 25 % de réserve.</text>
+  </g>
+</svg>
