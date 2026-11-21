@@ -18,6 +18,15 @@ export interface PlanVsReal {
   barDelta: number
 }
 
+/**
+ * The plan stays in force until a NO-GO recalls the team. From then on the route is the COS's decision (evacuation, then
+ * maybe a re-engagement on other objectives), not the plan's: comparing the two would match the team's position to points
+ * of a route it is no longer on. Returns the time of the NO-GO, or null while the plan is still the plan.
+ */
+export function planSupersededAt(validatedAtS: number, latchLog: readonly { t: number; action: string }[]): number | null {
+  return latchLog.find((l) => l.action === 'NO-GO' && l.t >= validatedAtS)?.t ?? null
+}
+
 /** The team as the PC sees it: where, how long since the engagement, how much air. */
 export interface RealTeam {
   cell: number

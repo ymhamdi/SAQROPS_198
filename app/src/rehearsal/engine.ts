@@ -331,12 +331,21 @@ export function projectRooms(input: KnownInput, plan: RehearsalPlan, tS: number)
   }
 }
 
-/** Pressure at T+tS along the rehearsed track, bar (the air used so far, by the point reached). */
+/**
+ * Pressure at T+tS along the rehearsed track, bar. Working at a point uses air steadily between arriving and leaving, and
+ * walking uses it step by step, so the value is interpolated the way the simulation locates its team.
+ */
 export function barAt(plan: RehearsalPlan, tS: number): number {
   const ap = airParams()
   const i = pointAt(plan, tS)
   const p = plan.track[i]
-  return barAfter(ap, tS < p.departS ? p.airArriveL : p.airUsedL)
+  let used = p.airUsedL
+  if (tS < p.departS) used = p.airArriveL + ((p.airUsedL - p.airArriveL) * Math.max(0, tS - p.arriveS)) / Math.max(1e-9, p.departS - p.arriveS)
+  else if (i + 1 < plan.track.length) {
+    const q = plan.track[i + 1]
+    used = p.airUsedL + ((q.airArriveL - p.airUsedL) * (tS - p.departS)) / Math.max(1e-9, q.arriveS - p.departS)
+  }
+  return barAfter(ap, used)
 }
 
 /** Where on the site the rehearsal's team stands at T+tS, for a map. */

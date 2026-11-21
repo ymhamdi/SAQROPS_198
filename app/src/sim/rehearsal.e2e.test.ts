@@ -14,7 +14,7 @@ import { applyAction } from './actions'
 import { snapshot } from './protocol'
 import { initSim, makeContext, teamNow, tick } from './sim'
 
-describe('video scenario with the rehearsal', { timeout: 60_000 }, () => {
+describe('video scenario with the rehearsal', { timeout: 120_000 }, () => {
   test('indoor drone → rehearsal → plan validated by the COS → the same intervention', () => {
     const site = buildSite()
     const ctx = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictor())

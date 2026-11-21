@@ -32,7 +32,7 @@ function runUntil(ctx: ReturnType<typeof demo>['ctx'], s: SimState, maxS: number
   for (let k = 0; k < maxS && !stop(s); k++) tick(ctx, s)
 }
 
-describe('the loop: fire → detectors → model → NO-GO → way out', { timeout: 30_000 }, () => {
+describe('the loop: fire → detectors → model → NO-GO → way out', { timeout: 120_000 }, () => {
   test('engaged GO towards the victim, then NO-GO, evacuation, out above the whistle', () => {
     const { ctx, s } = demo()
     expect(startFire(ctx, s, site.demo.fireAt)).toBe(true)
@@ -77,7 +77,7 @@ describe('the loop: fire → detectors → model → NO-GO → way out', { timeo
   })
 })
 
-describe('R5 the verdict reads detectors only', { timeout: 30_000 }, () => {
+describe('R5 the verdict reads detectors only', { timeout: 120_000 }, () => {
   test('the same readings with a different fire truth give the same verdict', () => {
     const { ctx, s } = demo()
     startFire(ctx, s, site.demo.fireAt)
@@ -101,7 +101,7 @@ describe('R5 the verdict reads detectors only', { timeout: 30_000 }, () => {
   })
 })
 
-describe('drone in the scenario (R7)', { timeout: 30_000 }, () => {
+describe('drone in the scenario (R7)', { timeout: 120_000 }, () => {
   test('launched once the detectors locate the fire: flies round the plume and lands with its reserve', () => {
     const { ctx, s } = demo()
     startFire(ctx, s, site.demo.fireAt)

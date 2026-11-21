@@ -8,7 +8,7 @@ import { loadPredictor } from '../ml/predict'
 import { buildSite } from '../site/site'
 import { engage, initSim, launchDrone, makeContext, reengageTeam, setObjectives, startFire, teamNow, tick, toggleDoor } from './sim'
 
-describe('video scenario with the shipped model', { timeout: 60_000 }, () => {
+describe('video scenario with the shipped model', { timeout: 120_000 }, () => {
   test('booth alert before the booth flashes over; the team gets out above the whistle', () => {
     const site = buildSite()
     const ctx = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictor())

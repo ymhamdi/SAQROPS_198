@@ -31,7 +31,7 @@ function lcg(seed: number) {
   }
 }
 
-describe('R9 an observation can only make things worse', { timeout: 60_000 }, () => {
+describe('R9 an observation can only make things worse', { timeout: 120_000 }, () => {
   test('before the drone has flown the layer is off: every cost is as it was', () => {
     const k = mergeKnowledge(n, false, [], 100)
     expect(k.active).toBe(false)

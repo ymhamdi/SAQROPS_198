@@ -10,7 +10,7 @@ import { applyAction } from '../sim/actions'
 import { snapshot } from '../sim/protocol'
 import { initSim, makeContext, startFire, tick, type SimContext, type SimState } from '../sim/sim'
 import { buildSite } from '../site/site'
-import { comparePlan } from './compare'
+import { comparePlan, planSupersededAt } from './compare'
 import { barAt, rehearse, type RehearsalPlan } from './engine'
 import { knownInputOf } from './input'
 
@@ -87,25 +87,49 @@ describe('plan or real', { timeout: 60_000 }, () => {
     }
     const p = rehearse(site, knownInputOf(site, snapshot(c2, st)))
     applyAction(c2, st, { type: 'plan-validate', plan: p })
-    // Over the first 45 s the team walks to the victim and starts working there: at every moment it is within seconds of the plan.
+    const validatedAt = st.fire.t
+    // Until the NO-GO recalls the team (214 s, 114 s after the engagement): it walks to the victim and works there, and at every
+    // moment, work included, it is within seconds and a couple of bar of the plan.
     let worstDelay = 0
     let worstBar = 0
-    for (let k = 0; k < 45; k++) {
+    let compared = 0
+    for (let k = 0; k < 130; k++) {
       tick(c2, st)
       const sn = snapshot(c2, st)
+      if (planSupersededAt(validatedAt, sn.latchLog) !== null) break
       const x = comparePlan(site, p, { cell: sn.team.cell, clock: sn.team.clock, bar: sn.team.bar })!
       worstDelay = Math.max(worstDelay, Math.abs(x.delayS))
       worstBar = Math.max(worstBar, Math.abs(x.barDelta))
+      expect(x.offRouteM).toBeLessThan(2)
+      compared++
     }
+    // It covered the walk and the whole work at the victim (a minute and a half), up to the NO-GO.
+    expect(compared).toBeGreaterThan(100)
     expect(worstDelay).toBeLessThan(5)
-    expect(worstBar).toBeLessThan(3)
-    const snap = snapshot(c2, st)
-    const cmp = comparePlan(site, p, { cell: snap.team.cell, clock: snap.team.clock, bar: snap.team.bar })!
-    expect(snap.team.mode).toBe('engaged')
-    // The rehearsal and the live route are the same plan on the same grids: the team is on it, on time, on the same air.
-    expect(cmp.offRouteM).toBeLessThan(2)
-    expect(Math.abs(cmp.delayS)).toBeLessThan(10)
-    expect(Math.abs(cmp.barDelta)).toBeLessThan(5)
-    expect(snap.team.bar).toBeLessThan(v(H.ari.startBar))
+    expect(worstBar).toBeLessThan(2)
+    expect(snapshot(c2, st).team.bar).toBeLessThan(v(H.ari.startBar))
+  })
+
+  test('the planned pressure goes down steadily while the team works at an objective', () => {
+    const p = plan.track[plan.objectiveIndex[0]]
+    const mid = (p.arriveS + p.departS) / 2
+    const a = barAt(plan, p.arriveS)
+    const b = barAt(plan, mid)
+    const c = barAt(plan, p.departS)
+    expect(a).toBeGreaterThan(b)
+    expect(b).toBeGreaterThan(c)
+    expect(a - b).toBeCloseTo(b - c, 6)
+  })
+
+  test('the plan stays in force until a NO-GO recalls the team, and only a NO-GO after its validation counts', () => {
+    const log = [
+      { t: 50, action: 'NO-GO' },
+      { t: 250, action: 'RE-ENGAGE' },
+      { t: 300, action: 'NO-GO' },
+    ]
+    expect(planSupersededAt(100, [])).toBeNull()
+    expect(planSupersededAt(100, log.slice(0, 1))).toBeNull()
+    expect(planSupersededAt(100, log.slice(1, 2))).toBeNull()
+    expect(planSupersededAt(100, log)).toBe(300)
   })
 })

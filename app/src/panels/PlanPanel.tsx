@@ -3,7 +3,7 @@
 // the COS validates it. Every verdict carries « Décision : COS » (R2) and every number its label (R3).
 
 import { confidenceAt } from '../knowledge/observation'
-import { comparePlan } from '../rehearsal/compare'
+import { comparePlan, planSupersededAt } from '../rehearsal/compare'
 import type { RehearsalPlan } from '../rehearsal/engine'
 import { RehearsalFrame } from '../rehearsal/RehearsalBanner'
 import type { Snapshot } from '../sim/protocol'
@@ -64,7 +64,8 @@ export function PlanCard({ site, snap, plan, onRehearse, onValidate }: { site: S
   const validated = snap.plan
   const shown = validated?.plan ?? plan
   // Once the team is in, how it does against the plan it was given.
-  const cmp = validated && snap.team.mode !== 'standby' ? comparePlan(site, validated.plan, { cell: snap.team.cell, clock: snap.team.clock, bar: snap.team.bar }) : null
+  const supersededAt = validated ? planSupersededAt(validated.validatedAtS, snap.latchLog) : null
+  const cmp = validated && supersededAt === null && snap.team.mode !== 'standby' ? comparePlan(site, validated.plan, { cell: snap.team.cell, clock: snap.team.clock, bar: snap.team.bar }) : null
   const live = worstStatus('MODELED', snap.readingsStatus)
   return (
     <RehearsalFrame>
@@ -117,6 +118,12 @@ export function PlanCard({ site, snap, plan, onRehearse, onValidate }: { site: S
               </li>
             ))}
           </ul>
+          {supersededAt !== null && (
+            <div className="rehearsal-compare" aria-live="polite">
+              <span className="pc-kick">Plan ou réel</span>
+              <p>Plan abandonné à {clock(supersededAt)} : le binôme a été rappelé. La suite est une décision du COS, plus celle du plan.</p>
+            </div>
+          )}
           {cmp && validated && (
             <div className="rehearsal-compare" aria-live="polite">
               <span className="pc-kick">Plan ou réel · à la position du binôme</span>

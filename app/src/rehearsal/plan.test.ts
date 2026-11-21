@@ -78,7 +78,7 @@ describe('R12 the rehearsal is labelled and framed as a simulation', () => {
   })
 })
 
-describe('the plan only applies once the COS validates it', () => {
+describe('the plan only applies once the COS validates it', { timeout: 60_000 }, () => {
   const fresh = () => {
     const c = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictor())
     const st = initSim(c, initialDoors(site), 42)
@@ -118,6 +118,18 @@ describe('the plan only applies once the COS validates it', () => {
     expect(out).toContain('contre')
     expect(out).toContain(REHEARSAL_BANNER)
     expect(out).not.toContain('Valider le plan')
+  })
+
+  test('once a NO-GO has recalled the team, the card says the plan is abandoned and shows no more lead or delay', () => {
+    const { c, st } = fresh()
+    applyAction(c, st, { type: 'plan-validate', plan })
+    for (let k = 0; k < 160; k++) tick(c, st)
+    const snap = snapshot(c, st)
+    expect(snap.latched).toBe(true)
+    const out = html(createElement(PlanCard, { site, snap, plan: null, onRehearse: noop, onValidate: noop }))
+    expect(out).toContain('Plan abandonné')
+    expect(out).toContain('décision du COS')
+    expect(out).not.toMatch(/Retard|Avance|À l’heure|contre/)
   })
 
   test('a plan can only be validated before the engagement', () => {
