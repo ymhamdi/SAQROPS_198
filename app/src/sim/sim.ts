@@ -18,7 +18,7 @@ import type { Predictor } from '../ml/predict.ts'
 import { prepareGrid, stepTime, type PreparedGrid } from '../route/cost.ts'
 import { nearestHaven } from '../route/optimize.ts'
 import { findPath, pathDown, walkHomeField } from '../route/search.ts'
-import { cellAt, type Site } from '../site/site.ts'
+import { cellAt, cellCentre, type Site } from '../site/site.ts'
 import { airParams, airReasons, barAfter, buildTrack, checkPnr, type AirParams, type TrackPoint } from '../stats/air.ts'
 import { applyLatch, OPEN_LATCH, reengage as openLatch, type Latch } from '../stats/latch.ts'
 import { verdictOf, type Reason, type Verdict } from '../stats/verdict.ts'
@@ -112,6 +112,8 @@ export interface SimState {
   planVersion: number
   drone: DroneState
   indoor: IndoorState
+  /** what the team itself met on its way and reported (passages the plan does not show) */
+  contacts: Observation[]
   /** what PNR knows once the indoor drone has flown (R9, R10); inactive before */
   known: Known
   /** the plan the COS validated, or null (no rehearsal, or engaged without one) */
@@ -173,6 +175,7 @@ export function initSim(ctx: SimContext, doors: boolean[], seed: number): SimSta
     planVersion: 0,
     drone: { status: 'ground', launchedAt: null, flight: null, seen: site.rooms.map(() => false), roofC: site.rooms.map(() => null), reason: null, noise: 12345 },
     indoor: { status: 'ground', launchedAt: null, plan: null, observations: [], reason: null },
+    contacts: [],
     known: mergeKnowledge(site.rooms.length, false, [], 0),
     plan: null,
   }
@@ -197,7 +200,7 @@ export function observe(ctx: SimContext, s: SimState) {
   for (const p of s.predictions) if (p.alert && s.firstAlertAt[p.room] === null) s.firstAlertAt[p.room] = t
   const byRoom = new Map(s.predictions.map((p) => [p.room, p]))
   // The indoor drone's picture only ever adds cost (R9): a multiplier of at least 1, and the passages it found blocked.
-  s.known = mergeKnowledge(site.rooms.length, s.indoor.status === 'flown', s.indoor.observations, t)
+  s.known = mergeKnowledge(site.rooms.length, s.indoor.status === 'flown', [...s.indoor.observations, ...s.contacts], t)
   const travelPace = s.observations.map((o) => paceOf(o.condition))
   const costPace = s.observations.map((o, r) => paceOf(o.condition) * ruleMultiplier(o.condition) * aiMultiplier(byRoom.get(r)) * s.known.rooms[r].extraCost)
   s.travel = prepareGrid(site, travelPace)
@@ -254,11 +257,21 @@ function remainingCost(s: SimState): number {
   return c
 }
 
-/** Plans the rest: to each remaining objective then out, or straight out when evacuating. */
-function replan(ctx: SimContext, s: SimState) {
+/** The plan with the team standing still for waitS first, at working effort (it uses its air and the clock runs). */
+function waited(track: TrackPoint[], waitS: number, ap: { workLpm: number }): TrackPoint[] {
+  const used = (waitS * ap.workLpm) / 60
+  return track.map((p, i) =>
+    i === 0
+      ? { ...p, departS: p.departS + waitS, airUsedL: p.airUsedL + used }
+      : { ...p, arriveS: p.arriveS + waitS, departS: p.departS + waitS, airArriveL: p.airArriveL + used, airUsedL: p.airUsedL + used },
+  )
+}
+
+/** Plans the rest: to each remaining objective then out, or straight out when evacuating. `meeting`: from where the team stopped, after waiting. */
+function replan(ctx: SimContext, s: SimState, meeting?: { cell: number; airUsedL: number; waitS: number }) {
   const { site } = ctx
   const team = s.team
-  const here = team.mode === 'standby' ? { index: 0, cell: site.doors[team.entryDoor].cells[0], airUsedL: 0 } : locate(s)
+  const here = meeting ? { index: 0, cell: meeting.cell, airUsedL: meeting.airUsedL } : team.mode === 'standby' ? { index: 0, cell: site.doors[team.entryDoor].cells[0], airUsedL: 0 } : locate(s)
   if (team.mode === 'out' || here.cell < 0) return
   const legs: number[][] = []
   let from = here.cell
@@ -275,10 +288,53 @@ function replan(ctx: SimContext, s: SimState) {
   }
   const out = pathDown(s.cost, s.exitCost, from)
   legs.push(out ? out.cells : [from])
-  team.track = buildTrack(s.travel, legs, ctx.air, { tS: teamClock(s), airUsedL: here.airUsedL })
+  const track = buildTrack(s.travel, legs, ctx.air, { tS: teamClock(s), airUsedL: here.airUsedL })
+  team.track = meeting ? waited(track, meeting.waitS, ctx.air) : track
   team.index = 0
   team.plannedCost = remainingCost(s)
   s.planVersion++
+}
+
+/** The first cell of the rest of the plan that is a hidden obstacle PNR does not know yet (the simulator's world), or -1. */
+function firstUnknownObstacle(ctx: SimContext, s: SimState): number {
+  if (ctx.site.hidden.length === 0) return -1
+  const hidden = new Set(ctx.site.hidden.flatMap((h) => h.cells))
+  const known = new Set(s.known.blockedCells)
+  for (let k = Math.max(0, s.team.index); k < s.team.track.length; k++) {
+    const c = s.team.track[k].cell
+    if (hidden.has(c) && !known.has(c)) return k
+  }
+  return -1
+}
+
+/**
+ * The team reaches a passage the plan does not show and nobody had found (no indoor drone, or it missed it): it stops
+ * in front of it, reports it, waits for the new route (obstacle.contactDelayS, at working effort) and goes round. What it
+ * met is an observation of its own, so PNR now knows the passage is closed (R9: that only adds cost).
+ */
+function meetObstacle(ctx: SimContext, s: SimState, k: number): void {
+  const at = s.team.track[k - 1]
+  const found = ctx.site.hidden.find((h) => h.cells.includes(s.team.track[k].cell))!
+  const waitS = v(H.obstacle.contactDelayS)
+  s.contacts.push({
+    id: `obstacle-team-${s.contacts.length}`,
+    kind: 'obstacle',
+    takenAtS: s.fire.t,
+    receivedAtS: s.fire.t,
+    at: cellCentre(ctx.site, at.cell),
+    room: null,
+    door: null,
+    cells: [...found.cells],
+    valueC: null,
+    open: null,
+    confidence: v(H.knowledge.confidenceClear),
+    source: 'team',
+    status: 'SIMULATED',
+    label: `Passage obstrué rencontré par le binôme : ${found.name} (absent du plan)`,
+  })
+  s.notes.push({ t: s.fire.t, text: `Passage obstrué rencontré : ${found.name}. Le binôme s’arrête ${waitS} s, puis contourne.` })
+  observe(ctx, s)
+  replan(ctx, s, { cell: at.cell, airUsedL: at.airUsedL, waitS })
 }
 
 /** Rooms on the rest of the plan (the team's own room included). */
@@ -367,6 +423,11 @@ export function tick(ctx: SimContext, s: SimState, dt = v(H.sim.tickS)): void {
   // A passage the drone has just found blocked lies on the rest of the plan: re-plan before judging, so that a stale route
   // through it never reads as a NO-GO that the latch (R6) would then keep.
   if (team.mode !== 'out' && trackBlocked(s)) replan(ctx, s)
+  // Something the plan does not show lies on the route and nobody had found it: the team meets it (never with a plan from the rehearsal).
+  if (team.mode === 'engaged' || team.mode === 'evacuating') {
+    const k = firstUnknownObstacle(ctx, s)
+    if (k >= 1 && team.index >= k - 1) meetObstacle(ctx, s, k)
+  }
   const prev = s.computed.verdict
   judge(ctx, s)
   const costNow = remainingCost(s)

@@ -123,7 +123,9 @@ températures, portes, passage obstrué (un rack effondré que le plan ne montre
 reste **INCONNU**. PNR joue ensuite l'intervention en **avance rapide**, sur ce qu'il sait (jamais sur la vérité du
 simulateur), dans la même vue première personne que le HUD : itinéraire, air, heure de demi-tour, sortie de repli, un GO
 ou NO-GO par phase. Le COS **valide le plan** (« Valider le plan (décision COS) ») ou **engage sans répétition**. Pendant
-l'engagement, le PC compare le plan et le réel (avance ou retard, pression prévue ou réelle).
+l'engagement, le PC compare le plan et le réel (avance ou retard, pression prévue ou réelle). La tablette et la fiche
+réflexe reçoivent le plan validé. Si le COS engage **sans** répétition, le binôme simulé rencontre le rack : il s'arrête
+20 s (hypothèse à valider), le signale et le contourne, ce que le plan lui aurait évité.
 
 C'est la répétition de mission de l'aviation, appliquée à la reconnaissance. Tout ce qui en vient porte
 « RÉPÉTITION — SIMULATION », dans un cadre violet pointillé, et n'apparaît jamais sur le HUD en direct. Les chiffres du
@@ -222,7 +224,7 @@ Lancer le PC, mettre **×20** puis **Lecture**. Les temps sont en temps simulé.
 | 100 s | (avec la répétition) **Lancer la répétition** puis **Valider le plan (décision COS)** | PNR rejoue la mission en vue première personne (onglet « Répétition » du jumeau) : contournement du rack, demi-tour, sortie de repli ; la validation engage le binôme sur ce plan |
 | ≈ 214 s | (rien, ça arrive tout seul) | **NO-GO : « Embrasement prévu Cabine de peinture sous 60 s »**. Itinéraire rouge vers la sortie Ouest, alerte sur tablette et HUD. |
 | ≈ 229 s | Cliquer la **porte stockage ↔ cabine** pour la fermer | Le délai prédit remonte (probabilité 0,50 → 0,01, délai ≈ 107 → 219 s). **Le verdict reste NO-GO** ; bouton « Ré-engager (décision COS) ». |
-| ≈ 259 s | (binôme sorti à **272 bar**) | Cocher « Vérité simulateur » : l'embrasement réel de la cabine (à 286 s si la porte reste ouverte) montre que l'IA avait **72 s d'avance**. |
+| ≈ 262 s | (binôme sorti à **272 bar**) | Cocher « Vérité simulateur » : l'embrasement réel de la cabine (à 286 s si la porte reste ouverte) montre que l'IA avait **72 s d'avance**. |
 | ensuite | Décocher l'objectif « Victime – cabine », cliquer **Ré-engager** | Nouvel itinéraire vers le TGBT, **GO**, reçu en direct sur la tablette. |
 | fin | **Fiche réflexe**, puis **Imprimer** | La fiche A4 avec les consignes sourcées. |
 

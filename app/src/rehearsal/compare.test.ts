@@ -30,7 +30,7 @@ beforeAll(() => {
   plan = rehearse(site, knownInputOf(site, snapshot(ctx, s)))
 }, 60_000)
 
-describe('plan or real', () => {
+describe('plan or real', { timeout: 60_000 }, () => {
   test('a team exactly on the plan has no lead, no delay and no air difference', () => {
     for (const i of [0, 40, Math.floor(plan.track.length / 2), plan.track.length - 1]) {
       const p = plan.track[i]

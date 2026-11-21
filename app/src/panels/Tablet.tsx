@@ -15,6 +15,7 @@ import { Num } from '../ui/Num'
 import { StatusBadge } from '../ui/StatusBadge'
 import { nextStep } from './crew'
 import { clock } from './Pc'
+import { PlanSummary } from './PlanSummary'
 import './crew.css'
 
 /** Zoom steps of the map: 0 is the closest. */
@@ -95,6 +96,7 @@ export function Tablet({ site, snap }: { site: Site; snap: Snapshot | null }) {
           </p>
         )}
       </section>
+      {snap.plan && <PlanSummary plan={snap.plan.plan} validatedAtS={snap.plan.validatedAtS} surface="tablet" />}
       <dl className="tablet2-gauges">
         <div>
           <dt>Pression ARI</dt>

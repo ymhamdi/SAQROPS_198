@@ -12,6 +12,7 @@ import { Num } from '../ui/Num'
 import { StatusBadge } from '../ui/StatusBadge'
 import { clock } from './Pc'
 import { Plan } from './Plan'
+import { PlanSummary } from './PlanSummary'
 import './card2.css'
 
 type HazardKey = keyof typeof consignes.hazards
@@ -124,6 +125,12 @@ export function Card({ site, snap, onClose }: { site: Site; snap: Snapshot; onCl
             <Plan site={site} snap={snap} truth={false} mode="view" onDoor={() => {}} onFire={() => {}} />
           </section>
         </div>
+        {snap.plan && (
+          <section className="fiche-planvalide">
+            <h3>Plan validé</h3>
+            <PlanSummary plan={snap.plan.plan} validatedAtS={snap.plan.validatedAtS} surface="card" />
+          </section>
+        )}
         <section>
           <h3>Dangers sur l'itinéraire</h3>
           {onRoute.length ? <Consignes keys={onRoute} /> : <p>Aucun danger particulier relevé sur l'itinéraire.</p>}

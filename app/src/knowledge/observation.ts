@@ -34,7 +34,8 @@ export interface Observation {
   open: boolean | null
   /** at the time it was taken, 0..1 */
   confidence: number
-  source: 'drone-indoor'
+  /** the indoor drone, or the team itself when it meets something the plan does not show */
+  source: 'drone-indoor' | 'team'
   /** what it is shown as: a SIMULATED sensor in the demo */
   status: DataStatus
   /** French, for the interface */

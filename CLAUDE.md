@@ -139,7 +139,9 @@ Python reste hors repo : venv C:\dev\pnr-venv, wheels C:\dev\wheels, données NI
 2 bis. Le drone d'intérieur entre par la sortie Ouest, découvre le passage obstrué (un rack effondré absent du plan) et une
    porte fermée (au-delà : INCONNU). La répétition joue l'intervention en vue première personne, propose le contournement
    et l'heure de demi-tour, puis le COS valide le plan (« Valider le plan (décision COS) »). Sans répétition, « Engager
-   sans répétition » reste possible et le scénario d'avant (app/src/sim/demo.test.ts) passe toujours.
+   sans répétition » reste possible et le scénario d'avant (app/src/sim/demo.test.ts) passe toujours. Sans plan, le
+   binôme simulé rencontre le rack : il s'arrête devant (config `obstacle.contactDelayS`, au travail), le signale, PNR le
+   ferme et il contourne ; avec le plan il ne le rencontre jamais (app/src/sim/obstacle.test.ts).
 3. Un binôme est engagé vers un point de sauvetage (sur le plan validé) : itinéraire, air, PNR, GO.
 4. Le feu grandit, des détecteurs tombent en panne, l'IA annonce l'embrasement du local voisin : NO-GO, nouvel
    itinéraire vers la sortie, alerte sur tablette et HUD, air à la sortie au-dessus du sifflet. Le calque « vérité

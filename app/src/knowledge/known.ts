@@ -50,8 +50,13 @@ const UNOBSERVED: KnownRoom = { unknown: false, tooHot: false, observedC: null, 
 
 /** Everything known at tS from the observations that have reached PNR. `roomCount` = number of rooms of the site. */
 export function mergeKnowledge(roomCount: number, active: boolean, observations: readonly Observation[], tS: number): Known {
-  if (!active) return { active: false, rooms: Array.from({ length: roomCount }, () => ({ ...UNOBSERVED })), blockedCells: [], doors: [] }
   const live = observations.filter((o) => o.receivedAtS <= tS && !isExpired(o, tS))
+  if (!active) {
+    // The drone has not flown: rooms are as the detectors and the AI say. A passage the team itself met is blocked all the same
+    // (closing a passage can only add cost, R9).
+    const met = [...new Set(live.filter((o) => o.kind === 'obstacle').flatMap((o) => o.cells))]
+    return { active: false, rooms: Array.from({ length: roomCount }, () => ({ ...UNOBSERVED })), blockedCells: met, doors: [] }
+  }
   const latest = (room: number) => live.filter((o) => (o.kind === 'room-thermal' || o.kind === 'too-hot') && o.room === room).sort((a, b) => b.takenAtS - a.takenAtS)[0]
   const rooms: KnownRoom[] = Array.from({ length: roomCount }, (_, r) => {
     const o = latest(r)

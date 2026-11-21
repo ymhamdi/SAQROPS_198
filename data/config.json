@@ -145,6 +145,9 @@
       "observedHotCostMultiplier": { "value": 8, "unit": "1", "source": "Route-cost multiplier of a room the drone saw at or above progression.hotC. Team assumption", "status": "MODELED" },
       "tooHotCostMultiplier": { "value": 20, "unit": "1", "source": "Route-cost multiplier of a room too hot for the drone to enter (« trop chaud pour le drone » is itself an observation that makes things worse, R9). Team assumption", "status": "MODELED" }
     },
+    "obstacle": {
+      "contactDelayS": { "value": 20, "unit": "s", "source": "Time a team loses when it meets a passage the plan does not show (a collapsed rack): it stops, sizes it up, reports it by radio and waits for the new route, all at working effort. Team assumption, to validate with the Protection civile", "status": "MODELED" }
+    },
     "rehearsal": {
       "flashoverMarginS": { "value": 20, "unit": "s", "source": "A room becomes impassable in the rehearsal this long before the flashover the AI predicts for it. Safety margin, team assumption, to validate with the Protection civile", "status": "MODELED" },
       "playbackS": { "value": 8, "unit": "s", "source": "Wall-clock duration of the rehearsal replay in the self-playing demo (at ×20 the whole sequence must stay under 10 s). Team choice", "status": "MODELED" }
