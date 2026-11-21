@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { captionOf } from './demo/captions'
 import { DemoHost } from './demo/DemoHost'
 import { useDemo } from './demo/useDemo'
+import { useHardware } from './hardware/useHardware'
 import { openChannel } from './live/channel'
 import { useBroadcast } from './live/useBroadcast'
 import { Hud } from './panels/Hud'
@@ -22,6 +23,8 @@ function PcApp({ autoDemo, rehearsal }: { autoDemo: boolean; rehearsal: boolean 
   // The PC shows the plan the rehearsal produced, so the simulation waits while the COS reads it.
   const opts = useMemo(() => ({ rehearsal, hold: rehearsal }), [rehearsal])
   const demo = useDemo(sim, site, demoOn, opts)
+  // The USB hardware (drone payload and binôme HUD): inert until something is connected or a recording is played.
+  const hw = useHardware(sim, site)
   useBroadcast(sim.snap)
   const openCrew = (view: 'tablet' | 'hud' | 'twin') => {
     const url = `${window.location.pathname}?view=${view}`
@@ -34,6 +37,7 @@ function PcApp({ autoDemo, rehearsal }: { autoDemo: boolean; rehearsal: boolean 
       sim={sim}
       onOpenCrew={openCrew}
       demoPlan={demoOn ? demo.plan : null}
+      hw={hw}
       demo={{ on: demoOn, onToggle: () => setDemoOn((x) => !x), onRestart: demo.restart, done: demo.done, caption: `Étape ${caption.step}/${caption.steps}`, text: caption.text }}
     />
   )

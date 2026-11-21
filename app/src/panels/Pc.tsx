@@ -14,6 +14,8 @@ import { Num } from '../ui/Num'
 import { StatusBadge } from '../ui/StatusBadge'
 import { Card } from './Card'
 import { clock } from './clock'
+import type { HardwareControls } from '../hardware/useHardware'
+import { HardwarePanel } from './HardwarePanel'
 import { IndoorCard, PlanCard } from './PlanPanel'
 import { Plan } from './Plan'
 import { ReasonList } from './ReasonList'
@@ -35,7 +37,7 @@ export interface PcDemo {
   text: string
 }
 
-export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud' | 'twin') => void; demo: PcDemo; demoPlan?: RehearsalPlan | null }) {
+export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null, hw = null }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud' | 'twin') => void; demo: PcDemo; demoPlan?: RehearsalPlan | null; hw?: HardwareControls | null }) {
   const [truth, setTruth] = useState(false)
   const [mode, setMode] = useState<'doors' | 'fire'>('doors')
   const [card, setCard] = useState(false)
@@ -76,6 +78,11 @@ export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Sit
             {demo.on ? 'Arrêter la démo' : 'Démo automatique'}
           </button>
         </div>
+        {hw?.replayBanner && (
+          <p className="hw-banner is-global" role="status">
+            {hw.replayBanner}
+          </p>
+        )}
         {demo.on && (
           <p className="pc-demo" role="status" aria-live="polite">
             <strong>{demo.caption}</strong>
@@ -104,7 +111,7 @@ export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Sit
             <input type="checkbox" checked={truth} onChange={(e) => setTruth(e.target.checked)} /> Vérité simulateur <StatusBadge status="SIMULATED" />
           </label>
         </div>
-        <Plan site={site} snap={s} truth={truth} mode={mode} showDrone onDoor={(door) => sim.act({ type: 'door', door })} onFire={(at) => (sim.act({ type: 'fire', at }), setMode('doors'))} />
+        <Plan site={site} snap={s} truth={truth} mode={mode} showDrone hardwareDroneRoom={hw?.telemetry.drone.roomIndex ?? null} onDoor={(door) => sim.act({ type: 'door', door })} onFire={(at) => (sim.act({ type: 'fire', at }), setMode('doors'))} />
         <p className="pc-legend">
           Locaux teintés d'après leurs détecteurs uniquement (gris fumées, orange fumées chaudes, rouge détecteurs hors service) · contour rouge pointillé : alerte IA · portes bleues
           ouvertes, grises fermées · ◆ objectifs · ● binôme · ✕ détecteur hors service · ◇ violet : drone, son trajet et l'image thermique des toits (SIMULATED, jamais utilisée pour le
@@ -125,6 +132,7 @@ export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Sit
           )}
         </section>
 
+        {hw && <HardwarePanel site={site} snap={s} hw={hw} onReengage={() => sim.act({ type: 'reengage' })} />}
         {(s.team.mode === 'standby' || s.indoor.status === 'flown') && <IndoorCard site={site} snap={s} onLaunch={() => sim.act({ type: 'indoor' })} />}
         {(s.team.mode === 'standby' || s.plan) && (
           <PlanCard
@@ -142,7 +150,8 @@ export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Sit
             <div>
               <dt>Pression ARI</dt>
               <dd>
-                <Num value={s.team.bar} unit="bar" status={live} />
+                {/* the cylinder's own reading when it is the lower one (OBSERVED live, REPLAY played back), the model's otherwise */}
+                <Num value={s.team.bar} unit="bar" status={s.hardware.ariBinding && s.hardware.ari ? s.hardware.ari.status : live} />
               </dd>
             </div>
             <div>
