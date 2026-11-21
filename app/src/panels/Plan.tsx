@@ -125,7 +125,7 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
       ctx.setLineDash([])
       ctx.font = '700 12px Barlow, system-ui, sans-serif'
       ctx.fillStyle = '#d93025'
-      ctx.fillText('⚠ chaleur anormale (matériel)', b.x + 6, b.y + b.h - 8)
+      ctx.fillText(big ? '⚠ chaleur anormale (matériel)' : '⚠ chaleur', b.x + 6, b.y + b.h - 8)
     }
     // Where the real drone payload says it is (a diamond; the simulated drone keeps its own, violet).
     if (hardwareDroneRoom !== null) {

@@ -74,6 +74,7 @@ const hw = (over: Partial<HardwareControls> = {}): HardwareControls => ({
   recording: false,
   recordedCount: 0,
   toggleRecording: noop,
+  replaying: false,
   replayBanner: null,
   playBuiltIn: noop,
   playFile: async () => {},
@@ -114,12 +115,20 @@ describe('what the panel shows, and where each value comes from (R3)', () => {
 
   test('replay: every value is REPLAY, with the banner, and nothing says « en direct »', () => {
     const banner = replayBanner(buildSampleReplay())
-    const out = panel(hw({ telemetry: telemetry({ origin: 'replay' }), replayBanner: banner }))
+    const out = panel(hw({ telemetry: telemetry({ origin: 'replay' }), replayBanner: banner, replaying: true }))
     expect(out).toContain(banner)
     expect(out).toContain('badge-replay')
     expect(out).not.toContain('badge-observed')
     expect(out.toUpperCase()).not.toContain('EN DIRECT')
     expect(out).toContain('Arrêter le rejeu')
+  })
+
+  test('after the replay the banner stays with the values it labels, and the replay can be played again', () => {
+    const out = panel(hw({ telemetry: telemetry({ origin: 'replay' }), replayBanner: `${replayBanner(buildSampleReplay())} (rejeu terminé)`, replaying: false }))
+    expect(out).toContain('(rejeu terminé)')
+    expect(out).toContain('badge-replay')
+    expect(out).toContain('Rejouer démo')
+    expect(out).not.toContain('Arrêter le rejeu')
   })
 
   test('a recording of the live link says « REJEU d’une mesure réelle »', () => {

@@ -122,7 +122,7 @@ export function HardwarePanel({ site, snap, hw, onReengage }: { site: Site; snap
         <button type="button" aria-pressed={hw.recording} onClick={hw.toggleRecording}>
           {hw.recording ? `Arrêter et télécharger (${hw.recordedCount})` : 'Enregistrer session'}
         </button>
-        {hw.replayBanner ? (
+        {hw.replaying ? (
           <button type="button" onClick={hw.stopReplay}>
             Arrêter le rejeu
           </button>

@@ -29,6 +29,9 @@ export interface HardwareControls {
   recordedCount: number
   toggleRecording: () => void
   /** a recording is playing: the banner to show, or null */
+  /** a recording is playing now */
+  replaying: boolean
+  /** the banner of the recording whose values are on screen: kept after the replay ends, until live packets replace them */
   replayBanner: string | null
   playBuiltIn: () => void
   playFile: (file: File) => Promise<void>
@@ -47,6 +50,7 @@ export function useHardware(sim: SimControls, site: Site): HardwareControls {
   const [, redraw] = useState(0)
   const [lastHud, setLastHud] = useState<HudLevel | null>(null)
   const [banner, setBanner] = useState<string | null>(null)
+  const [replaying, setReplaying] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [recording, setRecording] = useState(false)
   const [recordedCount, setRecordedCount] = useState(0)
@@ -70,6 +74,8 @@ export function useHardware(sim: SimControls, site: Site): HardwareControls {
     (role: Role, msg: HwMessage, origin: HwOrigin) => {
       // While a recording plays, the live link is not listened to: the screen must show one thing, labelled as it is.
       if (origin === 'live' && replayingRef.current) return
+      // Live packets replace the replayed values: the banner of the replay has nothing left to say.
+      if (origin === 'live') setBanner(null)
       setTelemetry((t) => reduceTelemetry(t, msg, origin, site, Date.now()))
       const ev = decide(msg, origin, settingsRef.current, site)
       if (ev) dispatch(ev)
@@ -102,7 +108,9 @@ export function useHardware(sim: SimControls, site: Site): HardwareControls {
       onMessage: (role, msg) => handleRef.current(role, msg, 'replay'),
       onEnd: () => {
         replayingRef.current = false
-        setBanner(null)
+        setReplaying(false)
+        // The values on screen are still the replay's: the banner stays, and says the replay is over.
+        setBanner((b) => (b && !b.endsWith(' (rejeu terminé)') ? `${b} (rejeu terminé)` : b))
         manager.current?.setReplay(false)
       },
     })
@@ -139,6 +147,7 @@ export function useHardware(sim: SimControls, site: Site): HardwareControls {
     gate.current.reset()
     manager.current?.setReplay(true)
     setBanner(replayBanner(file))
+    setReplaying(true)
     setMessage(null)
     replayer.current?.start(file)
   }
@@ -181,6 +190,7 @@ export function useHardware(sim: SimControls, site: Site): HardwareControls {
         setRecording(true)
       }
     },
+    replaying,
     replayBanner: banner,
     playBuiltIn: () => startReplay(buildSampleReplay()),
     playFile: async (file) => {
@@ -191,7 +201,9 @@ export function useHardware(sim: SimControls, site: Site): HardwareControls {
     stopReplay: () => {
       replayer.current?.stop()
       replayingRef.current = false
-      setBanner(null)
+      setReplaying(false)
+      // Stopped, the values on screen are still the replay's: the banner stays.
+      setBanner((b) => (b && !b.endsWith(' (rejeu arrêté)') ? `${b} (rejeu arrêté)` : b))
       manager.current?.setReplay(false)
     },
     message,
