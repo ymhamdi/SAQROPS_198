@@ -1,6 +1,8 @@
 // What the simulation worker sends to the views, and what the PC asks of it. Plain data (structured clone).
 
 import type { RoomCondition } from '../danger/rules'
+import { featureVector } from '../ml/features'
+import { neighbours } from '../site/site'
 import type { LatchLogEntry } from '../stats/latch'
 import type { Verdict } from '../stats/verdict'
 import type { DataStatus, Point } from '../types'
@@ -15,8 +17,10 @@ export interface RoomView {
   status: DataStatus
   pred: { p30: number; p60: number; tffS: number; alert: boolean; horizonS: 30 | 60 | null; status: DataStatus } | null
   firstAlertAt: number | null
-  /** the simulator's truth: only for the « vérité simulateur » layer, never for the verdict (R5) */
-  truth: { layerC: number; layerZ: number; qKw: number; ignitedAt: number | null; flashedAt: number | null }
+  /** the 13 inputs the model received for this room, in contract order (NaN = missing: failed detectors); null outside the model. Detector statistics only (R5). */
+  features: number[] | null
+  /** the simulator's truth: only for the « vérité simulateur » layer and the digital twin's reality panel, never for the verdict (R5) */
+  truth: { layerC: number; layerZ: number; qKw: number; ignitedAt: number | null; flashedAt: number | null; fireAt: Point | null }
 }
 
 export interface Snapshot {
@@ -90,7 +94,8 @@ export function snapshot(ctx: SimContext, s: SimState): Snapshot {
         status: o.status,
         pred: p ? { p30: p.p30, p60: p.p60, tffS: p.tffS, alert: p.alert, horizonS: p.horizonS, status: p.status } : null,
         firstAlertAt: s.firstAlertAt[r],
-        truth: { layerC: fr.layerC, layerZ: fr.layerZ, qKw: fr.qKw, ignitedAt: fr.ignitedAt, flashedAt: fr.flashedAt },
+        features: ctx.site.rooms[r].flashoverModel ? featureVector(s.stats[r], neighbours(ctx.site, r).map((n) => s.stats[n])) : null,
+        truth: { layerC: fr.layerC, layerZ: fr.layerZ, qKw: fr.qKw, ignitedAt: fr.ignitedAt, flashedAt: fr.flashedAt, fireAt: fr.fireAt },
       }
     }),
     detectors: s.fire.detectors.map((d) => ({ reading: d.reading, failed: d.failed })),

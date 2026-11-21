@@ -6,8 +6,9 @@ import { Tablet } from './panels/Tablet'
 import { useSim } from './sim/client'
 import type { Snapshot } from './sim/protocol'
 import { buildSite } from './site/site'
+import { Twin } from './twin/Twin'
 
-type View = 'pc' | 'tablet' | 'hud'
+type View = 'pc' | 'tablet' | 'hud' | 'twin'
 
 /** The PC simulates and broadcasts every snapshot to the crew windows. */
 function PcApp() {
@@ -26,15 +27,15 @@ function PcApp() {
     latest.current = sim.snap
     if (sim.snap) channel.current?.post({ type: 'snap', snap: sim.snap })
   }, [sim.snap])
-  const openCrew = (view: 'tablet' | 'hud') => {
+  const openCrew = (view: 'tablet' | 'hud' | 'twin') => {
     const url = `${window.location.pathname}?view=${view}`
     if (!window.open(url, `pnr-${view}`)) alert('Le navigateur a bloqué la nouvelle fenêtre : autorisez les fenêtres pour cette page.')
   }
   return <Pc site={site} sim={sim} onOpenCrew={openCrew} />
 }
 
-/** Tablet and HUD only display what the PC broadcasts. */
-function CrewApp({ view }: { view: 'tablet' | 'hud' }) {
+/** Tablet, HUD and digital twin only display what the PC broadcasts. */
+function CrewApp({ view }: { view: 'tablet' | 'hud' | 'twin' }) {
   const site = useMemo(() => buildSite(), [])
   const [snap, setSnap] = useState<Snapshot | null>(null)
   useEffect(() => {
@@ -42,6 +43,7 @@ function CrewApp({ view }: { view: 'tablet' | 'hud' }) {
     ch.post({ type: 'hello' })
     return () => ch.close()
   }, [])
+  if (view === 'twin') return <Twin site={site} snap={snap} />
   return view === 'tablet' ? <Tablet site={site} snap={snap} /> : <Hud site={site} snap={snap} />
 }
 

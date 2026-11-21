@@ -10,7 +10,7 @@ import { CELL, type Point } from '../types'
 
 export const PX = 6
 
-const KIND_RGB: Record<number, [number, number, number]> = {
+export const KIND_RGB: Record<number, [number, number, number]> = {
   [CELL.FLOOR]: [248, 249, 250],
   [CELL.OUTSIDE]: [218, 220, 224],
   [CELL.OBSTACLE]: [154, 160, 166],
@@ -37,7 +37,7 @@ export interface PlanProps {
   showDrone?: boolean
 }
 
-function roomBoxes(site: Site) {
+export function roomBoxes(site: Site) {
   return site.rooms.map((r) => {
     let c0 = Infinity
     let r0 = Infinity

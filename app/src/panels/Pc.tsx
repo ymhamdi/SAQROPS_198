@@ -33,7 +33,7 @@ function ReasonList({ reasons }: { reasons: Reason[] }) {
   )
 }
 
-export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud') => void }) {
+export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; onOpenCrew: (view: 'tablet' | 'hud' | 'twin') => void }) {
   const [truth, setTruth] = useState(false)
   const [mode, setMode] = useState<'doors' | 'fire'>('doors')
   const [card, setCard] = useState(false)
@@ -158,6 +158,9 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
             </button>
             <button type="button" onClick={() => onOpenCrew('hud')}>
               Ouvrir le HUD
+            </button>
+            <button type="button" onClick={() => onOpenCrew('twin')}>
+              Ouvrir le jumeau numérique
             </button>
           </div>
         </section>
