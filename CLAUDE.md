@@ -18,14 +18,31 @@ Challenge Aero-Entrepreneur (Tunisian Aeroday × Protection civile × INJAZ). Ge
   → app/src/stats/verdict.test.ts
 - R3 Tout nombre affiché porte son étiquette ; SIMULATED/MOCK ne ressemble jamais à OBSERVED. → app/src/ui/labels.test.ts
 - R4 Toute hypothèse vit dans data/config.json avec source et statut. → app/src/config.test.ts
-- R5 Le verdict ne lit jamais la vérité du simulateur, ni l'image thermique du drone : seulement les détecteurs
-  (bruités, en panne) et l'IA. → app/src/danger/rules.test.ts
+- R5 Le verdict ne lit jamais la vérité du simulateur ni l'image thermique de la toiture : seulement les détecteurs
+  (bruités, en panne), l'IA et, par R9 seulement, les observations intérieures du drone. → app/src/danger/rules.test.ts,
+  app/src/sim/sim.test.ts
 - R6 Un NO-GO est verrouillé : aucun retour automatique au GO. Seul le COS peut ré-engager (bouton « Ré-engager
   (décision COS) » sur le PC, action journalisée et diffusée). → app/src/stats/latch.test.ts
 - R7 Drone : retour à l'engin garanti avec la réserve batterie de config.json ; vol refusé si vent > limite ;
   jamais dans la zone d'exclusion du panache. → app/src/drone/drone.test.ts
 - R8 Parité modèle : l'évaluateur TypeScript reproduit les prédictions Python à 1e-6 près sur ml/model/golden.csv,
   y compris avec des valeurs manquantes (détecteurs en panne). → app/src/ml/xgb.test.ts
+- R9 Une observation du drone d'intérieur ne peut qu'aggraver, comme l'IA (R1) : le coût qu'elle met sur un local ne
+  descend jamais sous celui des détecteurs et de l'IA seuls, elle ne rend jamais un local « sûr ». Une absence
+  d'observation n'est jamais une preuve de sécurité : un local non visité reste INCONNU, avec un coût d'incertitude
+  (config.json), jamais un coût nul. Le drone n'ouvre jamais une porte. → app/src/knowledge/known.test.ts,
+  app/src/drone/indoor.test.ts
+- R10 Chaque observation porte une heure de prise de vue, une position, une confiance et une source ; elle vieillit
+  (sa confiance décroît selon config.json) et, expirée, le local repasse à INCONNU. Dans une zone morte radio, elle
+  n'arrive qu'au retour de la liaison : heure de prise de vue et heure de réception sont affichées.
+  → app/src/knowledge/known.test.ts, app/src/drone/indoor.test.ts
+- R11 La répétition ne lit jamais la vérité du simulateur : elle part de ce que PNR sait (détecteurs, IA, observations du
+  drone) et des hypothèses de config.json. Modifier la vérité ne change aucun résultat. → app/src/rehearsal/engine.test.ts,
+  app/src/rehearsal/view.test.ts, app/src/demo/demo.test.ts
+- R12 Tout ce qui vient de la répétition porte « RÉPÉTITION — SIMULATION », dans un cadre et une couleur distincts du
+  direct (violet, pointillé). La répétition n'apparaît jamais sur le HUD en direct. Le plan ne s'applique qu'après
+  « Valider le plan (décision COS) » ; « Engager sans répétition » reste toujours possible.
+  → app/src/rehearsal/plan.test.ts, app/src/rehearsal/view.test.ts
 
 ## 4. Étiquettes
 OBSERVED mesure réelle (courbes NIST FCD, essais UL FSRI) · DERIVED calculé depuis des observations (vent Open-Meteo =
@@ -51,7 +68,15 @@ app/src/ml/      xgb.ts : évaluateur des arbres XGBoost exportés en JSON (gèr
 app/src/route/   A*, champ temps-de-sortie, re-itinéraire (hérités de Martian Map)
 app/src/stats/   budget air ARI, PNR, GO/NO-GO avec raisons, verrou NO-GO, alertes live
 app/src/drone/   trajet de reconnaissance, PNR batterie (même logique que le PNR air), zone d'exclusion panache,
-                 image thermique de toiture (affichage PC seulement)
+                 image thermique de toiture (affichage PC seulement) ; indoor.ts = drone d'intérieur : A* sur la grille du
+                 site, seulement par les portes déjà ouvertes (R9), jamais dans un local au-dessus de sa limite thermique,
+                 PNR batterie, observations horodatées (R10) ; la planification lit ce que PNR sait, la détection lit la
+                 vérité côté simulateur
+app/src/knowledge/ « ce que PNR sait » : observation.ts (horodatage, vieillissement, expiration), known.ts (fusion détecteurs
+                 + IA + drone, INCONNU, coûts qui n'aggravent que, raisons « drone »)
+app/src/rehearsal/ répétition : engine.ts (fonctions pures sur KnownInput, sans vérité : plan, chronologie, heure de demi-tour,
+                 sortie de repli, phases GO/NO-GO), input.ts (tranche du snapshot lue), compare.ts (plan ou réel),
+                 RehearsalView/RehearsalMap (vue première personne du HUD alimentée par l'état projeté), RehearsalBanner (R12)
 app/src/live/    BroadcastChannel PC ↔ tablette ↔ HUD (SIMULATED)
 app/src/panels/  MissionControl = PC du COS · Tablet = tablette chef de binôme · Hud = HUD masque ARI ·
                  PrintCard = fiche réflexe binôme
@@ -111,7 +136,11 @@ Python reste hors repo : venv C:\dev\pnr-venv, wheels C:\dev\wheels, données NI
 1. Le PC ouvre le site ; départ de feu dans le stockage solvants.
 2. Le drone décolle de l'engin, fait le tour du bâtiment en évitant le panache, affiche son PNR batterie et l'image
    thermique de la toiture au PC.
-3. Un binôme est engagé vers un point de sauvetage : itinéraire, air, PNR, GO.
+2 bis. Le drone d'intérieur entre par la sortie Ouest, découvre le passage obstrué (un rack effondré absent du plan) et une
+   porte fermée (au-delà : INCONNU). La répétition joue l'intervention en vue première personne, propose le contournement
+   et l'heure de demi-tour, puis le COS valide le plan (« Valider le plan (décision COS) »). Sans répétition, « Engager
+   sans répétition » reste possible et le scénario d'avant (app/src/sim/demo.test.ts) passe toujours.
+3. Un binôme est engagé vers un point de sauvetage (sur le plan validé) : itinéraire, air, PNR, GO.
 4. Le feu grandit, des détecteurs tombent en panne, l'IA annonce l'embrasement du local voisin : NO-GO, nouvel
    itinéraire vers la sortie, alerte sur tablette et HUD, air à la sortie au-dessus du sifflet. Le calque « vérité
    simulateur » montre ensuite l'embrasement réel et le délai d'anticipation obtenu.
@@ -153,5 +182,8 @@ béton · REMS/DONKI → feu, IA, vent · mission control → PC du COS · carte
 - Zone d'exclusion au-dessus du panache, orientée par le vent Open-Meteo (DERIVED). Vol refusé si vent > limite (R7).
 - Image thermique de toiture : température de toiture par local, tirée du simulateur avec bruit, SIMULATED,
   affichage PC uniquement (R5).
+- Drone d'intérieur : classe des drones d'inspection à cage de protection (autonomie, vitesse, température maximale dans
+  config.json, `droneIndoor`, avec sources, MODELED, « à valider »). Aucune marque dans l'interface. Pas de GPS à
+  l'intérieur : chaque observation est horodatée ; dans la fumée, seule la thermique compte, avec une confiance plus basse.
 - Vol simulé : en Tunisie, tout vol réel exige une autorisation préalable (à mentionner dans le README).
 - Inspiration NASA ACERO (gestion de l'espace aérien des drones sur incendie) : citée dans le rapport et le pitch, pas de code.

@@ -115,7 +115,22 @@ Dans la démo, les relevés des détecteurs et les prédictions sont `SIMULATED`
 6. **Verdict** GO / NO-GO avec ses raisons, puis le **verrou NO-GO**.
 7. Le PC diffuse le résultat à la tablette et au HUD (deux fenêtres du même navigateur, qui jouent le rôle de la radio).
 
-### Les 8 règles de sécurité (chacune vérifiée par un test automatique)
+### Nouveau : la répétition de l'intervention (branche `feat/drone-rehearsal`)
+
+Avant d'engager le binôme, un **drone d'intérieur** (simulé) entre par une sortie, passe par les portes **déjà ouvertes**
+(il n'en ouvre jamais : ouvrir une porte fait entrer de l'air et peut accélérer le feu) et rapporte ce qu'il voit :
+températures, portes, passage obstrué (un rack effondré que le plan ne montre pas). Derrière une porte fermée, le local
+reste **INCONNU**. PNR joue ensuite l'intervention en **avance rapide**, sur ce qu'il sait (jamais sur la vérité du
+simulateur), dans la même vue première personne que le HUD : itinéraire, air, heure de demi-tour, sortie de repli, un GO
+ou NO-GO par phase. Le COS **valide le plan** (« Valider le plan (décision COS) ») ou **engage sans répétition**. Pendant
+l'engagement, le PC compare le plan et le réel (avance ou retard, pression prévue ou réelle).
+
+C'est la répétition de mission de l'aviation, appliquée à la reconnaissance. Tout ce qui en vient porte
+« RÉPÉTITION — SIMULATION », dans un cadre violet pointillé, et n'apparaît jamais sur le HUD en direct. Les chiffres du
+drone d'intérieur (autonomie 10 min, 2 m/s, 50 °C) viennent de fiches techniques publiques d'une classe de drones à cage
+de protection : `data/config.json`, section `droneIndoor`, **à valider**.
+
+### Les 12 règles de sécurité (chacune vérifiée par un test automatique)
 
 | Règle | Contenu |
 |---|---|
@@ -127,6 +142,10 @@ Dans la démo, les relevés des détecteurs et les prédictions sont `SIMULATED`
 | R6 | Un NO-GO ne revient jamais tout seul en GO. Seul le COS ré-engage, et c'est journalisé. |
 | R7 | Drone : retour garanti avec 25 % de batterie, vol refusé si le vent dépasse la limite, jamais dans la zone du panache. |
 | R8 | Les prédictions calculées dans le navigateur sont identiques à celles de Python, à 10⁻⁶ près. |
+| R9 | Une observation du drone d'intérieur ne peut qu'**aggraver**, comme l'IA. Elle ne rend jamais un local « sûr » ; un local non visité reste INCONNU, avec un coût d'incertitude, jamais nul. |
+| R10 | Chaque observation porte une heure de prise de vue, une position, une confiance et une source ; elle vieillit et, expirée, le local redevient INCONNU. Dans une zone morte radio, elle n'arrive qu'au retour de la liaison. |
+| R11 | La répétition ne lit jamais la vérité du simulateur : un test la brouille, le plan ne change pas. |
+| R12 | Tout ce qui vient de la répétition dit « RÉPÉTITION — SIMULATION » ; jamais sur le HUD en direct ; le plan ne s'applique qu'une fois validé par le COS. |
 
 **L'élément aéronautique :**
 - Le drone de reconnaissance : caractéristiques d'un drone thermique industriel réel, zone d'exclusion orientée par
@@ -181,6 +200,8 @@ pour ça qu'on veut :
 | Consignes réflexes sourcées (ERG 2024, OSHA, NFPA 70E, EN 137) | ✅ à **valider par un humain** |
 | Script vidéo complet joué de bout en bout (test automatique + vérification dans un vrai navigateur) | ✅ |
 | 161 tests automatiques verts, build OK | ✅ |
+| Démo automatique (`?demo=1`) et jumeau numérique (`?view=twin`) | ✅ (branche `feat/digital-twin`) |
+| Répétition de l'intervention : drone d'intérieur, couche « ce que PNR sait » (R9, R10), moteur de répétition (R11), plan à valider (R12), plan ou réel, vue première personne dans l'onglet « Répétition » du jumeau | ✅ sur `feat/drone-rehearsal`, **pas fusionnée** : 312 tests verts, démo jouable (≈ 51 s) |
 | Réentraînement sur NIST | ⏳ serveur NIST en panne |
 | Validation sur les essais réels UL FSRI | ⏳ |
 | `MODEL_REPORT.md`, `README.md` en français, `CREDITS.md` | ⏳ |
@@ -197,6 +218,8 @@ Lancer le PC, mettre **×20** puis **Lecture**. Les temps sont en temps simulé.
 | 0 s | **Départ de feu (scénario : stockage solvants)** | Le local de stockage se teinte au fil des relevés. |
 | 60 s | **Décoller le drone** | Boucle partielle autour du bâtiment, demi-tour de chaque côté du panache, batterie et marge PNR. |
 | 100 s | **Engager le binôme** (victime dans la cabine de peinture, puis coupure TGBT) | **GO**, itinéraire bleu, sortie prévue à 239 bar. |
+| 62 s | (avec la répétition) **Lancer la reconnaissance intérieure** | Le drone d'intérieur entre par la sortie Ouest, trouve le rack effondré, voit la porte du TGBT fermée (INCONNU) : ses observations arrivent avec leur heure de prise de vue |
+| 100 s | (avec la répétition) **Lancer la répétition** puis **Valider le plan (décision COS)** | PNR rejoue la mission en vue première personne (onglet « Répétition » du jumeau) : contournement du rack, demi-tour, sortie de repli ; la validation engage le binôme sur ce plan |
 | ≈ 214 s | (rien, ça arrive tout seul) | **NO-GO : « Embrasement prévu Cabine de peinture sous 60 s »**. Itinéraire rouge vers la sortie Ouest, alerte sur tablette et HUD. |
 | ≈ 229 s | Cliquer la **porte stockage ↔ cabine** pour la fermer | Le délai prédit remonte (probabilité 0,50 → 0,01, délai ≈ 107 → 219 s). **Le verdict reste NO-GO** ; bouton « Ré-engager (décision COS) ». |
 | ≈ 259 s | (binôme sorti à **272 bar**) | Cocher « Vérité simulateur » : l'embrasement réel de la cabine (à 286 s si la porte reste ouverte) montre que l'IA avait **72 s d'avance**. |
@@ -259,7 +282,9 @@ python ml/train.py --data ml/data/scenarios.csv --name "plan B"
 | `app/src/ml/` | Les entrées du modèle et l'évaluateur XGBoost |
 | `app/src/danger/` | Les règles, l'IA, la fusion « ne peut qu'aggraver » |
 | `app/src/stats/` | L'air ARI, le point de non-retour, le verdict, le verrou |
-| `app/src/drone/` | Le drone |
+| `app/src/drone/` | Le drone (`drone.ts` : extérieur ; `indoor.ts` : d'intérieur) |
+| `app/src/knowledge/` | « Ce que PNR sait » : observations horodatées, vieillissement, fusion qui n'aggrave que |
+| `app/src/rehearsal/` | La répétition : moteur, plan, plan ou réel, vue première personne |
 | `app/src/sim/` | La boucle de simulation (dans un Web Worker) |
 | `app/src/panels/` | Le PC, la tablette, le HUD, la fiche réflexe |
 | `ml/` | Contrat du modèle, génération des données, entraînement, modèles exportés, métriques |
