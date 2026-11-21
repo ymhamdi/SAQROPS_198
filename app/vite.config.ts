@@ -54,6 +54,6 @@ export default defineConfig({
   server: { fs: { allow: ['..'] } },
   test: {
     include: ['src/**/*.test.ts'],
-    exclude: ['src/legacy/**', 'node_modules/**'],
+    exclude: ['node_modules/**'],
   },
 })

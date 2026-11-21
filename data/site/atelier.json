@@ -66,6 +66,6 @@
     "fireRoom": "solvants",
     "fireAt": [3, 37],
     "entry": "sortie-ouest",
-    "objectives": ["victime-peinture"]
+    "objectives": ["victime-peinture", "coupure-tgbt"]
   }
 }

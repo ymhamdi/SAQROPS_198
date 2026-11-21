@@ -80,6 +80,9 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
           <button type="button" aria-pressed={mode === 'fire'} onClick={() => setMode('fire')}>
             Clic : départ de feu
           </button>
+          <button type="button" onClick={() => sim.act({ type: 'fire', at: site.demo.fireAt })}>
+            Départ de feu (scénario : stockage solvants)
+          </button>
           <label>
             <input type="checkbox" checked={truth} onChange={(e) => setTruth(e.target.checked)} /> Vérité simulateur <StatusBadge status="SIMULATED" />
           </label>
@@ -238,7 +241,18 @@ export function Pc({ site, sim, onOpenCrew }: { site: Site; sim: SimControls; on
                     <td>
                       <Num value={rv.tLastC} unit="°C" status={rv.status} />
                     </td>
-                    <td>{rv.pred ? <Num value={rv.pred.p60 * 100} unit="%" status={rv.pred.status} /> : <small>hors modèle</small>}</td>
+                    <td>
+                      {rv.pred ? (
+                        <>
+                          <Num value={rv.pred.p60 * 100} unit="%" status={rv.pred.status} />
+                          <small>
+                            délai estimé ≈ <Num value={Math.round(rv.pred.tffS / 5) * 5} unit="s" status={rv.pred.status} />
+                          </small>
+                        </>
+                      ) : (
+                        <small>hors modèle (halle)</small>
+                      )}
+                    </td>
                   </tr>
                 )
               })}

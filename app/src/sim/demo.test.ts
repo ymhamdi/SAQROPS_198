@@ -6,7 +6,7 @@ import { defaultFireParams } from '../fire/params'
 import { fireSetupOf, initialDoors } from '../fire/siteSetup'
 import { loadPredictor } from '../ml/predict'
 import { buildSite } from '../site/site'
-import { engage, initSim, makeContext, startFire, teamNow, tick, toggleDoor } from './sim'
+import { engage, initSim, launchDrone, makeContext, reengageTeam, setObjectives, startFire, teamNow, tick, toggleDoor } from './sim'
 
 describe('video scenario with the shipped model', { timeout: 60_000 }, () => {
   test('booth alert before the booth flashes over; the team gets out above the whistle', () => {
@@ -40,6 +40,55 @@ describe('video scenario with the shipped model', { timeout: 60_000 }, () => {
     expect(s.firstAlertAt[booth]!).toBeLessThan(boothFo!)
     expect(s.team.mode).toBe('out')
     expect(teamNow(ctx, s).bar).toBeGreaterThan(ctx.air.whistleBar)
+  })
+
+  test('the whole video script (CLAUDE.md §9), step by step', () => {
+    const site = buildSite()
+    const ctx = makeContext(site, fireSetupOf(site), defaultFireParams(), loadPredictor())
+    const s = initSim(ctx, initialDoors(site), 42)
+    const booth = site.rooms.findIndex((r) => r.id === 'peinture')
+    const door = site.doors.findIndex((d) => d.id === 'd-solvants-peinture')
+    const log: string[] = []
+    const run = (until: (x: typeof s) => boolean, max = 600) => {
+      for (let k = 0; k < max && !until(s); k++) tick(ctx, s)
+    }
+    // 1. Fire in the solvent store.
+    startFire(ctx, s, site.demo.fireAt)
+    // 2. Drone once the detectors locate the fire.
+    run((x) => x.fire.t >= 60)
+    launchDrone(ctx, s)
+    expect(s.drone.status).toBe('flying')
+    log.push(`t=${s.fire.t} drone up (${s.drone.reason ?? 'full loop'})`)
+    // 3. Team engaged towards the victim then the switchboard: GO.
+    run((x) => x.fire.t >= 100)
+    engage(ctx, s)
+    expect(s.shown.verdict).toBe('GO')
+    log.push(`t=${s.fire.t} engaged GO, exit planned at ${teamNow(ctx, s).exitBar?.toFixed(0)} bar`)
+    // 4. The model calls the booth's flashover: NO-GO, way out, above the whistle.
+    run((x) => x.latch.latched)
+    expect(s.shown.reasons.some((r) => r.code === 'FLASHOVER_PREDICTED' && r.severity === 'no-go')).toBe(true)
+    expect(s.team.mode).toBe('evacuating')
+    expect(teamNow(ctx, s).exitBar!).toBeGreaterThan(ctx.air.whistleBar)
+    log.push(`t=${s.fire.t} NO-GO: ${s.shown.reasons[0].message}; exit at ${teamNow(ctx, s).exitBar?.toFixed(0)} bar`)
+    // 5. The store ↔ booth door is closed: the predicted delay goes up, the verdict stays NO-GO.
+    const before = s.predictions.find((p) => p.room === booth)!
+    toggleDoor(ctx, s, door)
+    run(() => false, 15)
+    const after = s.predictions.find((p) => p.room === booth)!
+    expect(after.p60).toBeLessThan(before.p60)
+    expect(s.shown.verdict).toBe('NO-GO')
+    log.push(`t=${s.fire.t} door closed: booth P60 ${before.p60.toFixed(2)} → ${after.p60.toFixed(2)}, estimate ${before.tffS.toFixed(0)} → ${after.tffS.toFixed(0)} s`)
+    run((x) => x.team.mode === 'out')
+    log.push(`t=${s.fire.t} team out at ${teamNow(ctx, s).bar.toFixed(0)} bar`)
+    // 6. The PC removes the booth objective and re-engages (decision COS): a new route, sent live.
+    const version = s.planVersion
+    setObjectives(ctx, s, ['coupure-tgbt'], 'Objectif cabine retiré par le PC')
+    reengageTeam(ctx, s)
+    expect(s.planVersion).toBeGreaterThan(version)
+    expect(s.team.mode).toBe('engaged')
+    expect(s.latch.log.at(-1)).toMatchObject({ action: 'RE-ENGAGE', by: 'COS' })
+    log.push(`t=${s.fire.t} re-engaged to the switchboard: ${s.shown.verdict}, exit planned at ${teamNow(ctx, s).exitBar?.toFixed(0)} bar`)
+    console.log(log.join('\n'))
   })
 
   test('closing the store ↔ booth door after the NO-GO pushes the booth flashover back and the verdict stays NO-GO', () => {

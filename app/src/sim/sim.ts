@@ -429,11 +429,14 @@ export function evacuate(ctx: SimContext, s: SimState): void {
   judge(ctx, s)
 }
 
-/** The COS re-engages after a NO-GO (R6): logged, and the plan goes back to the objectives. */
+/**
+ * The COS re-engages after a NO-GO (R6): logged, and the plan goes back to the objectives still listed, from where the
+ * team is (outside included), with the air they have left.
+ */
 export function reengageTeam(ctx: SimContext, s: SimState): void {
   if (!s.latch.latched) return
   s.latch = openLatch(s.latch, s.fire.t)
-  if (s.team.mode === 'evacuating') s.team.mode = 'engaged'
+  if (s.team.mode === 'evacuating' || s.team.mode === 'out') s.team.mode = 'engaged'
   s.notes.push({ t: s.fire.t, text: 'Ré-engagement : décision COS.' })
   replan(ctx, s)
   judge(ctx, s)
