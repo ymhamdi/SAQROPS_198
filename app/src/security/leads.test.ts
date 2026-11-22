@@ -33,13 +33,14 @@ const mayday = (): HardwareEvent => ({ kind: 'mayday', status: 'OBSERVED' })
 const send = (ctx: SimContext, s: SimState, event: HardwareEvent) => applyAction(ctx, s, { type: 'hardware', event })
 
 describe('R13: a MAYDAY recalls the engaged team, whatever the order of the events', () => {
-  test('a NO-GO latched in standby, then the COS engages, then a MAYDAY: the team is recalled', () => {
+  test('a NO-GO latched in standby, then the COS engages, then a MAYDAY: the team is turned back and stays out', () => {
     const { ctx, s } = fresh()
     send(ctx, s, hot(solvents, 80))
     expect(s.latch.latched).toBe(true)
     expect(s.team.mode).toBe('standby')
     engage(ctx, s)
-    expect(s.team.mode).toBe('engaged')
+    // R6: a latched NO-GO never leaves a team engaged; only « Ré-engager (décision COS) » opens the latch.
+    expect(s.team.mode).toBe('evacuating')
     send(ctx, s, mayday())
     expect(s.shown.verdict).toBe('NO-GO')
     expect(s.shown.reasons.some((r) => r.code === 'HARDWARE_MAYDAY')).toBe(true)
@@ -50,7 +51,7 @@ describe('R13: a MAYDAY recalls the engaged team, whatever the order of the even
     const { ctx, s } = fresh()
     send(ctx, s, hot(solvents, 80))
     applyAction(ctx, s, { type: 'engage-direct' })
-    expect(s.team.mode).toBe('engaged')
+    expect(s.team.mode).toBe('evacuating')
     send(ctx, s, mayday())
     expect(s.team.mode).toBe('evacuating')
   })
