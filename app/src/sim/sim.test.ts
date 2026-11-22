@@ -47,6 +47,22 @@ describe('the loop: fire → detectors → model → NO-GO → way out', { timeo
     expect(teamNow(ctx, s).bar).toBeGreaterThan(ctx.air.whistleBar)
   })
 
+  test('R6: a NO-GO latched while the team waits turns it back as soon as it is engaged; only the COS sends it in', () => {
+    const alarm: Predictor = { ...stub, predict: () => ({ p30: 0.9, p60: 0.95, tffS: 20 }) }
+    const ctx = makeContext(site, fireSetupOf(site), defaultFireParams(), alarm)
+    const s = initSim(ctx, initialDoors(site), 42)
+    startFire(ctx, s, site.demo.fireAt)
+    runUntil(ctx, s, 40, (x) => x.latch.latched)
+    expect(s.team.mode).toBe('standby')
+    expect(s.latch.latched).toBe(true)
+    engage(ctx, s)
+    expect(s.shown.verdict).toBe('NO-GO')
+    expect(s.team.mode).toBe('evacuating')
+    runUntil(ctx, s, 900, (x) => x.team.mode === 'out')
+    expect(s.team.mode).toBe('out')
+    expect(teamNow(ctx, s).bar).toBeGreaterThan(ctx.air.whistleBar)
+  })
+
   test('R6: once NO-GO, the shown verdict never returns to GO without the COS', () => {
     const { ctx, s } = demo()
     startFire(ctx, s, site.demo.fireAt)

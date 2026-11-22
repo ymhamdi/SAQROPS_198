@@ -374,14 +374,16 @@ export function judge(ctx: SimContext, s: SimState) {
   const { shown, latch } = applyLatch(s.latch, s.computed, s.fire.t)
   s.shown = shown
   s.latch = latch
-  // The latch just closed on an engaged team: get them out.
-  if (!before && latch.latched && s.team.mode === 'engaged') recallTeam(ctx, s)
+  // R6: a latched NO-GO never leaves a team engaged, whether the latch just closed on it or was already closed when the
+  // team was engaged (a NO-GO raised while it waited at the entry). Only « Ré-engager (décision COS) » opens the latch.
+  if (latch.latched && s.team.mode === 'engaged') recallTeam(ctx, s, before)
 }
 
 /** An engaged team is called back to the nearest exit, with the reason of the NO-GO in the notes. */
-function recallTeam(ctx: SimContext, s: SimState): void {
+function recallTeam(ctx: SimContext, s: SimState, alreadyLatched = false): void {
   s.team.mode = 'evacuating'
-  s.notes.push({ t: s.fire.t, text: `NO-GO : ${s.shown.reasons.find((r) => r.severity === 'no-go')?.message ?? ''}. Sortie la plus proche.` })
+  const why = s.shown.reasons.find((r) => r.severity === 'no-go')?.message ?? ''
+  s.notes.push({ t: s.fire.t, text: alreadyLatched ? `Engagement sous NO-GO verrouillé (${why}) : sortie la plus proche. Seul le COS peut ré-engager.` : `NO-GO : ${why}. Sortie la plus proche.` })
   replan(ctx, s)
   judgeAfterReplan(ctx, s)
 }
