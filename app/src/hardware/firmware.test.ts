@@ -113,6 +113,8 @@ describe('the documentation', () => {
   })
 
   test('says honestly what has and has not been tested', () => {
-    expect(readme).toMatch(/non compil/i)
+    // Compiled and flashed on the bench boards on 22/11; what the bench did not reach stays marked as not verified.
+    expect(readme).toMatch(/compilés et téléversés le 22\/11/)
+    expect(readme).toMatch(/non vérifié/i)
   })
 })
