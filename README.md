@@ -277,6 +277,26 @@ Le copilote de la tablette suit ses propres garde-fous (C1 à C8 : lecture seule
 
 ---
 
+## 09 · Voir le feu depuis le drone (module `vision/`, prototype séparé)
+
+Un second prototype de l'équipe regarde le flux caméra du drone. Un détecteur **YOLOv8s**, affiné sur le jeu public D-Fire, repère les flammes et la fumée ; une alerte n'est confirmée que si le feu apparaît sur au moins 4 des 8 dernières images. La détection est projetée sur une carte en grille (5 m par case), puis un automate stochastique simule l'extension possible du feu sous vent faible (10 km/h) et sous sirocco (40 km/h), avec les itinéraires d'évacuation et d'accès des camions.
+
+| Mesure (rapport technique de l'équipe) | Valeur |
+|---|---|
+| Précision / rappel / mAP@0,5, jeu de test D-Fire | 0,777 / 0,707 / 0,781 |
+| Images sans feu qui déclenchent une détection (par image, avant le filtre 4 sur 8) | ≈ 2,2 % |
+| Vitesse, GPU RTX 4050 | ≈ 89 images/s |
+| Au moins un bâtiment atteint à 45 min, 100 simulations (SIMULATED) | 8–13 % sous vent faible · 70–99 % sous sirocco |
+
+- D-Fire est fait surtout de photos prises au sol : les performances vues depuis un drone restent à mesurer.
+- La télémétrie du drone est simulée, la caméra supposée verticale, le terrain plat ; la propagation n'est pas calibrée.
+- Ce module **n'est pas branché à l'application** : il ne nourrit pas le verdict de PNR.
+- Les poids (`best.pt`, 22,5 Mo), le jeu D-Fire et les vidéos ne sont pas dans le dépôt.
+
+Détail : [vision/README.md](vision/README.md) et [vision/RAPPORT_TECHNIQUE.pdf](vision/RAPPORT_TECHNIQUE.pdf).
+
+---
+
 ## Démarrage rapide
 
 Il faut **Node.js 22.12 ou plus récent** (24 recommandé) : vérifier avec `node --version`.
@@ -349,6 +369,7 @@ Chaque hypothèse vit dans `data/config.json` avec sa source. Toutes les référ
 - La vue du HUD est dessinée d'après le plan : ce n'est pas une caméra.
 - Le banc matériel est un prototype : deux cartes de développement, un capteur de pression et de température, un potentiomètre qui simule la bouteille. Plusieurs comportements restent non vérifiés sur carte (voir [firmware/README.md](firmware/README.md)).
 - Le copilote de la tablette est une première version : une liste fermée de questions et des boutons, sans reconnaissance vocale ni LLM dans `main`.
+- Le module `vision/` est un prototype séparé, non branché à l'application ; ses métriques viennent de photos prises au sol (D-Fire).
 - PNR **aide** à décider ; il ne décide pas : « Décision : COS ».
 
 <details>
@@ -374,6 +395,7 @@ app/            application web : Vite + React + TypeScript, tests Vitest
   src/hardware    liaison USB (Web Serial) : drone ESP32, HUD STM32, rejeu
   src/copilot     copilote de la tablette : liste fermée de questions, réponses calculées par PNR
 firmware/       croquis Arduino du drone (ESP32) et du HUD (STM32), câblage, résultats du banc
+vision/         détection feu et fumée par caméra (YOLOv8s), localisation, propagation, évacuation (Python, prototype séparé)
 data/           config.json (toutes les hypothèses), SOURCES.md, consignes.json
 ml/             données, entraînement, évaluation, modèles, MODEL_REPORT.md
 security/       audit de sécurité : rapport, pistes à valider, correctifs

@@ -1,0 +1,6 @@
+path: C:/fire_project/DFire
+train: train/images
+val: test/images
+names:
+  0: smoke
+  1: fire
