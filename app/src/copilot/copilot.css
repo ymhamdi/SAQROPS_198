@@ -1,0 +1,117 @@
+/* The tablet copilot: glove-sized targets, the same surfaces and tokens as the rest of the tablet (crew.css). */
+
+.copilot-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.copilot-state {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+}
+.copilot-state.is-llm {
+  color: var(--green);
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+.copilot-state.is-rules {
+  color: var(--blue-text);
+  border-color: var(--blue);
+  background: var(--blue-bg);
+}
+.copilot-state.is-novoice {
+  color: var(--amber-text);
+  border-color: var(--amber);
+  background: var(--amber-bg);
+}
+
+.copilot-main {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.tablet2 .copilot-talk {
+  min-height: 88px;
+  font-size: 24px;
+  background: var(--blue);
+  color: #fff;
+}
+.tablet2 .copilot-talk:disabled {
+  background: var(--surface);
+  color: var(--text-2, #5f6368);
+  border-color: var(--line);
+}
+
+/* SOS: separate, red, always reachable. */
+.tablet2 .copilot-sos {
+  min-height: 88px;
+  min-width: 120px;
+  font-size: 26px;
+  font-weight: 800;
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.copilot-questions,
+.copilot-pick {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.tablet2 .copilot-questions button,
+.tablet2 .copilot-pick button {
+  margin-top: 0;
+  text-align: left;
+  padding: 8px 12px;
+}
+.tablet2 .copilot-questions button[aria-pressed='true'] {
+  background: var(--blue-bg);
+}
+
+.copilot-answer {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--blue);
+  background: var(--blue-bg);
+}
+.copilot-answer.is-refusal {
+  border-color: var(--amber);
+  background: var(--amber-bg);
+}
+.copilot-answer.is-mayday {
+  border-color: var(--red);
+  background: var(--red-bg);
+}
+.copilot-answer p {
+  margin: 6px 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.copilot-tag {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--blue-text);
+}
+
+.copilot-items,
+.copilot-sources {
+  margin: 6px 0 0;
+  padding-left: 20px;
+  font-size: 17px;
+}
+.copilot-sources small {
+  display: block;
+  color: var(--text-2, #5f6368);
+}

@@ -4,6 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { H, v } from '../config'
+import { CopilotPanel } from '../copilot/CopilotPanel'
 import { demoHref } from '../demo/links'
 import { LiveMap, type MapView } from '../scene/LiveMap'
 import { MISSION_STEPS, missionOf } from '../scene/mission'
@@ -137,6 +138,7 @@ export function Tablet({ site, snap }: { site: Site; snap: Snapshot | null }) {
           </ul>
         )}
       </section>
+      <CopilotPanel site={site} snap={snap} />
       <section className="tablet2-map" aria-label="Carte en direct">
         <div className="tablet2-maptools" role="toolbar" aria-label="Affichage de la carte">
           <button type="button" aria-pressed={mapView === 'heading'} onClick={() => setMapView('heading')}>
