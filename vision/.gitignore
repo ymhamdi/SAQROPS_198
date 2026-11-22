@@ -1,0 +1,15 @@
+fire_env/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+DFire/
+fausses_alertes/
+resultats_finaux/
+runs/
+*.mp4
+*.jpg
+*.csv
+yolov8s.pt
+git/

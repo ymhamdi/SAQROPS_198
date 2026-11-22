@@ -1,0 +1,6 @@
+# Dépendances du module vision (Python 3.12, versions non figées : à verrouiller, voir le rapport §VII)
+ultralytics
+opencv-python
+numpy
+scipy
+matplotlib

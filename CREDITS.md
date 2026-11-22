@@ -67,3 +67,10 @@ Le plan de l'atelier (`data/site/atelier.json`) est dessiné par l'équipe : c'e
 
 - **Barlow** et **Barlow Semi Condensed**, par Jeremy Tribby, licence SIL Open Font 1.1, depuis Google Fonts (<https://fonts.google.com/specimen/Barlow>). Hébergées dans `app/public/fonts/`, pour que la démonstration fonctionne hors-ligne.
 - Aucune bibliothèque d'icônes ni image tierce n'est utilisée ; le favicon (`app/public/favicon.svg`) est celui de Martian Map.
+
+## Module vision (prototype séparé, `vision/`)
+
+- **D-Fire**, jeu de données d'images de feu et de fumée : <https://github.com/gaiasd/DFireDataset>. Sert à affiner le détecteur ; non inclus dans le dépôt.
+- **Ultralytics YOLOv8**, licence AGPL-3.0 : détecteur, utilisé comme dépendance Python, non inclus dans le dépôt.
+- **OpenStreetMap**, © contributeurs OpenStreetMap, licence ODbL, via l'API Overpass : exploration d'un îlot industriel réel (`verif_osm.py`).
+- Code écrit par l'équipe avec l'aide d'un assistant IA, comme le reste du dépôt.
