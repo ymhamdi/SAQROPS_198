@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PNR · Point de Non-Retour — pitch</title>
+<link rel="stylesheet" href="deck.css">
+<style>
+  .x-row { display: flex; gap: 40px; }
+  .x-col { display: flex; flex-direction: column; gap: 22px; }
+  .x-shot { margin: 0; }
+  .x-shot img { display: block; width: 100%; border: 1px solid var(--line); border-radius: 8px; }
+  .x-shot figcaption { margin-top: 10px; font: 400 21px/1.3 var(--bd); color: var(--mute); }
+  .x-h { font: 700 64px/1.02 var(--hd); margin: 10px 0 0; }
+  .x-stat .n { font: 700 168px/0.9 var(--hd); color: var(--fire); }
+  .x-stat .u { font: 600 40px/1.1 var(--hd); }
+  .x-stat .s { font: 400 21px/1.3 var(--bd); color: var(--mute); margin-top: 14px; }
+  .x-li { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 18px; }
+  .x-li li { font: 400 30px/1.28 var(--bd); padding-left: 34px; position: relative; color: #dfe5ec; }
+  .x-li li::before { content: ''; position: absolute; left: 0; top: 14px; width: 16px; height: 3px; background: var(--fire); }
+  .x-li.cy li::before { background: var(--cyan); }
+  .x-li.t26 li { font-size: 26px; }
+  .x-note { font: 500 24px/1.3 var(--bd); color: var(--amber); border-left: 4px solid var(--amber); padding: 6px 0 6px 18px; }
+  .x-bars { display: flex; align-items: flex-end; gap: 60px; height: 420px; padding: 0 20px; border-bottom: 2px solid var(--line); }
+  .x-bar { width: 170px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
+  .x-bar .f { width: 100%; background: linear-gradient(var(--fire), var(--fire2)); border-radius: 6px 6px 0 0; }
+  .x-bar .v { font: 700 46px var(--hd); margin-bottom: 8px; }
+  .x-yr { display: flex; gap: 60px; padding: 8px 20px 0; font: 600 28px var(--hd); color: var(--mute); }
+  .x-yr span { width: 170px; text-align: center; }
+  .x-q { font: 700 76px/1.0 var(--hd); }
+  .x-q span { color: var(--fire); }
+  .x-flow { display: flex; align-items: stretch; gap: 14px; }
+  .x-node { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; }
+  .x-node h4 { margin: 0 0 6px; font: 700 28px/1.05 var(--hd); }
+  .x-node p { margin: 0; font: 400 22px/1.25 var(--bd); color: #cfd7df; }
+  .x-node.hot { border-color: var(--fire); background: rgba(255, 122, 26, .10); }
+  .x-node.go { border-color: var(--green); background: rgba(61, 220, 132, .08); }
+  .x-arrow { align-self: center; font: 700 40px var(--hd); color: var(--fire); }
+  .x-stack { display: flex; flex-direction: column; gap: 10px; flex: 1.15; }
+  .x-stack .x-node { flex: none; }
+  .x-kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: baseline; }
+  .x-kv .k { font: 700 44px var(--hd); color: var(--text); white-space: nowrap; }
+  .x-kv .v { font: 400 24px/1.25 var(--bd); color: #cfd7df; }
+  .x-chips { display: flex; flex-wrap: wrap; gap: 12px; }
+  .x-chips .chip { font-size: 23px; padding: 6px 16px; }
+  .x-tl { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .x-tl .ms { border-top: 4px solid var(--fire); padding-top: 14px; }
+  .x-tl .ms .w { font: 700 30px var(--hd); color: var(--fire); }
+  .x-tl .ms b { display: block; font: 600 28px/1.15 var(--hd); margin: 6px 0; }
+  .x-tl .ms p { margin: 0; font: 400 22px/1.28 var(--bd); color: #cfd7df; }
+  .x-cost .n { font: 700 72px/1 var(--hd); color: var(--fire); }
+  .x-cost .l { font: 400 24px/1.25 var(--bd); color: #cfd7df; margin-top: 4px; }
+  .x-bmc { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: 1fr 1fr auto; gap: 8px; height: 100%; }
+  .x-bmc div { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; font: 400 18px/1.25 var(--bd); color: #cfd7df; }
+  .x-bmc h5 { margin: 0 0 4px; font: 700 18px var(--hd); letter-spacing: .08em; text-transform: uppercase; color: var(--cyan); }
+  .x-bmc .vp { grid-row: span 2; border-color: var(--fire); } .x-bmc .vp h5 { color: var(--fire); }
+  .x-bmc .tall { grid-row: span 2; }
+  .x-bmc .wide { grid-column: span 2; padding-bottom: 12px; }
+  .x-wide3 { grid-column: span 3; }
+  .x-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .x-phase { padding: 22px 30px; border: 1px solid var(--line); background: var(--panel); }
+  .x-phase:first-child { border-radius: 8px 0 0 8px; } .x-phase:last-child { border-radius: 0 8px 8px 0; }
+  .x-phase .k { font: 700 24px var(--hd); letter-spacing: .14em; color: var(--fire); text-transform: uppercase; }
+  .x-phase h3 { margin: 4px 0 8px; font: 700 44px var(--hd); }
+  .x-phase p { margin: 0; font: 400 25px/1.3 var(--bd); color: #cfd7df; }
+  .x-needs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .x-band { text-align: center; font: 700 44px var(--hd); padding: 22px; border: 2px solid var(--fire); border-radius: 8px; background: rgba(255, 122, 26, .08); }
+  .x-team { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 30px; }
+  .x-team div { font: 600 38px var(--hd); border-left: 4px solid var(--fire); padding-left: 16px; }
+  .x-qr { display: flex; gap: 22px; align-items: center; }
+  .x-qr img { width: 190px; height: 190px; background: #fff; border-radius: 6px; padding: 6px; }
+  .x-qr b { display: block; font: 700 30px var(--hd); }
+  .x-qr span { font: 400 21px/1.3 var(--bd); color: var(--mute); }
+  .x-close { font: 700 92px/1.02 var(--hd); }
+  .x-close span { color: var(--fire); }
+  .foot { font-size: 18px; }
+  #d3 .body, #d8 .body, #d10 .body { justify-content: space-evenly; } #dsec .body { align-items: center; }
+  #d3 .card p { font-size: 31px; } #d3 .card h3 { font-size: 38px; } #d3 .x-li li { font-size: 30px; } #d3 .card { padding: 32px 34px; }
+  #d4 .body { align-items: center; }
+  #d8 .x-li li { font-size: 29px; } #d8 .card h3 { font-size: 40px; } #d8 .card { padding: 32px 34px; }
+  #d8 .x-tl .ms .w { font-size: 38px; } #d8 .x-tl .ms b { font-size: 36px; } #d8 .x-tl .ms p { font-size: 27px; }
+  #d10 .x-phase { padding: 32px 34px; } #d10 .x-phase h3 { font-size: 54px; } #d10 .x-phase p { font-size: 29px; }
+  #d10 .card h3 { font-size: 38px; } #d10 .card p { font-size: 27px; } #d10 .x-band { font-size: 52px; padding: 30px; }
+  #d5 .card { padding: 18px 24px; } #d5 .card p { font-size: 24px; } #d5 .card h3 { font-size: 30px; }
+  #d5 .x-stack { gap: 8px; } #d5 .x-stack .x-node { padding: 10px 16px; } #d5 .x-node p { font-size: 20px; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1 · Accroche -->
+<section class="slide" id="d1">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Équipe SAQROPS · Aero-Entrepreneur</span><span class="num"><b>01</b> / 12</span></div>
+  <div class="body x-col" style="gap:34px">
+    <div>
+      <div class="kicker">Incendie sur site industriel · Protection civile</div>
+      <h1 class="title" style="font-size:118px;margin-top:10px">PNR · Point de Non-Retour</h1>
+      <p class="lead" style="margin:14px 0 0">Le binôme peut-il encore ressortir ? <span class="fire">PNR répond à chaque seconde.</span></p>
+    </div>
+    <div class="x-row" style="align-items:flex-start">
+      <div class="card x-stat" style="width:470px;flex:none">
+        <div class="n">44</div>
+        <div class="u">incendies par jour<br>en Tunisie (2021)</div>
+        <div class="s">16 021 incendies en 2021 — statistiques de la Protection civile, citées par WMC/TAP, 13/06/2022</div>
+      </div>
+      <figure class="x-shot" style="width:1250px">
+        <img src="assets/hero-no-go.jpg" alt="PC du COS : verdict NO-GO">
+        <figcaption>Capture de l'application : le PC du COS passe en NO-GO, l'IA prévoit l'embrasement du local voisin. Données <span class="lbl sim">SIMULATED</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · Problème -->
+<section class="slide" id="d2">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Le problème</span><span class="num"><b>02</b> / 12</span></div>
+  <div class="body x-row">
+    <div class="x-col" style="flex:1.25">
+      <h2 class="x-h">Dans la fumée, le binôme décide à l'aveugle</h2>
+      <ul class="x-li">
+        <li><b>Le local voisin va-t-il s'embraser ?</b> Aucun œil ne le voit venir à travers la fumée.</li>
+        <li><b>Les détecteurs se taisent au-delà de 150 °C</b>, juste quand l'information devient vitale.</li>
+        <li><b>L'air est compté</b> : le sifflet de l'ARI sonne à 55 bar (EN 137), le retour coûte plus que l'aller.</li>
+        <li><b>La fumée est la 1<sup>re</sup> cause de décès</b> des victimes d'incendie (FTUSA).</li>
+      </ul>
+      <div class="x-note">Limites des pratiques actuelles en Tunisie : hypothèse fondée sur la doctrine publique (IAFC, NFPA 1404), à valider avec la Protection civile.</div>
+    </div>
+    <div class="card" style="flex:1">
+      <h3>Indemnités d'incendie versées</h3>
+      <p class="mute" style="font-size:24px">millions de dinars (MDT), assurance</p>
+      <div class="x-bars" style="margin-top:30px">
+        <div class="x-bar"><div class="v">32,8</div><div class="f" style="height:30.6%"></div></div>
+        <div class="x-bar"><div class="v fire">107,2</div><div class="f" style="height:100%"></div></div>
+      </div>
+      <div class="x-yr"><span>2016</span><span>2020</span></div>
+      <p style="margin-top:22px;font-size:30px"><b class="fire">× 3,3</b> en quatre ans.</p>
+    </div>
+  </div>
+  <div class="foot">Sources : Hichem Saied (FTUSA) et statistiques de la Protection civile, cités par WMC/TAP, 13/06/2022 · EN 137 (appareils respiratoires isolants).</div>
+</section>
+
+<!-- 3 · Étude du besoin -->
+<section class="slide" id="d3">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Étude du besoin</span><span class="num"><b>03</b> / 12</span></div>
+  <div class="body x-col">
+    <h2 class="x-h">Le vrai besoin : la décision d'engagement, pas la détection</h2>
+    <div class="x-row" style="gap:24px">
+      <div class="card" style="flex:1"><h3 class="fire">COS · poste de commandement</h3><p>« J'engage ou je retire ? » Une vue d'ensemble, des raisons claires, un journal de ses décisions.</p></div>
+      <div class="card" style="flex:1"><h3 class="fire">Chef de binôme · tablette</h3><p>« Par où sortir ? Combien d'air au retour ? » Un itinéraire, un point de non-retour, des alertes.</p></div>
+      <div class="card" style="flex:1"><h3 class="fire">Porteur d'ARI · masque</h3><p>« Je continue ou je sors ? » Une alerte lisible en moins d'une seconde : icône, mot, couleur.</p></div>
+    </div>
+    <div class="x-row">
+      <div class="x-col" style="flex:1">
+        <div class="kicker cy">Cible</div>
+        <ul class="x-li cy t26">
+          <li><b>Payeurs</b> : sites industriels à risque — solvants, peinture, batteries Li-ion, entrepôts, sites aéronautiques.</li>
+          <li><b>Utilisateurs</b> : la Protection civile (COS, chefs de binôme, porteurs d'ARI) et ses centres de formation, gratuitement.</li>
+        </ul>
+      </div>
+      <div class="x-col" style="flex:1">
+        <div class="kicker cy">Méthode</div>
+        <ul class="x-li cy t26">
+          <li>Cahier des charges du challenge ; doctrine publique : règles d'engagement IAFC, EN 137, NFPA 1404.</li>
+          <li>Veille : NIST P-Flash, DHS POINTER, essais UL FSRI, NASA ACERO.</li>
+          <li>Carte d'empathie : <b>hypothèse</b>, aucun pompier interviewé à ce jour — à valider au pilote.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Solution -->
+<section class="slide" id="d4">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">La solution</span><span class="num"><b>04</b> / 12</span></div>
+  <div class="body x-row">
+    <div class="x-col" style="flex:0.9;gap:26px">
+      <div class="x-q">Tenable <span>?</span><br>Par où sortir <span>?</span><br>Pourquoi <span>?</span></div>
+      <ul class="x-li t26">
+        <li><b>Une IA voit venir l'embrasement 30 à 60 s avant</b>, avec les détecteurs déjà installés, même en panne.</li>
+        <li><b>Le point de non-retour de l'aviation, pour le pompier</b> : l'air de l'ARI vérifié en chaque point de l'itinéraire.</li>
+        <li><b>Deux drones</b> : un tour du site hors du panache, un vol d'intérieur pour répéter la mission.</li>
+      </ul>
+      <div class="x-chips"><span class="chip">L'IA ne peut qu'aggraver</span><span class="chip">NO-GO verrouillé</span><span class="chip fire">Décision : COS</span></div>
+    </div>
+    <div class="x-col" style="flex:1.1">
+      <figure class="x-shot">
+        <img src="assets/screen-pc.jpg" alt="PC du COS">
+        <figcaption>Capture : PC du COS à T+3:34 — NO-GO, « Embrasement prévu Cabine de peinture sous 60 s », itinéraire de sortie. Données <span class="lbl sim">SIMULATED</span></figcaption>
+      </figure>
+      <p class="mute" style="margin:0;font-size:22px">Héritage : moteur de route et logique de point de non-retour repris de <b style="color:var(--text)">Martian Map</b> (NASA Space Apps Challenge 2026), O₂ du scaphandre → air de l'ARI.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Comment ça marche + aéronautique -->
+<section class="slide" id="d5">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec cy">Chaîne de décision · aéronautique</span><span class="num"><b>05</b> / 12</span></div>
+  <div class="body x-col" style="gap:26px">
+    <div class="x-flow">
+      <div class="x-stack">
+        <div class="x-node"><h4>Détecteurs du bâtiment</h4><p>bruités, en panne au-delà de 150 °C</p></div>
+        <div class="x-node"><h4 class="cy">Drone extérieur</h4><p>tour du site, hors du panache</p></div>
+        <div class="x-node"><h4 class="cy">Drone d'intérieur</h4><p>observations horodatées</p></div>
+      </div>
+      <div class="x-arrow">→</div>
+      <div class="x-node hot"><h4>Fusion</h4><p>règles + IA + drone : <b>ne peut qu'aggraver</b> (GO → NO-GO, jamais l'inverse)</p></div>
+      <div class="x-arrow">→</div>
+      <div class="x-node"><h4>Itinéraire et air</h4><p>A* sur le plan, temps de sortie, point de non-retour de l'ARI</p></div>
+      <div class="x-arrow">→</div>
+      <div class="x-node go"><h4>Verdict + raisons</h4><p>GO / NO-GO verrouillé ; seul le COS ré-engage</p></div>
+      <div class="x-arrow">→</div>
+      <div class="x-node"><h4>5 écrans</h4><p>PC, tablette, HUD du masque, jumeau numérique, fiche réflexe</p></div>
+    </div>
+    <div class="x-row" style="gap:34px">
+      <figure class="x-shot" style="width:720px;flex:none">
+        <img src="assets/drone-plume.jpg" alt="Drone autour du bâtiment, zone du panache">
+        <figcaption>Capture : trajet du drone et zone d'exclusion du panache orientée par le vent. <span class="lbl sim">SIMULATED</span></figcaption>
+      </figure>
+      <div class="x-col" style="flex:1;gap:16px">
+        <div class="card cy"><h3>Drone de reconnaissance</h3><p>Tour à 30 m depuis l'engin ; panache évité selon le vent Open-Meteo <span class="lbl">DERIVED</span> ; <b>PNR batterie</b> : retour garanti avec 25 % de réserve ; vol refusé au-delà de 12 m/s.</p></div>
+        <div class="card cy"><h3>Drone d'intérieur à cage</h3><p>9 min, 1,5 m/s, 50 °C max <span class="lbl mod">MODELED</span> ; n'ouvre jamais une porte ; un local non visité reste INCONNU, jamais « sûr ».</p></div>
+        <p class="mute" style="margin:0;font-size:21px">Vol simulé : en Tunisie, tout vol réel exige une autorisation préalable. Inspiration : NASA ACERO (gestion des drones sur incendie).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · IA -->
+<section class="slide" id="d6">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Le modèle IA</span><span class="num"><b>06</b> / 12</span></div>
+  <div class="body x-row" style="gap:34px">
+    <div class="x-col" style="flex:1">
+      <h2 class="x-h" style="font-size:54px">3 × XGBoost<br>13 variables</h2>
+      <ul class="x-li t26">
+        <li>Entrées : les seuls détecteurs, pannes comprises (valeurs manquantes).</li>
+        <li>Sorties : P(embrasement ≤ 30 s), P(≤ 60 s), délai avant embrasement.</li>
+        <li>Pourquoi : données tabulaires, valeurs manquantes natives, explicable, tourne dans le navigateur hors ligne (parité Python 10⁻⁶).</li>
+        <li>Entraînement : 5 000 scénarios de notre moteur feu <span class="lbl mod">MODELED</span> ; validation : 120 essais réels UL FSRI <span class="lbl obs">OBSERVED</span>.</li>
+      </ul>
+    </div>
+    <div class="x-col" style="flex:1.05;gap:18px">
+      <div class="card">
+        <h3>Sur nos scénarios <span class="lbl sim">SIMULATED</span></h3>
+        <div class="x-kv" style="margin-top:8px">
+          <span class="k">94,6 %</span><span class="v">des embrasements sous 60 s détectés (rappel), précision 0,52</span>
+          <span class="k">0,76</span><span class="v">PR-AUC, contre 0,31 pour une règle simple</span>
+          <span class="k">94 s</span><span class="v">d'avance médiane ; 893 embrasements annoncés sur 905</span>
+        </div>
+      </div>
+      <div class="card" style="border-color:var(--fire)">
+        <h3>Sur essais réels UL FSRI <span class="lbl obs">OBSERVED</span></h3>
+        <div class="x-kv" style="margin-top:8px">
+          <span class="k gr">11 / 11</span><span class="v">embrasements annoncés, 54 s d'avance médiane</span>
+          <span class="k red">92 / 109</span><span class="v"><b>fausses alertes (84 %)</b> sur les locaux qui ne s'embrasent pas</span>
+        </div>
+      </div>
+    </div>
+    <div class="x-col" style="flex:0.8;gap:18px">
+      <div class="card cy"><h3>Lecture honnête</h3><p style="font-size:24px">Sur le réel, l'IA n'a manqué aucun embrasement, mais elle alerte trop souvent. Entraînée sur notre simulateur, elle doit être réentraînée sur des mesures réelles (NIST P-Flash, relevés d'exercices).</p></div>
+      <div class="x-note" style="font-size:23px">Une fausse alerte coûte du temps, pas la sécurité : l'IA ne peut qu'aggraver. Les réduire est l'objectif n° 1 du pilote.</div>
+    </div>
+  </div>
+  <div class="foot">Rapport complet : ml/MODEL_REPORT.md (données, métriques, étalonnage, limites) · UL FSRI fsri-compartments-2018.</div>
+</section>
+
+<!-- 7 · Démo + règles -->
+<section class="slide" id="d7">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Démonstration · sécurité</span><span class="num"><b>07</b> / 12</span></div>
+  <div class="body x-col" style="gap:24px">
+    <div class="x-row" style="gap:34px">
+      <figure class="x-shot" style="width:980px;flex:none">
+        <img src="assets/truth-twin.jpg" alt="Jumeau numérique : réalité simulée et ce que PNR sait">
+        <figcaption>Capture : jumeau numérique — à gauche la réalité simulée, à droite ce que PNR en sait. <span class="lbl sim">SIMULATED</span></figcaption>
+      </figure>
+      <div class="x-col" style="flex:1;gap:16px">
+        <div class="card"><h3>Le scénario de la démo <span class="lbl sim">SIMULATED</span></h3>
+          <div class="x-kv" style="margin-top:6px">
+            <span class="k" style="font-size:36px">T+3:34</span><span class="v">NO-GO : l'IA prévoit l'embrasement de la cabine de peinture</span>
+            <span class="k" style="font-size:36px">259 s</span><span class="v">binôme dehors avec 272 bar (sifflet : 55 bar)</span>
+            <span class="k fire" style="font-size:36px">72 s</span><span class="v">d'avance sur l'embrasement réel du simulateur</span>
+          </div>
+        </div>
+        <div class="card vi"><h3 class="vi">Répéter avant d'entrer</h3><p>Le drone d'intérieur découvre un rack effondré absent du plan ; la répétition propose le contournement et l'heure de demi-tour ; le COS valide le plan.</p></div>
+      </div>
+    </div>
+    <div class="x-col" style="gap:10px">
+      <div class="kicker">13 règles de sécurité, chacune avec son test · 555 tests automatiques</div>
+      <div class="x-chips">
+        <span class="chip">R1 L'IA ne peut qu'aggraver</span><span class="chip">R2 Décision : COS</span><span class="chip">R3 Chaque nombre étiqueté</span>
+        <span class="chip">R5 Jamais la vérité du simulateur</span><span class="chip">R6 NO-GO verrouillé</span><span class="chip">R7 Drone : retour garanti</span>
+        <span class="chip">R9 Non visité = INCONNU</span><span class="chip">R12 Répétition étiquetée</span><span class="chip">R13 Le matériel ne peut qu'aggraver</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Sécurité -->
+<section class="slide" id="dsec">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Sécurité du logiciel</span><span class="num"><b>08</b> / 12</span></div>
+  <div class="body x-row" style="gap:34px">
+    <div class="x-col" style="flex:0.95;gap:22px">
+      <h2 class="x-h" style="font-size:58px">Un audit de sécurité,<br>des correctifs testés</h2>
+      <div class="card"><h3>Audit du 22/11 · lecture du code</h3>
+        <div class="x-kv" style="margin-top:8px">
+          <span class="k">12</span><span class="v">pistes examinées, chacune revue par un vérificateur indépendant</span>
+          <span class="k gr">8</span><span class="v">réfutées</span>
+          <span class="k am">4</span><span class="v">à valider : 2 reproduites puis corrigées</span>
+        </div>
+      </div>
+      <ul class="x-li t26">
+        <li>Aucun secret, aucune injection : application client seulement, sans serveur ni compte.</li>
+        <li>Le risque porte sur <b>l'intégrité des règles de sécurité</b>, pas sur le vol de données.</li>
+      </ul>
+    </div>
+    <div class="card" style="flex:1.15"><h3>Corrigé sur main, avec des tests</h3>
+      <ul class="x-li t26" style="margin-top:12px;gap:14px">
+        <li><b>Un MAYDAY rappelle l'équipe</b> même sous un NO-GO déjà verrouillé (R13).</li>
+        <li><b>Un rejeu ne garde jamais l'étiquette OBSERVED</b> d'une mesure en direct (R3).</li>
+        <li><b>Vent illisible : vol du drone refusé</b> (R7).</li>
+        <li><b>Messages entre écrans contrôlés</b> à la réception : un message mal formé ne fait plus tomber la tablette ou le HUD.</li>
+        <li><b>Alerte MAYDAY gardée à l'écran du PC</b> jusqu'à l'accusé de réception (sans test dédié).</li>
+        <li><b>Arbre IA abîmé</b> : parcours borné, plus de boucle sans fin.</li>
+        <li>Pression de la bouteille reprise après une réinitialisation.</li>
+      </ul>
+    </div>
+    <div class="x-col" style="flex:0.62;gap:18px">
+      <div class="card x-stat"><div class="n" style="font-size:120px">555</div><div class="u" style="font-size:32px">tests automatiques, dont 39 de sécurité</div></div>
+      <div class="card x-stat"><div class="n" style="font-size:120px">13</div><div class="u" style="font-size:32px">règles de sécurité, chacune testée</div></div>
+      <div class="x-note" style="font-size:22px">Reste à décider : un seul PC maître sur la liaison entre écrans.</div>
+    </div>
+  </div>
+  <div class="foot">Détail : security/README.md, REPORT.md, NEEDS-VALIDATION.md dans le dépôt · scan des secrets propre sur toutes les branches et l'historique.</div>
+</section>
+
+<!-- 8 · Faisabilité technique -->
+<section class="slide" id="d8">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Faisabilité technique</span><span class="num"><b>09</b> / 12</span></div>
+  <div class="body x-col" style="gap:30px">
+    <div class="x-row" style="gap:24px">
+      <div class="card" style="flex:1.1"><h3>Le prototype existe</h3>
+        <ul class="x-li t26" style="margin-top:10px">
+          <li>Application web hors ligne, aucun serveur : PC, tablette, HUD, jumeau, fiche.</li>
+          <li>555 tests automatiques ; 13 règles de sécurité testées.</li>
+          <li>Banc matériel : drone ESP32 + capteur, HUD STM32 ; croquis compilés et téléversés, en partie vérifiés sur carte.</li>
+        </ul>
+      </div>
+      <div class="card" style="flex:1"><h3>Ressources</h3>
+        <ul class="x-li t26" style="margin-top:10px">
+          <li>Équipe de 4 : logiciel, IA et données, matériel, terrain.</li>
+          <li>Un référent de la Protection civile.</li>
+          <li>Tablette durcie, drone thermique, banc de capteurs.</li>
+        </ul>
+      </div>
+      <div class="card x-stat" style="flex:0.6"><div class="n" style="font-size:150px">12</div><div class="u">mois jusqu'au bilan du pilote</div></div>
+    </div>
+    <div class="x-tl">
+      <div class="ms"><span class="w">M1–M2</span><b>Valider les hypothèses</b><p>Air, vitesses, consignes : revus avec la Protection civile.</p></div>
+      <div class="ms"><span class="w">M2–M5</span><b>Réentraîner l'IA</b><p>NIST P-Flash, relevés d'exercices réels ; réduire les fausses alertes.</p></div>
+      <div class="ms"><span class="w">M3–M6</span><b>Matériel en exercice</b><p>Capteurs et HUD, du banc à l'exercice de formation.</p></div>
+      <div class="ms"><span class="w">M6–M10</span><b>Pilote</b><p>Une unité, un site industriel, drone sous autorisation.</p></div>
+      <div class="ms"><span class="w">M10–M12</span><b>Bilan et extension</b><p>Mesures du pilote, cahier des charges, autres sites.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · Faisabilité commerciale -->
+<section class="slide" id="d9">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Faisabilité commerciale</span><span class="num"><b>10</b> / 12</span></div>
+  <div class="body x-row" style="gap:36px">
+    <div class="x-col" style="flex:0.95;gap:20px">
+      <div class="kicker cy">Coût global — estimation de l'équipe</div>
+      <div class="x-cost"><div class="n">0 TND</div><div class="l">de licence : détecteurs déjà installés, un simple navigateur, aucun serveur</div></div>
+      <div class="x-cost"><div class="n">≈ 3 000 TND</div><div class="l">pilote minimal, sans drone neuf</div></div>
+      <div class="x-cost"><div class="n">≈ 28 000 TND</div><div class="l">pilote complet : 22 400 TND de matériel (dont un drone thermique neuf) + 25 % de marge</div></div>
+      <p class="mute" style="margin:0;font-size:21px">Hypothèse de change : 1 € = 3,4 TND. Prix revendeurs relevés le 22/11/2026, ordre de grandeur.</p>
+      <div class="kicker cy" style="margin-top:6px">Viabilité</div>
+      <p style="margin:0;font:400 25px/1.3 var(--bd);color:#dfe5ec">Coût par site faible ; les indemnités d'incendie ont triplé en quatre ans : industriels et assureurs ont intérêt à des interventions plus sûres.</p>
+    </div>
+    <div style="flex:1.25">
+      <div class="x-bmc">
+        <div class="tall"><h5>Partenaires</h5>Protection civile, INJAZ, intégrateurs de systèmes incendie, fabricants d'ARI, assureurs</div>
+        <div><h5>Activités</h5>Numériser les plans, valider, maintenir les modèles</div>
+        <div class="vp"><h5>Proposition de valeur</h5>Sortir avant le sifflet, voir venir l'embrasement, un verdict expliqué, un plan validé par le COS. Pour l'industriel : un plan d'intervention vivant.</div>
+        <div><h5>Relations</h5>Pilote co-construit, formation, validation des consignes</div>
+        <div class="tall"><h5>Segments</h5><b>Payeurs</b> : sites industriels à risque. <b>Utilisateurs</b> : Protection civile et centres de formation</div>
+        <div><h5>Ressources</h5>Moteur PNR, modèle IA, données UL FSRI, équipe</div>
+        <div><h5>Canaux</h5>Pilote Protection civile, zones industrielles, assureurs</div>
+        <div class="wide"><h5>Coûts</h5>Numérisation, matériel de pilote, maintenance des modèles (estimation de l'équipe)</div>
+        <div class="x-wide3" style="grid-column:span 3"><h5>Revenus</h5>Mise en place par site + abonnement ; gratuit pour la Protection civile ; licence formation</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">Marché : 16 021 incendies en 2021 (Protection civile, via WMC/TAP) · indemnités 32,8 → 107,2 MDT, 2016 → 2020 (FTUSA). BMC complet : livrable 01.</div>
+</section>
+
+<!-- 10 · Déploiement Protection civile -->
+<section class="slide" id="d10">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Déploiement avec la Protection civile</span><span class="num"><b>11</b> / 12</span></div>
+  <div class="body x-col" style="gap:30px">
+    <div class="x-phases">
+      <div class="x-phase"><span class="k">Temps 1</span><h3>Valider</h3><p>Hypothèses d'air et de vitesse, consignes, seuils : chacun revu et signé par la Protection civile.</p></div>
+      <div class="x-phase"><span class="k">Temps 2</span><h3>Piloter</h3><p>Une unité et un site : exercices, puis interventions en parallèle des pratiques actuelles.</p></div>
+      <div class="x-phase"><span class="k">Temps 3</span><h3>Étendre</h3><p>Autres unités, zones industrielles, centres de formation.</p></div>
+    </div>
+    <div class="x-needs">
+      <div class="card"><h3>Matériel</h3><p>Tablette durcie, drone mutualisé par unité, affichage dans le masque.</p></div>
+      <div class="card"><h3>Données</h3><p>Plans de site numérisés, relevés d'exercices pour réentraîner l'IA.</p></div>
+      <div class="card"><h3>Formation</h3><p>Deux jours par équipe ; la répétition sert d'outil d'entraînement.</p></div>
+      <div class="card"><h3>Maintenance</h3><p>Recalibrage semestriel du modèle, mise à jour des plans.</p></div>
+      <div class="card"><h3>Support</h3><p>Un référent technique, journal des décisions pour le retour d'expérience.</p></div>
+    </div>
+    <div class="x-band">PNR aide, il ne décide pas. <span class="fire">Décision : COS.</span></div>
+  </div>
+</section>
+
+<!-- 11 · Équipe et clôture -->
+<section class="slide" id="d11">
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="hdr"><span class="brand">PNR · Point de Non-Retour</span><span class="sec">Équipe SAQROPS</span><span class="num"><b>12</b> / 12</span></div>
+  <div class="body x-col" style="gap:44px">
+    <div class="x-close">44 incendies par jour.<br><span>Un binôme qui sait quand ressortir.</span></div>
+    <div class="x-row" style="gap:60px;align-items:flex-start">
+      <div class="x-col" style="flex:1;gap:20px">
+        <div class="kicker">L'équipe SAQROPS</div>
+        <div class="x-team"><div>Youssef Mhamdi</div><div>Amine Chtara</div><div>Loua Klai</div><div>Ichrak Ayachi</div></div>
+        <p class="mute" style="margin:6px 0 0;font-size:21px">Code, tests et documentation écrits avec l'aide d'un assistant IA (Claude Code), déclaré. Fork de Martian Map (NASA Space Apps 2026), crédité.</p>
+      </div>
+      <div class="x-col" style="flex:1;gap:22px">
+        <div class="x-qr"><img src="assets/qr-repo.svg" alt="QR code du dépôt"><div><b>Code et rapport IA</b><span>github.com/ymhamdi/SAQROPS_198<br>(dépôt privé : accès au jury sur demande)</span></div></div>
+        <div class="x-qr"><img src="assets/qr-drive.svg" alt="QR code du dossier des livrables"><div><b>Livrables</b><span>Dossier Google Drive : BMC, compte rendu, rapport du modèle, présentation</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+<div id="chrome"><div id="progress"></div><div id="counter"></div></div>
+<div id="notes"></div>
+<div id="timer"></div>
+<script src="deck.js"></script>
+</body>
+</html>

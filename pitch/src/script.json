@@ -1,0 +1,142 @@
+{
+  "wpm": 150,
+  "limitSeconds": 285,
+  "slides": [
+    {
+      "id": 1,
+      "name": "Hook",
+      "speaker": "Orateur 1",
+      "criterion": "Unicité tôt (−5 si même idée) · oral : accroche",
+      "onscreen": [
+        "44 incendies par jour — Tunisie, 2021",
+        "PNR · Point de Non-Retour",
+        "Le binôme peut-il encore ressortir ? PNR répond à chaque seconde."
+      ],
+      "script": "En 2021, la Protection civile a compté en moyenne quarante-quatre incendies par jour en Tunisie. Quand l'un d'eux frappe une usine, un binôme entre dans la fumée avec deux questions qu'aucun œil ne tranche : le local voisin va-t-il s'embraser ? Reste-t-il assez d'air pour ressortir ? Nous sommes PNR, Point de Non-Retour. En aviation, on calcule le point de non-retour de chaque vol. Nous le calculons pour chaque pompier qui entre dans le feu."
+    },
+    {
+      "id": 2,
+      "name": "Problème et limites des pratiques actuelles",
+      "speaker": "Orateur 1",
+      "criterion": "(a) Besoin : problème opérationnel, limites des pratiques actuelles",
+      "onscreen": [
+        "Le binôme décide à l'aveugle",
+        "Détecteurs muets au-delà de 150 °C",
+        "Fumée : 1re cause de décès",
+        "Indemnités d'incendie : 32,8 → 107,2 MDT (2016 → 2020)"
+      ],
+      "script": "Aujourd'hui, face à une usine en feu, la décision repose sur le coup d'œil et la radio. Or les détecteurs de chaleur se taisent au-delà de cent cinquante degrés, juste quand l'information devient vitale. La fumée est la première cause de décès des victimes d'incendie. Et la facture grimpe : les indemnités d'incendie ont plus que triplé entre 2016 et 2020."
+    },
+    {
+      "id": 3,
+      "name": "Cible, utilisateurs, carte d'empathie",
+      "speaker": "Orateur 1",
+      "criterion": "(a) Besoin : cible justifiée, stratégie, utilisateurs · carte d'empathie",
+      "onscreen": [
+        "Qui on protège",
+        "COS · Chef de binôme · Porteur d'ARI",
+        "Cible : sites industriels à risque",
+        "Carte d'empathie : hypothèse à valider"
+      ],
+      "script": "Notre cible : les sites industriels à risque, solvants, peinture, batteries lithium, et les équipes de la Protection civile qui y interviennent. Trois utilisateurs dans l'intervention : le COS au poste de commandement, le chef de binôme avec sa tablette, le porteur d'ARI avec un affichage dans le masque. Notre carte d'empathie est une hypothèse bâtie sur la doctrine publique : la valider en entretien sera notre première étape."
+    },
+    {
+      "id": 4,
+      "name": "La solution (révélation)",
+      "speaker": "Orateur 1",
+      "criterion": "(a) Valeur ajoutée · composante aéronautique · différenciation",
+      "onscreen": [
+        "PNR : tenable ? par où sortir ? pourquoi ?",
+        "IA · Point de non-retour · Drones",
+        "Le point de non-retour de l'aviation, pour le pompier",
+        "L'IA ne peut qu'aggraver · Décision : COS"
+      ],
+      "script": "PNR répond à chaque seconde : l'engagement est-il tenable, par où sortir, et pourquoi. Une IA lit les détecteurs déjà installés et annonce l'embrasement trente à soixante secondes avant. Un point de non-retour garantit que le binôme ressort avant le sifflet de l'ARI. Côté aéronautique, un drone fait le tour du site hors du panache, un second entre répéter la mission. L'IA ne peut qu'aggraver un verdict : décision, COS."
+    },
+    {
+      "id": 5,
+      "name": "Comment ça marche (schéma)",
+      "speaker": "Orateur 2",
+      "criterion": "Faisabilité technique · réalisme aéronautique · interactivité",
+      "onscreen": [
+        "Capteurs → Fusion → Calcul → Verdict → Écrans",
+        "Fusion : ne peut qu'aggraver",
+        "Un seul moteur, cinq écrans"
+      ],
+      "script": "Voici la chaîne, seconde après seconde. Les détecteurs du bâtiment ; le drone extérieur, qui évite le panache selon le vent et surveille sa batterie ; le drone d'intérieur, qui rapporte des observations horodatées et n'ouvre jamais une porte. Tout converge dans une fusion qui ne peut qu'aggraver. L'itinéraire et l'air sont calculés, et le verdict, avec ses raisons, arrive au PC, à la tablette et au masque."
+    },
+    {
+      "id": 6,
+      "name": "Le modèle IA",
+      "speaker": "Orateur 2",
+      "criterion": "Modèle IA : architecture, pourquoi ce modèle, données, résultats, GitHub",
+      "onscreen": [
+        "3 × XGBoost · 13 variables",
+        "Rappel 0,95 · avance 94 s (simulé)",
+        "Essais réels UL FSRI : 11/11 annoncés · 84 % de fausses alertes",
+        "QR : code et rapport"
+      ],
+      "script": "L'IA : trois modèles XGBoost, treize variables venues des seuls détecteurs, pannes comprises. Pourquoi XGBoost : données tabulaires, valeurs manquantes gérées nativement, explicable à un COS, et il tourne dans le navigateur, hors ligne. Entraîné sur cinq mille scénarios de notre moteur feu : rappel de quatre-vingt-quinze pour cent, quatre-vingt-quatorze secondes d'avance. Sur cent vingt essais réels : onze embrasements sur onze annoncés, mais trop de fausses alertes. Nous l'affichons, et nous la corrigerons avec la Protection civile."
+    },
+    {
+      "id": 7,
+      "name": "Simulation et vidéo",
+      "speaker": "Orateur 2",
+      "criterion": "Simulation physique · données réelles · interactivité temps réel · vidéo 1 min",
+      "onscreen": [
+        "Simulation : physique · données réelles · temps réel",
+        "72 s d'avance (simulé)",
+        "QR : vidéo d'une minute"
+      ],
+      "script": "La démo, une minute. Un feu part dans le stockage de solvants. Le moteur feu suit des corrélations publiées, le vent vient d'Open-Meteo, cent vingt essais réels jugent l'IA. Le COS agit en temps réel : il ferme une porte, engage, ré-engage. Dans la simulation, l'IA annonce l'embrasement soixante-douze secondes avant : NO-GO, nouvel itinéraire, le binôme sort à deux cent soixante-douze bars. Scannez pour la vidéo."
+    },
+    {
+      "id": 8,
+      "name": "Faisabilité technique",
+      "speaker": "Orateur 3",
+      "criterion": "(b) Faisabilité technique : ressources, étapes, durée, supports",
+      "onscreen": [
+        "Faisabilité technique : 12 mois",
+        "5 étapes",
+        "Prototype : 327 tests, aucun serveur"
+      ],
+      "script": "Faisabilité technique. Le prototype existe, de la simulation au masque : trois cent vingt-sept tests automatiques, aucun serveur. En douze mois : valider les hypothèses d'air avec la Protection civile, réentraîner sur NIST et sur des relevés d'exercices réels, tester les capteurs sur banc, puis un pilote sur un site, drone sous autorisation. Il faut une petite équipe logiciel et IA, des officiers qui valident, un télépilote agréé."
+    },
+    {
+      "id": 9,
+      "name": "Faisabilité commerciale et BMC",
+      "speaker": "Orateur 3",
+      "criterion": "(c) Faisabilité commerciale : marché, coût global, moyens · BMC · départage au coût",
+      "onscreen": [
+        "0 TND de licence",
+        "≈ 3 000 TND : pilote minimal",
+        "≈ 28 000 TND : pilote complet",
+        "BMC en 9 blocs"
+      ],
+      "script": "Faisabilité commerciale. Le marché : environ quatre mille cinq cents entreprises industrielles, et seize mille incendies par an. Notre atout, le coût : zéro dinar de licence, des détecteurs déjà installés, un simple navigateur. Un pilote minimal coûte environ trois mille dinars, vingt-huit mille avec un drone thermique neuf. Revenus : numérisation des plans, abonnement de maintenance, formation."
+    },
+    {
+      "id": 10,
+      "name": "Déploiement avec la Protection civile",
+      "speaker": "Orateur 3",
+      "criterion": "Partenariat Protection civile : déploiement, matériel, données, formation, maintenance, support",
+      "onscreen": [
+        "Valider → Piloter → Étendre",
+        "Matériel · Données · Formation · Maintenance · Support",
+        "Le COS garde la décision"
+      ],
+      "script": "Avec la Protection civile, trois temps : valider les hypothèses, piloter sur une unité et un site, étendre. Besoins : une tablette durcie et un drone mutualisé ; les plans de site et des relevés d'exercices ; deux jours de formation par équipe ; un recalibrage semestriel du modèle ; un référent technique. Le COS garde la décision."
+    },
+    {
+      "id": 11,
+      "name": "Équipe et clôture",
+      "speaker": "Orateur 1",
+      "criterion": "Oral : clôture qui fait écho à l'accroche · équipe",
+      "onscreen": [
+        "44 incendies par jour. Un binôme qui sait quand ressortir.",
+        "L'équipe PNR"
+      ],
+      "script": "Quarante-quatre incendies par jour : pour chacun, un binôme doit savoir quand ressortir. Nous sommes l'équipe PNR. Le point de non-retour de l'aviation, pour ceux qui entrent dans le feu. Merci."
+    }
+  ]
+}
