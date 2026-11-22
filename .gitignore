@@ -2,7 +2,7 @@
 /docs/*
 !/docs/HUD_DESIGN_NOTES.md
 
-# Data stay local (the repo is public): raw downloads in ml/data/raw/ (NIST xlsx, UL FSRI clone), generated CSV and
+# Data stay local (the repo is private but must stay publishable): raw downloads in ml/data/raw/ (NIST xlsx, UL FSRI clone), generated CSV and
 # Parquet next to them. Only the documented schema is committed.
 /ml/data/*
 !/ml/data/NIST_SCHEMA.md
@@ -33,7 +33,7 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Secrets (the repo is public)
+# Secrets (the repo is private but must stay publishable)
 .env
 .env.*
 

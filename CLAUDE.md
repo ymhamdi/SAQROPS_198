@@ -19,8 +19,8 @@ Challenge Aero-Entrepreneur (Tunisian Aeroday × Protection civile × INJAZ). Ge
 - R3 Tout nombre affiché porte son étiquette ; SIMULATED/MOCK ne ressemble jamais à OBSERVED. → app/src/ui/labels.test.ts
 - R4 Toute hypothèse vit dans data/config.json avec source et statut. → app/src/config.test.ts
 - R5 Le verdict ne lit jamais la vérité du simulateur ni l'image thermique de la toiture : seulement les détecteurs
-  (bruités, en panne), l'IA et, par R9 seulement, les observations intérieures du drone. → app/src/danger/rules.test.ts,
-  app/src/sim/sim.test.ts
+  (bruités, en panne), l'IA et, par R9 seulement, les observations intérieures du drone. → app/src/sim/sim.test.ts,
+  app/src/demo/demo.test.ts, app/src/scene/render.test.ts
 - R6 Un NO-GO est verrouillé : aucun retour automatique au GO. Seul le COS peut ré-engager (bouton « Ré-engager
   (décision COS) » sur le PC, action journalisée et diffusée). → app/src/stats/latch.test.ts
 - R7 Drone : retour à l'engin garanti avec la réserve batterie de config.json ; vol refusé si vent > limite ;
