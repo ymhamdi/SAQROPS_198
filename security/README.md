@@ -40,8 +40,9 @@ sécurité** (les règles R1 à R13), pas sur le vol de données.
 - Les notes de durcissement du rapport (accusé de réception du MAYDAY, battement de cœur du HUD, plafonds du fichier de rejeu,
   `jury_demo.py`, etc.).
 
-## Limites de cette branche
+## Vérification de cette branche
 
-Les correctifs ont été testés par cible (`src/security`, `src/hardware`, typecheck). **La suite complète et le build n'ont pas été
-relancés après la dernière modification** : à faire avant toute fusion (`cd app && npm test && npm run build`).
-Les rapports décrivent l'état de `c91771c` : les verdicts des pistes sont ceux de l'audit, avant ces correctifs.
+Typecheck propre, **555 tests réussis** (516 avant, 39 ajoutés dans `src/security`), build réussi, le 22/11/2026 après le dernier correctif.
+Les rapports décrivent l'état de `c91771c` : les verdicts des pistes sont ceux de l'audit, avant ces correctifs. Les quatre pistes
+« à valider » n'ont pas toutes été reproduites : le rappel R13 et l'étiquette R3 l'ont été (échec sur `c91771c`) ; la pression ARI après
+réinitialisation et l'absence de maître unique sur le canal ne l'ont pas été.
