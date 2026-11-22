@@ -115,3 +115,51 @@
   display: block;
   color: var(--text-2, #5f6368);
 }
+
+/* PC: a MAYDAY from the tablet, until the COS acknowledges it; the copilot's log. */
+.pc-mayday {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 2px solid var(--red);
+  background: var(--red-bg);
+  color: var(--red-text);
+}
+.pc-mayday div {
+  display: grid;
+  gap: 4px;
+}
+.pc-mayday strong {
+  font-size: 20px;
+  letter-spacing: 0.04em;
+}
+.pc-mayday button {
+  justify-self: start;
+}
+.pc-copilot-log li.is-mayday {
+  color: var(--red-text);
+  font-weight: 600;
+}
+.pc-copilot-log small {
+  color: var(--text-2, #5f6368);
+}
+
+.copilot-type {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin-top: 10px;
+}
+.copilot-type input {
+  min-height: 52px;
+  font-size: 18px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: inherit;
+}
+.tablet2 .copilot-type button {
+  margin-top: 0;
+}

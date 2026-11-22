@@ -151,6 +151,14 @@
     "rehearsal": {
       "flashoverMarginS": { "value": 20, "unit": "s", "source": "A room becomes impassable in the rehearsal this long before the flashover the AI predicts for it. Safety margin, team assumption, to validate with the Protection civile", "status": "MODELED" },
       "playbackS": { "value": 8, "unit": "s", "source": "Wall-clock duration of the rehearsal replay in the self-playing demo (at ×20 the whole sequence must stay under 10 s). Team choice", "status": "MODELED" }
+    },
+    "copilot": {
+      "model": { "value": "qwen3:8b", "unit": "", "source": "Local LLM of the tablet copilot, served by Ollama: Qwen3 8B, official Alibaba Qwen release (ollama.com/library/qwen3), already on the demo laptop on 22/11/2026. Kept or replaced after the latency measurement of docs/COPILOT_EVAL.md (p95 target below). It only maps a question to an intent and rewords under the guard (C1–C8)", "status": "MODELED" },
+      "understandTimeoutMs": { "value": 1500, "unit": "ms", "source": "p95 target of the specification for the understanding of a question; past it the rules answer without waiting for the LLM (C5). Team choice", "status": "MODELED" },
+      "rephraseTimeoutMs": { "value": 1500, "unit": "ms", "source": "Wait for an LLM rewording of an answer already computed; past it the template is said. Team choice", "status": "MODELED" },
+      "minConfidence": { "value": 0.6, "unit": "1", "source": "Below this confidence of the LLM the question counts as outside the list (C5). Team choice", "status": "MODELED" },
+      "maxWords": { "value": 30, "unit": "words", "source": "Longest LLM rewording the guard accepts (C2), as in Martian Map's copilot. Team choice", "status": "MODELED" },
+      "whisperModel": { "value": "small", "unit": "", "source": "faster-whisper multilingual model for French speech (not small.en); base if a short clip takes too long on the CPU. Team choice, to be measured", "status": "MODELED" }
     }
   }
 }

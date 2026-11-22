@@ -33,7 +33,7 @@ export const MAYDAY =
 
 /** C3: asking whether to go in, on, or continue: the answer is the verdict and its reasons, never yes or no. */
 const ENGAGE =
-  /\b((je|on) (peux|peut|pourrais|pourrait|dois|doit)|puis je|peut on|est ce que (je|j|on) (peux|peut|dois|doit)|est ce qu on (peut|doit))( y)? (entrer|rentrer|aller|continuer|avancer|engager|passer|progresser|reprendre|y aller)\b|\bon y va\b|\bj y vais\b|\bon entre\b|\bje rentre\b|\bj entre\b|\bc est go\b|\bgo ou (pas|no go)\b|\bon engage\b|\bje continue\b|\bon continue\b/
+  /\b((je|on) (peux|peut|pourrais|pourrait|dois|doit)|puis je|peut on|est ce que (je|j|on) (peux|peut|dois|doit)|est ce qu on (peut|doit))( y)? (entrer|rentrer|aller|continuer|avancer|engager|passer|progresser|reprendre|y aller)\b|\bon y va\b|\bj y vais\b|\bon entre\b|\bje rentre\b|\bj entre\b|\bc est go\b|\bgo ou (pas|no go)\b|\bon engage\b|\bje continue\b|\bon continue\b|\bj engage\b|\bje m engage\b|\b(je|on) fonce\b|\bon (rentre|avance)\b|\bfeu vert\b|\b(c est|ca est|c) (bon|ok|safe|sur|sans danger|possible) (pour|d|de) (entrer|rentrer|y aller|engager|avancer|passer|continuer)\b/
 
 /** C1 + C5: an order. The copilot reads; it opens, closes, ignores, cancels or invents nothing. */
 const ORDER =
