@@ -43,3 +43,6 @@ Thumbs.db
 
 # Model experiments (each ml/train.py --out run); key numbers go to ml/MODEL_REPORT.md, the shipped model is ml/model/
 /ml/runs/
+
+# Arduino build output (arduino-cli writes it next to each sketch)
+firmware/**/build/
