@@ -115,6 +115,13 @@ Le MAYDAY est confirmé 30 ms, émis une seule fois par geste, puis réarmé apr
 
 L'écran affiche `!!! NO-GO !!!` ou `PNR   GO`, et la pression (`AIR 145 bar`, avec `SOS` après un MAYDAY).
 
+**terminal → `binome-hud`** (démo jury seulement, l'application ne l'envoie jamais) : du texte libre, 16 colonnes ASCII par ligne,
+jusqu'à la prochaine commande `alert`, qui ramène l'écran normal :
+
+```json
+{"cmd":"lcd","l1":"! FEU DETECTE !","l2":"STOCKAGE SOLV."}
+```
+
 ## 4. Dans l'application (panneau « Télémétrie matérielle » du PC)
 
 1. **Connecter le drone (ESP32)** et **Connecter le HUD binôme (STM32)** : le navigateur demande le port à chaque fois. Un seul
@@ -202,6 +209,42 @@ coupée. L'application l'ignore, comme tout ce qui n'est pas un paquet complet.
   ```
 
   Le test résume les paquets par capteur et liste les lignes rejetées. Sans `BENCH_CAPTURE`, il est ignoré par `npm test`.
+
+### Démo jury au terminal (`tools/jury_demo.py`)
+
+Un juré teste le prototype lui-même : il allume un briquet près du drone, baisse la bouteille, déclenche le MAYDAY. Le terminal joue
+le PC du COS, l'écran LCD le HUD du masque. Le récit (engagement, NO-GO, sortie, ré-engagement) est minuté. **Les deux gestes du juré
+sont détectés par les capteurs eux-mêmes** : l'étape feu attend que le relevé du drone monte d'au moins 2 °C au-dessus de son départ
+(`--rise`, ou le seuil de `data/config.json`), l'étape MAYDAY attend le vrai paquet MAYDAY du capteur IR. ESPACE ne sert que de
+secours si un capteur ne réagit pas, et l'étape s'affiche alors « déclenchée à la main ». Les valeurs des cartes sont affichées en
+direct et étiquetées `OBSERVED` ; aucune valeur mise à l'échelle ni inventée n'est affichée. Seuil et sifflet viennent de
+`data/config.json`.
+
+```powershell
+C:\dev\pnr-venv\Scripts\python.exe -m pip install pyserial        # une fois
+C:\dev\pnr-venv\Scripts\python.exe firmware\tools\jury_demo.py      # ports trouvés seuls ; sinon --drone COM3 --hud COM4
+C:\dev\pnr-venv\Scripts\python.exe firmware\tools\jury_demo.py --auto 3   # répétition à blanc : une étape toutes les 3 s
+```
+
+Touches : **ESPACE** secours seulement (étape alors affichée « déclenchée à la main ») · **R** recommencer · **Q** quitter (l'écran
+revient à la normale).
+
+| # | Avance | Ce que fait le juré | Terminal (PC du COS) | Écran LCD |
+|---|---|---|---|---|
+| 0 | 4 s | | banc prêt, relevés en direct | `PNR   GO` / `AIR xxx bar` |
+| 1 | **quand le drone relève la chaleur** | **allume le briquet** à ~10 cm sous le capteur, jamais au contact | engagement du binôme 1 : GO | `BINOME ENGAGE` / `GO > VICTIME` |
+| 2 | 6 s | | départ de feu : relevé, départ, hausse | `! FEU DETECTE !` / `STOCKAGE SOLV.` |
+| 3 | 7 s | **baisse la bouteille** (potentiomètre) | NO-GO verrouillé, rappel par la sortie Ouest | `!!! NO-GO !!!` / `SORTIE OUEST <` |
+| 4 | **quand le capteur IR envoie son MAYDAY** | **passe la main** devant le capteur IR | pression lue, au-dessus ou sous le sifflet | `RETOUR SORTIE` / `AIR xxx bar`, mis à jour chaque seconde |
+| 5 | 8 s | | MAYDAY reçu de la carte (seq, il y a combien) | `!!! MAYDAY !!!` / `SECOURS ENGAGES` |
+| 6 | 5 s | | binôme sorti, NO-GO verrouillé | `BINOME SORTI` / `NO-GO VERROUILLE` |
+| 7 | 5 s | | Ré-engager (Décision : COS) | `PNR   GO` / `AIR xxx bar` |
+| 8 | jusqu'à R ou Q | | fin : le verdict est une aide, la décision appartient au COS | `FIN DEMO PNR` / `MERCI` |
+
+Répétée à blanc le 22/11 sur le banc (`--auto`) : ports trouvés seuls, relevés reçus, les neuf écrans envoyés au HUD. Les deux
+déclencheurs ont été vérifiés avec de fausses cartes (une température qui monte, un paquet MAYDAY) : les étapes avancent seules, sans
+mention « à la main » ; avec ESPACE en secours, seules ces étapes portent la mention. **Encore à vérifier sur le banc** : la hausse
+qu'un briquet donne réellement au BMP280 à 10 cm, et le texte affiché par l'écran.
 
 ## 8. Limites
 

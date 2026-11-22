@@ -45,6 +45,13 @@ bool screenDirty = true;
 char line[96];
 uint8_t lineLen = 0;
 
+// Free text on the screen, for the jury demo run from the terminal (firmware/tools/jury_demo.py):
+// {"cmd":"lcd","l1":"! FEU DETECTE !","l2":"STOCKAGE SOLV."}. It stays until the next alert command, which brings back the
+// normal screen (verdict + air). The app itself only sends alert commands.
+bool textMode = false;
+char text1[17] = "";
+char text2[17] = "";
+
 // An I2C device answers at this address?
 bool present(uint8_t addr) {
   Wire.beginTransmission(addr);
@@ -75,6 +82,13 @@ float readBar() {
 
 void drawScreen() {
   if (!lcd) return;
+  if (textMode) {
+    lcd->setCursor(0, 0);
+    lcd->print(text1);
+    lcd->setCursor(0, 1);
+    lcd->print(text2);
+    return;
+  }
   lcd->setCursor(0, 0);
   lcd->print(alertLevel == ALERT_NOGO ? "!!! NO-GO !!!   " : "PNR   GO        ");
   lcd->setCursor(0, 1);
@@ -84,18 +98,43 @@ void drawScreen() {
   lcd->print(buf);
 }
 
+// The string value of "key":"..." in a raw line (spaces kept inside the text), as 16 printable ASCII columns, padded. A missing
+// key gives a blank line.
+void textField(const char *raw, const char *key, char out[17]) {
+  uint8_t n = 0;
+  const char *p = strstr(raw, key);
+  if (p) {
+    p += strlen(key);
+    while (*p == ' ' || *p == ':') p++;
+    if (*p == '"') {
+      for (p++; *p && *p != '"' && n < 16; p++) out[n++] = (*p >= 32 && *p < 127) ? *p : '?';
+    }
+  }
+  while (n < 16) out[n++] = ' ';
+  out[16] = 0;
+}
+
 // {"cmd":"alert","level":"NO-GO"} or {"cmd":"alert","level":"GO"}: spaces ignored, no JSON library needed.
+// {"cmd":"lcd","l1":"...","l2":"..."}: free text until the next alert (the text keeps its spaces: it is read from the raw line).
 void handleLine(const char *raw) {
   char flat[96];
   uint8_t n = 0;
   for (const char *p = raw; *p && n < sizeof(flat) - 1; p++)
     if (*p != ' ' && *p != '\r') flat[n++] = *p;
   flat[n] = 0;
+  if (strstr(flat, "\"cmd\":\"lcd\"")) {
+    textField(raw, "\"l1\"", text1);
+    textField(raw, "\"l2\"", text2);
+    textMode = true;
+    screenDirty = true;
+    return;
+  }
   if (!strstr(flat, "\"cmd\":\"alert\"")) return;  // boot text, anything else: ignored
   // "NO-GO" contains "GO": test it first.
   if (strstr(flat, "\"level\":\"NO-GO\"")) alertLevel = ALERT_NOGO;
   else if (strstr(flat, "\"level\":\"GO\"")) alertLevel = ALERT_GO;
   else return;
+  textMode = false;  // an alert always brings back the normal screen
   screenDirty = true;
 }
 
