@@ -8,8 +8,8 @@
 //   from the browser:               {"cmd":"alert","level":"NO-GO"}   or   {"cmd":"alert","level":"GO"}
 //
 // Wiring (see firmware/README.md): potentiometer left lug -> 3V3, wiper -> PA0 (A0), right lug -> GND; MH-B IR sensor VCC -> 3V3,
-// GND -> GND, OUT -> PA1 (A1, active low); LCD backpack GND -> GND, VCC -> 5V, SDA -> PB7, SCL -> PB6 (optional: nothing blocks if it
-// is absent).
+// GND -> GND, OUT -> PA1 (A1, active low); LCD backpack GND -> GND, VCC -> 5V, SDA and SCL on the board's default I2C pins: PB7 / PB6
+// on a Blue Pill, D14 / D15 (= PB9 / PB8) on a Nucleo-64 (optional: nothing blocks if it is absent).
 //
 // Board menu (Arduino IDE, STM32duino): "USB support: CDC (generic 'Serial' supersede U(S)ART)" on a Blue Pill; on a Nucleo `Serial`
 // is the ST-Link virtual COM port. Library for the LCD: "LiquidCrystal_I2C".
@@ -30,6 +30,9 @@ static const uint8_t ADC_SAMPLES = 8;       // averaged: the potentiometer jitte
 enum Alert { ALERT_GO, ALERT_NOGO };
 Alert alertLevel = ALERT_GO;
 bool maydaySent = false;
+// Armed only after the sensor has read clear for MAYDAY_REARM_MS: no MAYDAY at power-up (bench, 22/11: the MH-B output was low
+// while it started, and a MAYDAY went out 82 ms after boot, which the app would latch as a NO-GO).
+bool maydayArmed = false;
 
 LiquidCrystal_I2C *lcd = nullptr;  // created only if a screen answers
 uint32_t seq = 100;
@@ -75,8 +78,9 @@ void drawScreen() {
   lcd->setCursor(0, 0);
   lcd->print(alertLevel == ALERT_NOGO ? "!!! NO-GO !!!   " : "PNR   GO        ");
   lcd->setCursor(0, 1);
-  char buf[17];
+  char buf[28];  // room for the whole format: no truncation warning
   snprintf(buf, sizeof(buf), "AIR %3d bar %s    ", (int)(lastBar + 0.5f), maydaySent ? "SOS" : "   ");
+  buf[16] = 0;   // the screen has 16 columns
   lcd->print(buf);
 }
 
@@ -134,7 +138,7 @@ void loop() {
   if (triggered) {
     maydayHighSince = 0;
     if (maydayLowSince == 0) maydayLowSince = now;
-    if (!maydaySent && now - maydayLowSince >= MAYDAY_CONFIRM_MS) {
+    if (maydayArmed && !maydaySent && now - maydayLowSince >= MAYDAY_CONFIRM_MS) {
       emit("mayday", "1", "bool");
       maydaySent = true;
       screenDirty = true;
@@ -142,7 +146,10 @@ void loop() {
   } else {
     maydayLowSince = 0;
     if (maydayHighSince == 0) maydayHighSince = now;
-    if (maydaySent && now - maydayHighSince >= MAYDAY_REARM_MS) maydaySent = false;
+    if (now - maydayHighSince >= MAYDAY_REARM_MS) {
+      maydaySent = false;
+      maydayArmed = true;
+    }
   }
 
   if (now - lastAriMs >= ARI_MS) {

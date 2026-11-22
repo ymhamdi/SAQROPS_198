@@ -46,6 +46,9 @@ void emit(const char *sensor, float value, const char *unit) {
 
 void setup() {
   Serial.begin(BAUD);
+  // The boot ROM leaves a stray byte on the line: without this newline the first packet arrives glued to it and the app drops it
+  // (bench, 22/11: seq 0 lost after every reset).
+  Serial.println();
   pinMode(PIN_SWITCH, INPUT_PULLUP);
   Wire.begin(PIN_SDA, PIN_SCL);
   // The GY-BMP280 answers at 0x76 (SDO unconnected) or 0x77.
