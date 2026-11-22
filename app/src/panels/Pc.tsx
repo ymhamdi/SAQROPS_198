@@ -3,6 +3,8 @@
 
 import { useState } from 'react'
 import { H, v } from '../config'
+import { useCopilotLog } from '../copilot/log'
+import { CopilotLogCard, CopilotMaydays } from '../copilot/PcCopilot'
 import type { SimControls } from '../sim/client'
 import type { Snapshot } from '../sim/protocol'
 import type { Site } from '../site/site'
@@ -40,6 +42,7 @@ export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Sit
   const [mode, setMode] = useState<'doors' | 'fire'>('doors')
   const [card, setCard] = useState(false)
   const [rehearsal, setRehearsal] = useState<RehearsalPlan | null>(null)
+  const copilot = useCopilotLog()
   const snap = sim.snap
   if (!snap) return <main className="pc-loading">{sim.error ?? 'Chargement de la simulation…'}</main>
   const s: Snapshot = snap
@@ -113,6 +116,7 @@ export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Sit
       </section>
 
       <aside className="pc-side">
+        <CopilotMaydays maydays={copilot.maydays} onAcknowledge={copilot.acknowledge} />
         <section className={`pc-verdict is-${s.shown.verdict === 'GO' ? 'go' : 'nogo'}`} aria-live="assertive">
           <span className="pc-kick">Verdict de l'engagement</span>
           <h2>{s.shown.verdict}</h2>
@@ -322,6 +326,7 @@ export function Pc({ site, sim, onOpenCrew, demo, demoPlan = null }: { site: Sit
               ))}
           </ul>
         </section>
+        <CopilotLogCard entries={copilot.entries} />
       </aside>
       {card && <Card site={site} snap={s} onClose={() => setCard(false)} />}
     </main>

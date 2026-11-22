@@ -44,6 +44,25 @@ Challenge Aero-Entrepreneur (Tunisian Aeroday × Protection civile × INJAZ). Ge
   « Valider le plan (décision COS) » ; « Engager sans répétition » reste toujours possible.
   → app/src/rehearsal/plan.test.ts, app/src/rehearsal/view.test.ts
 
+Copilote vocal de la tablette (app/src/copilot, server/) : le LLM comprend la question, PNR fournit la réponse.
+Tests : app/src/copilot/guardrails.test.ts (C1–C8), app/src/copilot/copilot.test.ts, server/tests.
+- C1 Lecture seule : il lit le snapshot que la tablette reçoit, data/consignes.json et data/config.json ; jamais
+  rooms[].truth, jamais une action (pas d'import de sim/actions, sim/sim, sim/client). Modifier la vérité ne change
+  aucune réponse.
+- C2 Garde-fou des chiffres : une reformulation du LLM est rejetée (le gabarit est dit à la place) si elle contient un
+  nombre absent du gabarit, un nombre en lettres (deux… mille, demi, quart, moitié ; « un/une » seulement devant une unité :
+  « une minute » est rejeté, « un local » est permis), ou plus de copilot.maxWords mots.
+- C3 Jamais oui ou non sur l'engagement : « Je peux entrer ? » → « Verdict actuel : X. Raisons : … Décision : COS. »
+- C4 Les consignes sont lues telles qu'écrites dans data/consignes.json, avec leur source ; le LLM n'en écrit ni n'en
+  reformule aucune.
+- C5 Hors liste, incertain (confiance < copilot.minConfidence), lent (> copilot.understandTimeoutMs), invalide ou serveur
+  absent : les règles répondent, sinon « Je ne réponds qu'aux questions de la liste. Demandez au COS. » et les boutons.
+- C6 Les mots du Mayday sont reconnus par règles avant toute compréhension et n'atteignent jamais le LLM ; Mayday et
+  bouton SOS → alerte rouge sur le PC (BroadcastChannel), journalisée, jusqu'à « Acquitter ». Le verdict ne change pas.
+- C7 Chaque échange est journalisé sur le PC : question, intention, réponse, chemin (LLM / règles / bouton / SOS),
+  latence. Chaque réponse porte « COPILOTE ».
+- C8 Rien du copilote sur le HUD.
+
 ## 4. Étiquettes
 OBSERVED mesure réelle (courbes NIST FCD, essais UL FSRI) · DERIVED calculé depuis des observations (vent Open-Meteo =
 analyse de modèle météo, pas une mesure sur site) · MODELED nos hypothèses, corrélations et valeurs normatives (EN 137,
@@ -116,7 +135,9 @@ Plan B dataset : node ml/generate.ts --n 5000 --seed 42 --out ml/data/scenarios.
 - Chaque corrélation est citée en commentaire (auteur, année, SFPE Handbook / NIST) ET dans data/SOURCES.md.
 - Consignes : uniquement dans data/consignes.json, chacune avec une source et « à valider par la Protection civile ».
   Jamais générées par un LLM.
-- Aucune entreprise réelle nommée. Pas de LLM. Pas de 3D. Un seul niveau. Pas d'auth, pas de base de données.
+- Aucune entreprise réelle nommée. LLM local seulement dans le copilote de la tablette, pour comprendre la question
+  et reformuler sous garde-fou : jamais de chiffre, jamais de consigne, jamais d'ordre, jamais sur le chemin du Mayday
+  (C1–C8). Pas de 3D. Un seul niveau. Pas d'auth, pas de base de données.
 - Le repo est privé (décision du 22/11, à garder tel quel) mais doit rester publiable : jamais de secret commité.
 
 ## 8. Méthode
