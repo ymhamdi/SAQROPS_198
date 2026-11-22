@@ -36,6 +36,12 @@ Thumbs.db
 # Secrets (the repo is private but must stay publishable)
 .env
 .env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+.claude/settings.local.json
 
 # Claude Code plugin state
 .omc/

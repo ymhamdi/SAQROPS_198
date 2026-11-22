@@ -62,12 +62,21 @@ export function parseXgb(json: unknown): XgbModel {
       defaultLeft: Uint8Array.from(t.default_left, (d) => (d ? 1 : 0)),
     }),
   )
-  return { objective, baseMargin: Math.fround(baseMargin), nFeatures: Number(learner.learner_model_param.num_feature), trees }
+  const nFeatures = Number(learner.learner_model_param.num_feature)
+  for (const t of trees) {
+    for (let i = 0; i < t.left.length; i++) {
+      if (t.left[i] === -1) continue
+      if (!(t.left[i] >= 0 && t.left[i] < t.left.length && t.right[i] >= 0 && t.right[i] < t.left.length && t.feature[i] >= 0 && t.feature[i] < nFeatures)) throw new Error('xgb: malformed tree (child or feature index out of range)')
+    }
+  }
+  return { objective, baseMargin: Math.fround(baseMargin), nFeatures, trees }
 }
 
 function leafValue(tree: Tree, x: Float32Array): number {
   let node = 0
-  while (tree.left[node] !== -1) {
+  // A tree has no cycle: a walk longer than the tree, or a child outside it, means the file is damaged.
+  for (let hops = 0; tree.left[node] !== -1; hops++) {
+    if (hops > tree.left.length || !(node >= 0 && node < tree.left.length)) throw new Error('xgb: malformed tree (cycle or child index out of range)')
     const v = x[tree.feature[node]]
     const goLeft = Number.isNaN(v) ? tree.defaultLeft[node] === 1 : v < tree.value[node]
     node = goLeft ? tree.left[node] : tree.right[node]

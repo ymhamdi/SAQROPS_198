@@ -128,11 +128,8 @@ quoted ("up to 10 min") were not found in a manufacturer file; the only Elios 2 
 | Elios 3 RAD User Manual v1.0, 25.07.2023 (consulted; payload-specific figures, not used: 7 min 30 s with LiDAR, 45 °C) | `078b71416b0c18bb496574bbe53f6911f7225c1ad7d7c62864ba20142e6b75b0` |
 | Elios 2 RAD User Manual v1.2, 24.02.2022 (consulted; thermal camera field of view only) | `c735a26e179647ebb0fa05fcd491444f11d6d53252c81138569d8c211a6b6394` |
 
-Direct links (the first three are listed on the documentation page above; the file names are those of that page):
+Direct links. The three Elios 3 files are downloaded from the documentation page above (their file names are those of that page); their direct addresses carry a download token that the host rotates, so they are not copied here, and the SHA-256 above identifies the exact file read:
 
-- https://3798671238-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FEUlQdNranSJ0ddu4qSxa%2Fuploads%2F9gRokOPsGVhfPZz4y88R%2FElios%203%20Technical%20Specifications%20v1.1.pdf?alt=media&token=948d790d-751a-42e7-a038-cd582bab857d
-- https://3798671238-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FEUlQdNranSJ0ddu4qSxa%2Fuploads%2FnutwYTLi3xsLk59UctXJ%2FElios%203%20Battery%20Technical%20Specifications%20(Standard%20and%20High-Capacity).pdf?alt=media&token=ff27393c-be60-4507-9885-6c98e11a128f
-- https://3798671238-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FEUlQdNranSJ0ddu4qSxa%2Fuploads%2FPEM2i7pU23YHpWfRh03y%2FElios%203%20User%20Manual%20v1.3.pdf?alt=media&token=d631c396-6cae-4941-9b24-924e10a599e1
 - https://www.flyability.com/hubfs/Knowledge%20Base%20Files/Documents/Manuals/E3%20and%20equipments/Elios%203%20RAD%20User%20Manual%20v1.0.pdf
 - https://www.flyability.com/hubfs/ELIOS%202%20RAD%20user%20manual%20v1.2.pdf
 

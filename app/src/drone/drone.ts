@@ -128,6 +128,8 @@ export interface Flight {
  */
 export function planFlight(loop: Point[], home: Point, plume: Plume | null, wind: Wind, p: DroneParams): Flight {
   const refused = (reason: string): Flight => ({ ok: false, reason, points: [], plume, landedS: 0 })
+  // R7 fails closed: a comparison with a missing or non-finite wind is false, which would let the flight go.
+  if (!Number.isFinite(wind.speedMs) || !Number.isFinite(wind.fromDeg)) return refused('Vol refusé : vent inconnu ou illisible dans le relevé météo')
   if (wind.speedMs > p.maxWindMs) return refused(`Vol refusé : vent ${wind.speedMs.toFixed(1)} m/s au-delà de la limite de ${p.maxWindMs} m/s`)
   if (plume && inPlume(plume, home)) return refused("Vol refusé : l'engin est sous le panache, le déplacer au vent")
 
