@@ -2,9 +2,26 @@
   "_comment": "Seul fichier à éditer avant la remise : liens, équipe. Puis : npm run build. Tant qu'un champ est vide, le slide affiche un cadre rouge [À VÉRIFIER].",
   "repoUrl": "https://github.com/ymhamdi/SAQROPS_198",
   "repoIsPublic": false,
-  "videoUrl": "",
+  "videoUrl": "https://drive.google.com/drive/folders/18MI0fGknz7R9tFTBaTXN65_J7mthMpow?usp=sharing",
   "team": [
-    { "name": "Youssef Mhamdi", "role": "IA, simulation, application" }
+    {
+      "name": "Youssef Mhamdi",
+      "role": ""
+    },
+    {
+      "name": "Amine Chtara",
+      "role": ""
+    },
+    {
+      "name": "Loua Klai",
+      "role": ""
+    },
+    {
+      "name": "Ichrak Ayachi",
+      "role": ""
+    }
   ],
-  "teamPlaceholders": 3
+  "teamPlaceholders": 0,
+  "teamName": "SAQROPS",
+  "driveUrl": "https://drive.google.com/drive/folders/18MI0fGknz7R9tFTBaTXN65_J7mthMpow?usp=sharing"
 }
