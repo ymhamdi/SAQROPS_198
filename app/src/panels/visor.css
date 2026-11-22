@@ -1,0 +1,412 @@
+/* Helmet visor (HUD). See-through: a real visor cannot put a filled box in front of the terrain, so nothing here has
+   a background. Only text, numbers, icons and thin strokes, each with a tight dark halo (--visor-halo*) so it reads
+   over bright sand and dark rock alike. Groups are told apart by position and spacing at the edges of the visor; the
+   centre stays clear. One primary number per slot, large tabular figures. No gradients, glows or decorative motion.
+   The demo playback bar is the one exception: a demo control, not part of the visor, so it keeps its plate. */
+
+.visor {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: grid;
+  grid-template-columns: minmax(300px, 440px) minmax(0, 1fr) minmax(300px, 400px);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    'route alert clock'
+    '.     .     .'
+    'life  .     copilot'
+    'demo  demo  demo';
+  gap: 16px 24px;
+  padding: 24px 24px 16px;
+  background-color: var(--hud-bg);
+  background-position: center;
+  background-size: cover;
+  color: var(--visor-text);
+  font-variant-numeric: tabular-nums;
+  text-shadow: var(--visor-halo);
+  -webkit-text-stroke: var(--visor-text-stroke);
+  paint-order: stroke fill;
+}
+
+.visor.has-view {
+  background-color: var(--black);
+}
+
+.visor.is-abort {
+  background-color: var(--hud-bg-abort);
+}
+
+/* ---------- slots ---------- */
+
+.visor-slot {
+  padding: 0;
+  background: transparent;
+}
+
+/* Icons get the same halo as the text (an SVG ignores text-shadow). */
+.visor-slot svg,
+.visor-alert-area svg {
+  filter: var(--visor-halo-icon);
+}
+
+.visor-label {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--visor-text-2);
+}
+
+.visor-number {
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.visor-number.is-hero {
+  font-size: 56px;
+}
+
+.visor-sub {
+  font-weight: 500;
+  font-size: 17px;
+  color: var(--visor-text-2);
+}
+
+/* An inline state word in front of a name ("Next", "At stop", "Abort"): part of the line, not a label above it. */
+.visor-state {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1.5px solid currentColor;
+  border-radius: 6px;
+  box-shadow: var(--visor-halo-line);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--visor-text);
+}
+
+.visor-state.is-warning {
+  border-color: var(--visor-warning);
+  color: var(--visor-warning);
+}
+
+/* Route: top left. */
+.visor-route {
+  grid-area: route;
+  align-self: start;
+  display: grid;
+  gap: 12px;
+}
+
+.visor-route-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.visor-stopnum {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--visor-text);
+  border-radius: 50%;
+  box-shadow: var(--visor-halo-line);
+  font-size: 19px;
+}
+
+.visor-route-main {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 16px;
+}
+
+.visor-route-main:not(:has(.visor-dial)) {
+  grid-template-columns: 1fr;
+}
+
+.visor-route-main .visor-dial {
+  grid-row: span 2;
+}
+
+.visor-route-main:has(.visor-dial) > :not(.visor-dial) {
+  grid-column: 2;
+}
+
+.visor-dial {
+  width: 68px;
+  height: 68px;
+}
+
+.visor-dial-ring {
+  fill: none;
+  stroke: var(--visor-text);
+  stroke-width: 2.5;
+}
+
+.visor-dial-north {
+  stroke: var(--visor-text);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.visor-dial-arrow {
+  fill: var(--visor-text);
+}
+
+.visor.is-abort .visor-dial-arrow {
+  fill: var(--visor-warning);
+}
+
+/* Alert slot: top centre, fixed; empty keeps its place so nothing jumps. */
+.visor-alert-area {
+  grid-area: alert;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+/* Clock and exit: top right. */
+.visor-clock {
+  grid-area: clock;
+  justify-self: end;
+  align-self: start;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: start;
+  gap: 8px 20px;
+}
+
+.visor-clock-time {
+  display: grid;
+  gap: 2px;
+}
+
+.visor-drill {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Life support: bottom left. */
+.visor-life {
+  grid-area: life;
+  grid-column: 1 / 3; /* three gauges side by side need more than the corner column; still clear of the centre */
+  justify-self: start;
+  align-self: end;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  align-items: end;
+  gap: 16px 32px;
+}
+
+.visor-gauge {
+  display: grid;
+  gap: 4px;
+}
+
+.visor-gauge.is-caution .visor-number,
+.visor-gauge.is-caution .visor-state {
+  color: var(--visor-caution);
+  border-color: var(--visor-caution);
+}
+
+.visor-gauge.is-warning .visor-number,
+.visor-gauge.is-warning .visor-state {
+  color: var(--visor-warning);
+  border-color: var(--visor-warning);
+}
+
+.visor-gauge .visor-state {
+  justify-self: start;
+}
+
+/* ---------- controls ---------- */
+
+/* On the visor (Exit, Abort): outline only, a stroke in the button's colour with the halo; no fill, even on hover.
+   Hover and press thicken the stroke instead. */
+.visor-slot .visor-btn {
+  border: 2px solid currentColor;
+  background: transparent;
+  box-shadow: var(--visor-halo-line);
+}
+
+.visor-slot .visor-btn:hover {
+  border-color: currentColor;
+  box-shadow: inset 0 0 0 1px currentColor, var(--visor-halo-line);
+}
+
+.visor-slot .visor-btn:active {
+  box-shadow: inset 0 0 0 2px currentColor, var(--visor-halo-line);
+}
+
+.visor-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--visor-line);
+  border-radius: var(--radius-control);
+  background: var(--visor-plate-strong);
+  color: var(--visor-text);
+  font: inherit;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.visor-btn:hover {
+  border-color: var(--visor-text-2);
+}
+
+.visor-btn:focus-visible,
+.visor input:focus-visible {
+  outline: 3px solid var(--visor-copilot);
+  outline-offset: 2px;
+}
+
+select.visor-btn option {
+  color: var(--text);
+}
+
+.visor-exit {
+  min-width: 96px;
+}
+
+.visor-abort {
+  grid-column: 1 / -1;
+  justify-self: start;
+  color: var(--visor-warning);
+}
+
+/* Demo playback: not part of the visor itself, so it is set apart along the bottom edge and says what it is. */
+.visor-demo {
+  grid-area: demo;
+  justify-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  width: min(1000px, 100%);
+  padding: 8px 12px;
+  border-radius: var(--radius-card);
+  background: var(--visor-plate);
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
+.visor-demo-label {
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--visor-text-2);
+}
+
+.visor-demo input[type='range'] {
+  flex: 1;
+  min-width: 160px;
+  height: 44px;
+  accent-color: var(--visor-text);
+}
+
+.visor-credit {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--visor-text-2);
+}
+
+/* Status badges on the visor: outline only, near-white stroke with the halo (MODELED keeps its dashed stroke,
+   SIMULATED its double one). In the playback bar they keep the planner's look, OBSERVED filled. */
+.visor .badge {
+  font-size: 12px;
+  color: var(--visor-text);
+  border-color: currentColor;
+  background: transparent;
+  box-shadow: var(--visor-halo-line);
+}
+
+.visor-demo .badge {
+  color: var(--visor-text-2);
+  box-shadow: none;
+}
+
+.visor-demo .badge-observed {
+  background: var(--visor-text);
+  border-color: var(--visor-text);
+  color: var(--hud-bg);
+}
+
+/* ---------- narrower visors ---------- */
+
+@media (max-width: 1100px) {
+  .visor {
+    grid-template-columns: minmax(260px, 360px) minmax(0, 1fr) minmax(260px, 340px);
+  }
+
+  .visor-life {
+    grid-template-columns: repeat(2, auto);
+  }
+
+  .visor-number.is-hero {
+    font-size: 46px;
+  }
+}
+
+@media (max-width: 760px) {
+  .visor {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas: 'route' 'alert' 'clock' 'life' 'copilot' 'demo';
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  .visor-clock {
+    justify-self: stretch;
+  }
+}
+
+/* Phones: two gauges a row, numbers sized to fit. */
+@media (max-width: 760px) {
+  .visor-life {
+    grid-column: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 16px;
+    justify-self: stretch;
+  }
+
+  .visor-life .visor-number {
+    font-size: clamp(24px, 8vw, 40px);
+    white-space: normal;
+  }
+}

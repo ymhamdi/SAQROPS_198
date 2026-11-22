@@ -1,0 +1,106 @@
+{
+  "what": "Our fire engine's hot-layer temperature (SIMULATED) vs the mean of the four UL FSRI thermocouples 0.3 m below the ceiling (OBSERVED), same room and heat release",
+  "experiments": 105,
+  "rmseOpenDoorC": 105.3,
+  "rmseClosedDoorC": 110.0,
+  "groups": [
+    {
+      "fuel": "100kW",
+      "door": "Closed",
+      "n": 12,
+      "rmse_c": 63.2,
+      "bias_c": -33.9,
+      "peak_measured_c": 264.3,
+      "peak_predicted_c": 184.6
+    },
+    {
+      "fuel": "100kW",
+      "door": "Open",
+      "n": 12,
+      "rmse_c": 38.8,
+      "bias_c": -37.8,
+      "peak_measured_c": 154.2,
+      "peak_predicted_c": 112.9
+    },
+    {
+      "fuel": "100kWSB",
+      "door": "Closed",
+      "n": 12,
+      "rmse_c": 62.4,
+      "bias_c": -45.4,
+      "peak_measured_c": 266.0,
+      "peak_predicted_c": 184.6
+    },
+    {
+      "fuel": "100kWSB",
+      "door": "Open",
+      "n": 12,
+      "rmse_c": 49.4,
+      "bias_c": -44.4,
+      "peak_measured_c": 165.3,
+      "peak_predicted_c": 113.2
+    },
+    {
+      "fuel": "250kW",
+      "door": "Closed",
+      "n": 12,
+      "rmse_c": 125.2,
+      "bias_c": -70.6,
+      "peak_measured_c": 366.9,
+      "peak_predicted_c": 184.6
+    },
+    {
+      "fuel": "250kW",
+      "door": "Open",
+      "n": 12,
+      "rmse_c": 83.2,
+      "bias_c": -81.5,
+      "peak_measured_c": 279.5,
+      "peak_predicted_c": 196.1
+    },
+    {
+      "fuel": "500kW",
+      "door": "Closed",
+      "n": 10,
+      "rmse_c": 205.2,
+      "bias_c": -180.5,
+      "peak_measured_c": 465.1,
+      "peak_predicted_c": 175.7
+    },
+    {
+      "fuel": "500kW",
+      "door": "Open",
+      "n": 10,
+      "rmse_c": 149.0,
+      "bias_c": -146.9,
+      "peak_measured_c": 459.9,
+      "peak_predicted_c": 300.6
+    },
+    {
+      "fuel": "Overstuffed",
+      "door": "Open",
+      "n": 7,
+      "rmse_c": 319.9,
+      "bias_c": 162.1,
+      "peak_measured_c": 1020.0,
+      "peak_predicted_c": 900.0
+    },
+    {
+      "fuel": "RedAccent",
+      "door": "Open",
+      "n": 6,
+      "rmse_c": 71.0,
+      "bias_c": -60.2,
+      "peak_measured_c": 603.6,
+      "peak_predicted_c": 503.5
+    }
+  ],
+  "plots": [
+    "ml/report/fsri_physics/500kW_Open_Center_1.png",
+    "ml/report/fsri_physics/250kW_Open_Corner_1.png",
+    "ml/report/fsri_physics/Overstuffed_Open_Center_1.png",
+    "ml/report/fsri_physics/RedAccent_Open_Corner_1.png",
+    "ml/report/fsri_physics/500kW_Closed_Center_1.png",
+    "ml/report/fsri_physics/100kW_Closed_Back_1.png"
+  ]
+}

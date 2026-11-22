@@ -1,0 +1,1158 @@
+/* Phase 7 panels: elevation profile, stop details with panorama, conditions, crew timeline. Tokens from index.css.
+   The HUD's styles live in panels/visor.css. */
+
+/* ---------- Selectable stops ---------- */
+
+button.stop-text {
+  padding: 4px 6px;
+  margin: 0 -6px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  text-align: left;
+}
+
+button.stop-text:hover {
+  background: var(--surface-2);
+}
+
+.stop.is-selected button.stop-text {
+  background: var(--blue-bg);
+}
+
+.chip-float:disabled {
+  color: var(--text-3);
+  cursor: not-allowed;
+}
+
+.chip-float.clock {
+  position: relative;
+  cursor: pointer;
+}
+
+.chip-float.clock:hover,
+.chip-float.clock[aria-expanded='true'] {
+  background: var(--blue-bg);
+}
+
+.chip-float.clock.is-alert {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.alert-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+.map.leaflet-container .mark-stop.is-selected,
+.map.leaflet-container .mark-home.is-selected {
+  box-shadow:
+    0 0 0 5px rgba(26, 115, 232, 0.4),
+    0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Elevation profile ---------- */
+
+.profile {
+  margin: 16px 0 0;
+}
+
+.profile figcaption {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.profile figcaption span:first-child {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.profile svg {
+  display: block;
+  width: 100%;
+  height: 92px;
+  cursor: crosshair;
+}
+
+.profile-fill {
+  fill: var(--blue-bg);
+}
+
+.profile-line {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+.profile-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--text-2);
+}
+
+.profile-legend li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.profile-legend span {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.profile-stop {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.profile-cursor {
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+
+.profile-axis {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  height: 20px;
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
+.profile-pin {
+  position: absolute;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--on-accent);
+  font-weight: 600;
+  font-size: 10px;
+}
+
+/* ---------- Stop detail card ---------- */
+
+.detail {
+  position: absolute;
+  z-index: 1000;
+  top: 16px;
+  left: 440px;
+  width: 380px;
+  max-height: calc(100vh - 232px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px 12px 16px;
+}
+
+.detail-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.detail-title h2 {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.detail-title p {
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.pano {
+  position: relative;
+  height: 190px;
+  background-color: var(--pano-bg);
+  background-repeat: repeat-x;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.pano:active {
+  cursor: grabbing;
+}
+
+.pano-heading,
+.pano-hint {
+  position: absolute;
+  bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(32, 33, 36, 0.72);
+  color: var(--on-accent);
+  font-size: 12px;
+}
+
+.pano-heading {
+  left: 8px;
+}
+
+.pano-hint {
+  right: 8px;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px 0;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.photos {
+  margin: 0;
+}
+
+.view-switch {
+  margin: 0 16px 10px;
+}
+
+.photo-main {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--pano-bg);
+}
+
+.photo-thumbs {
+  display: flex;
+  gap: 6px;
+  padding: 8px 16px 0;
+}
+
+.photo-thumb {
+  flex: 0 0 56px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--pano-bg);
+  cursor: pointer;
+}
+
+.photo-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-thumb[aria-pressed='true'] {
+  border-color: var(--blue);
+}
+
+.photo-thumb:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.photo-camera {
+  color: var(--text-2);
+}
+
+.photo-source {
+  padding-top: 4px;
+}
+
+.panel-source {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-3);
+}
+
+.traverse-key {
+  display: inline-block;
+  width: 18px;
+  height: 0;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-top: 3px dashed var(--traverse);
+}
+
+.rover-compare {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+
+.space-weather {
+  margin-top: 14px;
+}
+
+.sw-events {
+  display: grid;
+  gap: 6px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+
+.sw-events li {
+  padding-left: 10px;
+  border-left: 3px solid var(--line);
+}
+
+.sw-events li.at-mars {
+  border-left-color: var(--amber);
+}
+
+.ride-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-basis: 100%;
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.ride-toggle input {
+  margin-top: 3px;
+}
+
+.ride-toggle small {
+  display: block;
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.ride-compare {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--blue-bg);
+  color: var(--blue-text);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.swatch-dashed {
+  background: none !important;
+  height: 0 !important;
+  border-top: 3px dashed;
+}
+
+.start-window {
+  margin: 10px 0 14px;
+}
+
+.sw-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.sw-slot {
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.sw-slot.is-go,
+.sw-key.is-go {
+  background: var(--green);
+}
+
+.sw-slot.is-caution,
+.sw-key.is-caution {
+  background: var(--amber);
+}
+
+.sw-slot.is-nogo,
+.sw-key.is-nogo {
+  background: var(--red);
+}
+
+.sw-slot[aria-checked="true"] {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.sw-slot:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.sw-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
+.sw-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.sw-key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
+.sw-now {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.start-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 4px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.start-hint .btn-chip {
+  flex: none;
+}
+
+.source-link {
+  color: var(--blue-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.source-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.detail-empty {
+  padding: 0 16px 12px;
+  color: var(--text-2);
+}
+
+.detail-body {
+  padding: 12px 16px 16px;
+}
+
+.detail-body h3 {
+  margin: 8px 0 4px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.detail-body p {
+  font-size: 13.5px;
+}
+
+.detail-body .detail-meta {
+  padding: 10px 0 0;
+}
+
+.kit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.kit li {
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12.5px;
+}
+
+/* ---------- Conditions panel ---------- */
+
+.side-panel {
+  width: 340px;
+  max-height: calc(100vh - 216px); /* clear of the zoom buttons and scale bar */
+  overflow-y: auto;
+  padding: 14px 16px 16px;
+}
+
+.panel-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.readouts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  margin: 12px 0 0;
+}
+
+.readouts dt {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.readouts dd {
+  margin: 0;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.readouts dd.is-alert {
+  color: var(--red);
+}
+
+.sunchart {
+  margin: 14px 0 0;
+}
+
+.sunchart figcaption {
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.sunchart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sun-window {
+  fill: var(--blue-bg);
+}
+
+.sun-horizon {
+  stroke: var(--line);
+  stroke-dasharray: 3 3;
+}
+
+.sun-line {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 2;
+}
+
+.switch {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.switch input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--red);
+}
+
+.switch span {
+  display: grid;
+  gap: 2px;
+}
+
+.switch strong {
+  font-weight: 600;
+}
+
+.switch small {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+/* ---------- Crew timeline ---------- */
+
+.timeline {
+  position: absolute;
+  z-index: 999;
+  left: 440px;
+  right: 136px; /* clear of the zoom buttons and the scale bar above them */
+  bottom: 16px;
+  padding: 10px 16px 12px;
+}
+
+.timeline-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.timeline-head h2 {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.timeline-sub {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.tl-bar {
+  position: relative;
+  height: 28px;
+  margin-top: 10px;
+  border-radius: 6px;
+  background: var(--surface-2);
+}
+
+.tl-seg {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 4px;
+}
+
+.tl-walk {
+  background: var(--blue-bg);
+}
+
+button.tl-stop {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: var(--blue);
+  color: var(--on-accent);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+button.tl-stop:hover {
+  background: var(--blue-hover);
+}
+
+button.tl-stop.is-selected {
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.35);
+}
+
+.tl-axis {
+  position: relative;
+  height: 16px;
+  margin-top: 4px;
+}
+
+.tl-axis span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+
+.tl-axis span:first-child {
+  transform: none;
+}
+
+/* ---------- Planned start ---------- */
+
+.start-select {
+  display: grid;
+  gap: 4px;
+  margin: 4px 0 10px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.start-select select {
+  padding: 7px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.readouts dt {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ---------- Crew plan in the stop card ---------- */
+
+.detail-body h3 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.crew {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 6px 10px;
+  margin: 6px 0 0;
+  font-size: 13.5px;
+}
+
+.crew dt {
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.crew dd {
+  margin: 0;
+}
+
+/* ---------- Reordering stops ---------- */
+
+.stop {
+  position: relative;
+}
+
+.grip {
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 32px;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-3);
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.stop:hover .grip,
+.grip:focus-visible {
+  opacity: 1;
+}
+
+.grip:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.stop.is-dragging {
+  opacity: 0.45;
+}
+
+/* Where the dragged stop will land. */
+.stop.drop-before::before,
+.stop.drop-after::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--blue);
+}
+
+.stop.drop-before::before {
+  top: -2px;
+}
+
+.stop.drop-after::after {
+  bottom: -2px;
+}
+
+@media (hover: none) {
+  .grip {
+    opacity: 1;
+  }
+}
+
+/* ---------- Plan tools: rover staging and optimise ---------- */
+
+.plan-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 20px 4px;
+}
+
+.rover-select {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.rover-select select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.btn-chip {
+  flex: none;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--blue);
+}
+
+.btn-chip:hover:not(:disabled) {
+  background: var(--blue-bg);
+}
+
+.btn-chip:disabled {
+  color: var(--text-3);
+  cursor: not-allowed;
+}
+
+.notice.notice-info {
+  background: var(--blue-bg);
+  color: var(--blue-text);
+}
+
+.map.leaflet-container .mark-rover {
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Route options: fastest vs safest ---------- */
+
+.route-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.route-option {
+  display: grid;
+  gap: 1px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  text-align: left;
+}
+
+.route-option:hover {
+  background: var(--surface-2);
+}
+
+.route-option[aria-checked='true'] {
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 1px var(--blue);
+  background: var(--blue-bg);
+}
+
+.route-option-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 500;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.route-option strong {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.route-option-sub {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.mini-verdict {
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 10.5px;
+  color: var(--on-accent);
+}
+
+.mini-verdict.is-go {
+  background: var(--green);
+}
+
+.mini-verdict.is-nogo {
+  background: var(--red);
+}
+
+.route-note {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.map.leaflet-container path.alt-route {
+  cursor: pointer;
+}
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 600px) {
+  .tl-axis span:nth-child(even) {
+    display: none; /* hourly labels only, so they do not run together */
+  }
+}
+
+@media (max-width: 960px) {
+  .detail,
+  .timeline {
+    position: static;
+    width: auto;
+    max-height: none;
+    margin: 12px;
+  }
+
+}
+
+/* ---------- Saved plans ---------- */
+
+.chip-count {
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-2);
+}
+
+.save-form {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.save-row {
+  display: flex;
+  gap: 8px;
+}
+
+.save-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.save-row input:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -1px;
+}
+
+.btn-primary {
+  flex: none;
+  padding: 7px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--blue);
+  font-weight: 500;
+  color: var(--on-accent);
+}
+
+.btn-primary:hover {
+  background: var(--blue-hover);
+}
+
+.saved-current,
+.saved-undo {
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border-radius: var(--radius-control);
+  background: var(--surface-2);
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.saved-undo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: var(--blue);
+}
+
+.saved-list {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.saved-list li {
+  display: grid;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.saved-list li.is-open .saved-head strong::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  vertical-align: middle;
+}
+
+.saved-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.saved-head strong {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.saved-verdict {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--on-accent);
+}
+
+.saved-verdict.is-go {
+  background: var(--green);
+}
+
+.saved-verdict.is-nogo {
+  background: var(--red);
+}
+
+.saved-meta {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.saved-date {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.saved-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.saved-actions .btn-chip {
+  padding: 5px 12px;
+}
+
+.saved-actions .btn-chip:disabled {
+  cursor: default;
+}
+
+.btn-chip.is-quiet {
+  margin-left: auto;
+  border-color: transparent;
+  color: var(--text-2);
+}
+
+.btn-chip.is-quiet:hover {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+/* Stop card: priority and spare time if the walk runs late */
+.detail-prio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 8px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.detail-prio .segmented {
+  flex: 1;
+}
+
+/* The stop card opens below the chip row (desktop), never over it. */
+@media (min-width: 961px) {
+  .detail {
+    top: 72px;
+    max-height: calc(100vh - 288px);
+  }
+}

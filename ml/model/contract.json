@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "about": "Contract between the Python training code (ml/) and the TypeScript app (app/src/ml/). Both read this file. Changing it means retraining and regenerating golden.csv.",
+  "windowS": 60,
+  "slopeWindowsS": [10, 30, 60],
+  "slopeAtFailWindowS": 30,
+  "horizonsS": [30, 60],
+  "tffCapS": 300,
+  "roomSignal": "max of the valid (not failed) heat-detector readings in the room, degC; NaN when every detector of the room has failed",
+  "failure": "a detector fails the first time it reads above config.json fire.detectorFailureC (150 degC, as in NIST P-Flash) and returns NaN from then on",
+  "neighbours": "rooms that share a door with the target room (any door state); NIST P-Flash runs: every other room of the run",
+  "features": [
+    { "name": "self_t_last", "unit": "degC", "what": "room signal now; NaN if failed" },
+    { "name": "self_slope_10", "unit": "degC/s", "what": "least-squares slope of the valid room signal over the last 10 s; NaN with fewer than 2 valid samples" },
+    { "name": "self_slope_30", "unit": "degC/s", "what": "same over 30 s" },
+    { "name": "self_slope_60", "unit": "degC/s", "what": "same over 60 s" },
+    { "name": "self_t_max_60", "unit": "degC", "what": "max valid room signal over the last 60 s; NaN if none" },
+    { "name": "self_frac_failed", "unit": "1", "what": "failed detectors / detectors in the room, now" },
+    { "name": "self_s_since_fail", "unit": "s", "what": "time since the first detector of the room failed; NaN if none has" },
+    { "name": "self_slope_at_fail", "unit": "degC/s", "what": "slope of the room signal over the 30 s before that first failure; NaN if none" },
+    { "name": "nb_t_last_max", "unit": "degC", "what": "max of self_t_last over the neighbours; NaN if none valid" },
+    { "name": "nb_slope_30_max", "unit": "degC/s", "what": "max of self_slope_30 over the neighbours; NaN if none valid" },
+    { "name": "nb_frac_failed_max", "unit": "1", "what": "max of self_frac_failed over the neighbours; 0 without neighbours" },
+    { "name": "nb_s_since_fail_max", "unit": "s", "what": "max of self_s_since_fail over the neighbours (earliest neighbour failure); NaN if none" },
+    { "name": "nb_slope_at_fail_max", "unit": "degC/s", "what": "max of self_slope_at_fail over the neighbours; NaN if none" }
+  ],
+  "models": {
+    "p30": { "file": "model-30s.json", "objective": "binary:logistic", "target": "room reaches flashover within 30 s" },
+    "p60": { "file": "model-60s.json", "objective": "binary:logistic", "target": "room reaches flashover within 60 s" },
+    "tff": { "file": "model-tff.json", "objective": "reg:squarederror", "target": "seconds to flashover, capped at tffCapS (censored runs and late flashovers count as tffCapS)" }
+  },
+  "golden": "golden.csv: one row per sample, columns = feature names (empty cell = NaN) then p30, p60, tff as predicted by Python xgboost"
+}

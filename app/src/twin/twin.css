@@ -1,0 +1,683 @@
+/* Jumeau numérique. Built on the tokens of index.css: calm, legible from a distance, red only for NO-GO and alerts.
+   Colour is never alone: every state also has a word or a mark. Motion only for a change of state, and not at all
+   under prefers-reduced-motion. */
+
+.twin,
+.twin-loading {
+  min-height: 100vh;
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: Barlow, system-ui, sans-serif;
+}
+
+.twin-loading {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  max-width: 70ch;
+  padding: 32px;
+  font-size: 18px;
+}
+
+.twin {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 12px 16px 20px;
+}
+
+.twin-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+}
+
+.twin-head h1,
+.twin-loading h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.twin-kick {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.twin-clock strong {
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+.twin-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.twin-tabs button,
+.twin-rehearsal button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.twin-tabs button[aria-pressed='true'] {
+  background: var(--blue-bg);
+  border-color: var(--blue);
+  color: var(--blue-text);
+}
+
+/* The rehearsal tab is a simulation: its tab wears the rehearsal's violet, never the live colours. */
+.twin-tabs button.is-rehearsal {
+  border-style: dashed;
+  border-color: #6a40b8;
+}
+
+.twin-tabs button.is-rehearsal[aria-pressed='true'] {
+  background: #6a40b8;
+  color: #fff;
+}
+
+.twin-rehearsal {
+  display: grid;
+  gap: 8px;
+}
+
+.twin-focus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.twin-focus .twin-kick {
+  margin-right: 4px;
+}
+
+.twin-focus button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.twin-focus button[aria-pressed='true'] {
+  background: var(--blue-bg);
+  border-color: var(--blue);
+  color: var(--blue-text);
+}
+
+/* ---------- Reality | twin | detail ---------- */
+
+.twin-worlds {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(300px, 24%);
+  gap: 12px;
+  align-items: start;
+}
+
+.twin-panel,
+.twin-detail,
+.twin-chain,
+.twin-chart {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.twin-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 10px 12px 12px;
+  border-top: 4px solid var(--line);
+}
+
+.twin-panel.is-real {
+  border-top-color: var(--amber);
+}
+
+.twin-panel.is-twin {
+  border-top-color: var(--blue);
+}
+
+.twin-panel figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+}
+
+.twin-panel figcaption .twin-kick {
+  width: 100%;
+}
+
+.twin-canvaswrap {
+  position: relative;
+  line-height: 0;
+}
+
+.twin-canvaswrap canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+/* The followed room, marked on both plans. */
+.twin-ring {
+  position: absolute;
+  border: 3px solid var(--blue);
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px var(--on-accent);
+  pointer-events: none;
+}
+
+.twin-scale {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.twin-scale i {
+  flex: 1;
+  max-width: 160px;
+  height: 10px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: linear-gradient(90deg, #f8f9fa, rgb(244, 96, 24));
+}
+
+.twin-facts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.twin-facts li {
+  padding: 2px 0;
+}
+
+.twin-facts li.is-alert {
+  color: var(--red-text);
+  font-weight: 600;
+}
+
+.twin-legend-line,
+.twin-note,
+.twin-foot {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.twin .is-go {
+  color: var(--green);
+}
+
+.twin .is-nogo {
+  color: var(--red);
+}
+
+.twin .num strong {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.twin .num {
+  white-space: nowrap;
+}
+
+.twin .badge {
+  font-size: 9px;
+}
+
+.twin-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 12px 12px;
+}
+
+.twin-detail h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.twin-vars {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.twin-vars th {
+  padding: 3px 6px 3px 0;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.twin-vars td {
+  padding: 3px 0;
+  text-align: right;
+}
+
+.twin-vars tr + tr {
+  border-top: 1px solid var(--line);
+}
+
+.twin-vars .num strong {
+  font-size: 13px;
+}
+
+.twin-vars .badge {
+  font-size: 8px;
+  padding: 1px 3px 0;
+}
+
+.twin-vars tr.is-missing td {
+  color: var(--text-3);
+}
+
+.twin-vars td {
+  white-space: nowrap;
+}
+
+.twin-miss small {
+  display: block;
+  font-size: 11px;
+}
+
+/* ---------- The chain ---------- */
+
+.twin-chain {
+  padding: 12px 14px 14px;
+}
+
+.twin-chain > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  margin-bottom: 10px;
+}
+
+.twin-chain > header p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.twin-chain > header .twin-kick {
+  color: var(--text);
+  font-size: 12px;
+}
+
+/* Wide windows: the AI and the rules, two parallel lanes, sit side by side in a double-width cell. */
+.twin-chain > ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 2.1fr) repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* An arrow from each stage to the next. */
+.twin-chain > ol > li {
+  position: relative;
+  min-width: 0;
+}
+
+.twin-chain > ol > li:not(:last-child)::after {
+  content: '▸';
+  position: absolute;
+  top: 50%;
+  right: -17px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--text-3);
+}
+
+.stage-pair > ol {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+  min-width: 0;
+  padding: 8px 10px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.stage-pair > ol > .stage {
+  flex: 1;
+  min-width: 0;
+}
+
+.stage h3 {
+  margin: 0;
+  padding-right: 16px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.stage-step {
+  position: absolute;
+  top: 7px;
+  right: 9px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+.stage-what {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.stage dl {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+}
+
+/* The room conditions: label above its number, every row alike. */
+.stage-counts .stage-row {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.stage-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 6px;
+}
+
+.stage-row dt {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.stage-row dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  margin: 0;
+}
+
+.stage-note,
+.stage-off {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.stage-alert {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--red-text);
+}
+
+.stage.is-alert {
+  border-color: var(--red);
+  background: var(--red-bg);
+}
+
+.stage-word {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.stage-verdict.is-go {
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+
+.stage-verdict.is-nogo {
+  border-color: var(--red);
+  background: var(--red-bg);
+}
+
+.stage-verdict-word {
+  margin: 4px 0 0;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stage-verdict.is-go .stage-verdict-word {
+  color: var(--green);
+}
+
+.stage-verdict.is-nogo .stage-verdict-word {
+  color: var(--red);
+}
+
+.stage-line {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.stage-screens {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.stage-screens li::before {
+  content: '▪ ';
+  color: var(--text-3);
+}
+
+/* A stage whose output just changed flashes once. */
+@keyframes twin-pulse-a {
+  from {
+    box-shadow: 0 0 0 0 rgba(26, 115, 232, 0.55);
+  }
+  to {
+    box-shadow: 0 0 0 10px rgba(26, 115, 232, 0);
+  }
+}
+
+@keyframes twin-pulse-b {
+  from {
+    box-shadow: 0 0 0 0 rgba(26, 115, 232, 0.55);
+  }
+  to {
+    box-shadow: 0 0 0 10px rgba(26, 115, 232, 0);
+  }
+}
+
+.pulse-a {
+  animation: twin-pulse-a 0.9s ease-out;
+}
+
+.pulse-b {
+  animation: twin-pulse-b 0.9s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-a,
+  .pulse-b {
+    animation: none;
+  }
+}
+
+/* ---------- Curves ---------- */
+
+.twin-curves {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.twin-chart {
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px 10px;
+}
+
+.twin-chart figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  font-size: 13px;
+}
+
+.twin-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.chart-axis {
+  stroke: var(--text-3);
+  stroke-width: 1;
+}
+
+.chart-tick,
+.chart-unit,
+.chart-note,
+.chart-mark {
+  font-size: 10px;
+}
+
+.chart-tick {
+  fill: var(--text-2);
+}
+
+.chart-unit {
+  fill: var(--text-2);
+  font-weight: 600;
+}
+
+.chart-mark {
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+}
+
+.chart-note {
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+}
+
+.twin-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.twin-legend i {
+  display: inline-block;
+  width: 18px;
+  margin-right: 4px;
+  vertical-align: middle;
+  border-top: 3px solid;
+}
+
+/* ---------- Smaller windows ---------- */
+
+@media (max-width: 1500px) {
+  .twin-chain > ol {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    row-gap: 18px;
+  }
+
+  .stage-pair > ol {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .twin-chain > ol > li:nth-child(4n)::after {
+    display: none;
+  }
+
+  .twin-curves {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1100px) {
+  .twin-worlds {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .twin-detail {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .twin-worlds,
+  .twin-curves,
+  .twin-chain > ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .twin-chain > ol > li::after {
+    display: none;
+  }
+}

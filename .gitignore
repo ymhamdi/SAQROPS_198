@@ -1,0 +1,45 @@
+# Working notes stay local, except the HUD design notes (aviation HUD principles reused for the ARI mask HUD)
+/docs/*
+!/docs/HUD_DESIGN_NOTES.md
+
+# Data stay local (the repo is public): raw downloads in ml/data/raw/ (NIST xlsx, UL FSRI clone), generated CSV and
+# Parquet next to them. Only the documented schema is committed.
+/ml/data/*
+!/ml/data/NIST_SCHEMA.md
+/ml/data/raw/
+/ml/raw/
+*.xlsx
+*.parquet
+
+# Node
+node_modules/
+dist/
+*.local
+*.tsbuildinfo
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets (the repo is public)
+.env
+.env.*
+
+# Claude Code plugin state
+.omc/
+.impeccable/
+
+# Model experiments (each ml/train.py --out run); key numbers go to ml/MODEL_REPORT.md, the shipped model is ml/model/
+/ml/runs/

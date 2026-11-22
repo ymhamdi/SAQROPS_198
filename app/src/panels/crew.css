@@ -1,0 +1,391 @@
+/* Crew views: the team leader's tablet (gloved hands: targets of 64 px and more) and the ARI mask HUD. */
+
+.crew-wait {
+  padding: 32px;
+  font-family: Barlow, system-ui, sans-serif;
+  font-size: 20px;
+}
+
+.crew-kick {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+/* ---------- Tablet ---------- */
+
+.tablet2 {
+  display: grid;
+  grid-template-columns: minmax(320px, 440px) 1fr;
+  grid-auto-rows: min-content;
+  gap: 12px 16px;
+  min-height: 100vh;
+  padding: 16px;
+  background: var(--surface-2);
+  font-family: Barlow, system-ui, sans-serif;
+  color: var(--text);
+}
+
+.tablet2 > section,
+.tablet2 > dl {
+  grid-column: 1;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.tablet2-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tablet2-verdict h1 {
+  margin: 0;
+  font-size: 56px;
+  line-height: 1;
+}
+
+.tablet2-verdict p {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.tablet2.is-go .tablet2-verdict {
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+
+.tablet2.is-go .tablet2-verdict h1 {
+  color: var(--green);
+}
+
+.tablet2.is-nogo .tablet2-verdict {
+  border-color: var(--red);
+  background: var(--red-bg);
+}
+
+.tablet2.is-nogo .tablet2-verdict h1 {
+  color: var(--red);
+}
+
+.tablet2-msg {
+  border-color: var(--blue) !important;
+  background: var(--blue-bg) !important;
+}
+
+.tablet2-msg p {
+  margin: 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tablet2 button {
+  min-height: 64px;
+  min-width: 120px;
+  margin-top: 6px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  border: 1px solid var(--blue);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--blue-text);
+}
+
+.tablet2-next h2 {
+  margin: 2px 0;
+  font-size: 26px;
+}
+
+.tablet2-next p {
+  margin: 0;
+}
+
+.tablet2-gauges {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tablet2-gauges dt {
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+.tablet2-gauges dd {
+  margin: 0;
+}
+
+.tablet2-gauges .num strong {
+  font-size: 30px;
+}
+
+.tablet2-alerts ul {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 17px;
+}
+
+.tablet2-alerts li {
+  padding: 4px 0;
+}
+
+.tablet2-alerts li.is-no-go {
+  color: var(--red-text);
+  font-weight: 600;
+}
+
+.tablet2-alerts li.is-caution {
+  color: var(--amber-text);
+}
+
+/* The live map stays in view while the cards beside it scroll. */
+.tablet2 > .tablet2-map {
+  grid-column: 2;
+  grid-row: 2 / span 8;
+  align-self: start;
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: calc(100vh - 76px);
+  padding: 8px;
+}
+
+.tablet2-maptools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tablet2 .tablet2-maptools button {
+  margin-top: 0;
+}
+
+.tablet2 .tablet2-maptools button[aria-pressed='true'] {
+  background: var(--blue-bg);
+  color: var(--blue-text);
+  border-width: 2px;
+}
+
+.tablet2 .tablet2-maptools button.is-zoom {
+  min-width: 64px;
+  font-size: 26px;
+}
+
+.tablet2 .tablet2-maptools button:disabled {
+  opacity: 0.4;
+}
+
+.tablet2-canvas {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.tablet2-legend {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+/* The phase of the mission: past, current (a mark as well as a colour), to come. */
+.tablet2-mission ol {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.tablet2-mission li {
+  flex: 1;
+  padding: 10px 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--text-3);
+  background: var(--surface-2);
+}
+
+.tablet2-mission li.is-past {
+  color: var(--green);
+  background: var(--green-bg);
+  border-color: var(--green);
+}
+
+.tablet2-mission li.is-current {
+  font-weight: 700;
+  color: var(--blue-text);
+  background: var(--blue-bg);
+  border: 2px solid var(--blue);
+}
+
+.tablet2-mission li.is-current.is-nogo {
+  color: var(--red-text);
+  background: var(--red-bg);
+  border-color: var(--red);
+}
+
+.tablet2-mission p {
+  margin: 0;
+  font-size: 16px;
+}
+
+@media (max-width: 900px) {
+  .tablet2 {
+    grid-template-columns: 1fr;
+  }
+
+  .tablet2 > .tablet2-map {
+    grid-column: 1;
+    grid-row: auto;
+    position: static;
+    height: 70vh;
+  }
+}
+
+/* ---------- HUD: dark, see-through look, no filled panels; text and strokes with a dark halo ---------- */
+
+.hud2 {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 28px 32px;
+  background: var(--hud-bg);
+  color: var(--visor-text);
+  font-family: Barlow, system-ui, sans-serif;
+  text-shadow: var(--visor-halo);
+}
+
+/* The synthetic view fills the visor; the symbology sits over it. */
+.hud2-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hud2 > section,
+.hud2 > .hud2-tag {
+  position: relative;
+  z-index: 1;
+}
+
+/* The view is a rendering, and says so. */
+.hud2-tag {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--visor-text-2);
+}
+
+/* NO-GO: the edges of the visor go red, in addition to the word and the icon. */
+.hud2.is-warning::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 140px 20px rgba(217, 48, 37, 0.6);
+}
+
+.hud2-alert {
+  grid-column: 2;
+  justify-self: center;
+  font-size: 44px;
+  letter-spacing: 0.08em;
+}
+
+.hud2.is-warning .hud2-alert {
+  color: var(--hud-red);
+}
+
+.hud2.is-caution .hud2-alert {
+  color: var(--hud-amber);
+}
+
+.hud2.is-ok .hud2-alert {
+  color: var(--hud-green);
+}
+
+/* Where next, under the view: distance and place, between the air and the point of no return. */
+.hud2-nav {
+  grid-column: 2;
+  grid-row: 3;
+  align-self: end;
+  justify-self: center;
+  text-align: center;
+  font-size: 24px;
+  line-height: 1.2;
+  max-width: 100%;
+  padding-bottom: 6px;
+}
+
+.hud2-nav p {
+  margin: 0;
+}
+
+.hud2-nav .num strong {
+  font-size: 44px;
+}
+
+.hud2-air,
+.hud2-pnr {
+  grid-row: 3;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.hud2-air {
+  grid-column: 1;
+}
+
+.hud2-pnr {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.hud2-air span,
+.hud2-pnr span {
+  font-size: 20px;
+  letter-spacing: 0.1em;
+}
+
+.hud2-air strong,
+.hud2-pnr strong {
+  font-size: 64px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud2 .badge {
+  text-shadow: none;
+  color: var(--visor-text-2);
+  border-color: var(--visor-text-2);
+}

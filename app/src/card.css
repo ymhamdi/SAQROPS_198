@@ -1,0 +1,446 @@
+/* The printable Marswalk card: an on-screen preview of an A4 sheet, and print rules that print only the sheet. */
+
+.print-view {
+  position: fixed;
+  z-index: 3000;
+  inset: 0;
+  overflow-y: auto;
+  background: var(--backdrop);
+}
+
+.print-toolbar {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow-chip);
+  font-size: 14px;
+}
+
+.print-toolbar span {
+  flex: 1 1 auto;
+  color: var(--text-2);
+}
+
+.print-toolbar .btn-secondary {
+  width: auto;
+  padding: 7px 18px;
+}
+
+.sheet {
+  box-sizing: border-box;
+  width: 210mm;
+  height: 297mm;
+  overflow: hidden;
+  margin: 24px auto;
+  padding: 11mm 12mm;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--text);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.sheet h2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 4px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.sheet small {
+  display: block;
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+/* Header */
+
+.sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--text);
+}
+
+.sheet-kicker {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.sheet-head h1 {
+  margin: 2px 0;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.sheet-start {
+  font-size: 12px;
+}
+
+.sheet-verdict {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 8px 14px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--on-accent);
+}
+
+.sheet-verdict.is-small {
+  padding: 6px 10px;
+  font-size: 16px;
+}
+
+.sheet-head.is-back h1 {
+  font-size: 18px;
+}
+
+.sheet-verdict.is-go {
+  background: var(--green);
+}
+
+.sheet-verdict.is-nogo {
+  background: var(--red);
+}
+
+.sheet-verdict .badge {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: var(--on-accent);
+}
+
+/* Key figures */
+
+.sheet-figures {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-bottom: 1px solid var(--line);
+}
+
+.sheet-figures > div {
+  padding: 8px 8px 8px 0;
+}
+
+.sheet-figures > div + div {
+  padding-left: 8px;
+  border-left: 1px solid var(--line);
+}
+
+.sheet-figures dt {
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+.sheet-figures dd {
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+/* Map and safety */
+
+.sheet-mid {
+  display: grid;
+  grid-template-columns: 118mm 1fr;
+  gap: 6mm;
+  margin-top: 10px;
+}
+
+.sheet-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+}
+
+.sheet-map image {
+  image-rendering: auto;
+}
+
+.sheet-route-casing {
+  fill: none;
+  stroke: var(--on-accent);
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sheet-route {
+  fill: none;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sheet-pin {
+  fill: var(--blue);
+  stroke: var(--on-accent);
+  stroke-width: 0.6;
+}
+
+.sheet-pin-base {
+  fill: var(--text);
+  stroke: var(--on-accent);
+  stroke-width: 0.6;
+}
+
+.sheet-map text {
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--on-accent);
+}
+
+.sheet-far {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 2px;
+  stroke-dasharray: 3 2;
+}
+
+.sheet-rover {
+  fill: var(--on-accent);
+  stroke: var(--text);
+  stroke-width: 0.6;
+}
+
+.sheet-map .sheet-rover + text,
+.sheet-map .sheet-north text,
+.sheet-map .sheet-scale text {
+  fill: var(--text);
+}
+
+.sheet-north path,
+.sheet-scale rect {
+  fill: var(--text);
+}
+
+.sheet-scale text {
+  text-anchor: start;
+}
+
+.sheet-map figcaption {
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+.sheet-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  margin-bottom: 2px;
+}
+
+.sheet-legend li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sheet-legend span {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.sheet-legend span.is-ring {
+  width: 9px;
+  height: 9px;
+  border: 1.5px dashed var(--red);
+  border-radius: 50%;
+}
+
+.sheet-legend span.is-rover {
+  display: grid;
+  place-items: center;
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--text);
+  border-radius: 2px;
+  font-weight: 600;
+  font-size: 8px;
+}
+
+.sheet-safety h2:first-child {
+  margin-top: 0;
+}
+
+.sheet-reasons {
+  display: grid;
+  gap: 3px;
+}
+
+
+.sheet-reasons b {
+  font-weight: 600;
+}
+
+.sheet-reasons .sev-no-go b {
+  color: var(--red);
+}
+
+.sheet-reasons .sev-caution b {
+  color: var(--amber-text);
+}
+
+.sheet-reasons .sev-info {
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+.sheet-none {
+  color: var(--text-2);
+}
+
+/* Profile and stops */
+
+.sheet-profile {
+  margin-top: 12px;
+}
+
+.sheet-profile svg {
+  display: block;
+  width: 100%;
+  height: 80px;
+}
+
+.sheet-stops {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+}
+
+.sheet-stops th {
+  padding: 4px 6px 4px 0;
+  border-bottom: 1.5px solid var(--text);
+  font-weight: 600;
+  font-size: 10px;
+  text-align: left;
+}
+
+.sheet-stops td {
+  padding: 5px 6px 5px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.sheet-stops tr {
+  break-inside: avoid;
+}
+
+.sheet-stops td:first-child {
+  width: 18px;
+  font-weight: 600;
+}
+
+.sheet-stops td:nth-child(3),
+.sheet-stops td:nth-child(4) {
+  width: 62px;
+  white-space: nowrap;
+}
+
+.sheet-stops td:nth-child(2) {
+  width: 34%;
+}
+
+.sheet-hazards {
+  color: var(--amber-text) !important;
+}
+
+.sheet-foot {
+  margin-top: 10px;
+  font-size: 9.5px;
+  color: var(--text-2);
+}
+
+.sheet-link {
+  margin-top: 2px;
+  word-break: break-all;
+}
+
+/* ---------- Print: only the sheet ---------- */
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+/* Narrow screens: the preview shrinks the A4 sheet to fit the width (screen only; printing is unchanged), and the
+   toolbar wraps. */
+@media screen and (max-width: 860px) {
+  .print-toolbar {
+    flex-wrap: wrap;
+    padding: 10px 16px;
+  }
+
+  .print-toolbar span {
+    flex-basis: 100%;
+    order: 3;
+  }
+
+  .sheet {
+    zoom: 0.85;
+    margin: 16px auto;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .sheet {
+    zoom: 0.62;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .sheet {
+    zoom: 0.44;
+  }
+}
+
+@media print {
+  html,
+  body,
+  #root,
+  .app {
+    height: auto !important;
+    overflow: visible !important;
+    background: var(--surface) !important;
+  }
+
+  .app > :not(.print-view),
+  .print-toolbar {
+    display: none !important;
+  }
+
+  .print-view {
+    position: static;
+    overflow: visible;
+    background: none;
+  }
+
+  .sheet {
+    margin: 0;
+    box-shadow: none;
+    break-after: page;
+  }
+
+  .sheet:last-child {
+    break-after: auto;
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "about": "Reflex instructions per hazard, printed on the team's card. Each one is a paraphrase of the cited public reference and must be checked line by line against it and validated by the Protection civile before any real use. Drafted by the team with an AI assistant (see CREDITS.md); never generated at run time.",
+  "validation": "à valider par la Protection civile",
+  "hazards": {
+    "solvants": {
+      "name": "Solvants inflammables",
+      "status": "MODELED",
+      "items": [
+        { "text": "Vapeurs inflammables, plus lourdes que l'air : écarter toute source d'inflammation, se méfier des points bas.", "source": "ERG 2024, guides 127 et 128 (liquides inflammables)" },
+        { "text": "Petit feu : poudre, CO₂, eau pulvérisée ou mousse. Feu important : eau pulvérisée, brouillard ou mousse ; le jet d'eau seul peut être inefficace.", "source": "ERG 2024, guide 128" },
+        { "text": "Refroidir les fûts et contenants exposés à grande eau et à distance ; se retirer immédiatement si le bruit des soupapes augmente.", "source": "ERG 2024, guide 128" }
+      ]
+    },
+    "liion": {
+      "name": "Batteries lithium-ion",
+      "status": "MODELED",
+      "items": [
+        { "text": "Feu important : eau pulvérisée ou brouillard en grande quantité pour refroidir ; risque de réinflammation après extinction.", "source": "ERG 2024, guide 147 (batteries lithium-ion et sodium-ion)" },
+        { "text": "Gaz irritants, corrosifs ou toxiques : ARI obligatoire, rester au vent.", "source": "ERG 2024, guide 147" }
+      ]
+    },
+    "electrique": {
+      "name": "Risque électrique (TGBT, transformateur)",
+      "status": "MODELED",
+      "items": [
+        { "text": "Considérer toute installation comme sous tension tant que la coupure n'est pas confirmée par une personne habilitée.", "source": "NFPA 70E (2024), mise en sécurité électrique (consignation)" },
+        { "text": "Faire couper l'alimentation au TGBT avant toute attaque à l'eau dans les locaux électriques.", "source": "NFPA 70E (2024), principe de consignation" }
+      ]
+    },
+    "gaz": {
+      "name": "Gaz inflammables, BLEVE",
+      "status": "MODELED",
+      "items": [
+        { "text": "Ne pas éteindre une fuite de gaz enflammée si la fuite ne peut pas être arrêtée.", "source": "ERG 2024, guide 115 (gaz inflammables)" },
+        { "text": "Rester à l'écart des réservoirs pris dans le feu ; refroidir à distance ; se retirer immédiatement si le bruit des soupapes augmente ou si le réservoir se décolore.", "source": "ERG 2024, guide 115" }
+      ]
+    },
+    "pression": {
+      "name": "Appareils sous pression (autoclave)",
+      "status": "MODELED",
+      "items": [
+        { "text": "Un récipient sous pression exposé à la chaleur peut éclater : refroidir à distance, ne pas stationner dans l'axe des fonds.", "source": "ERG 2024, guide 121 (gaz inertes) : les récipients peuvent exploser sous l'effet de la chaleur" }
+      ]
+    },
+    "eau": {
+      "name": "Produits réagissant à l'eau",
+      "status": "MODELED",
+      "items": [
+        { "text": "Ne pas utiliser d'eau ni de mousse ; utiliser sable sec, poudre, carbonate de sodium ou chaux.", "source": "ERG 2024, guide 138 (substances réagissant à l'eau, gaz inflammables)" }
+      ]
+    },
+    "fumees": {
+      "name": "Fumées toxiques",
+      "status": "MODELED",
+      "items": [
+        { "text": "ARI obligatoire dans les fumées ; engagement en binôme avec une équipe prête à l'extérieur (« deux dedans, deux dehors »).", "source": "OSHA 29 CFR 1910.134(g)(4) (lutte contre l'incendie intérieure, atmosphère dangereuse)" },
+        { "text": "Sortie avant le sifflet basse pression (55 bar), retour compté à ×1,5 du temps prévu.", "source": "EN 137:2006 (alarme basse pression) ; règle PNR de data/config.json" }
+      ]
+    }
+  },
+  "sources": {
+    "ERG 2024": "Emergency Response Guidebook 2024, US DOT PHMSA / Transport Canada / SCT Mexico — https://www.phmsa.dot.gov/hazmat/erg/emergency-response-guidebook-erg",
+    "OSHA 29 CFR 1910.134": "Respiratory protection — https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.134",
+    "NFPA 70E": "Standard for Electrical Safety in the Workplace, 2024 edition",
+    "EN 137:2006": "Respiratory protective devices — Self-contained open-circuit compressed air breathing apparatus with full face mask"
+  }
+}

@@ -1,0 +1,127 @@
+/* Self-playing demo: a narration bar over the crew views. Dark and translucent so it reads on the HUD, the tablet and the
+   twin alike; the caption is always visible, the controls only while the pointer or a key moves. */
+
+.demo-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  z-index: 100;
+  display: grid;
+  gap: 8px;
+  width: min(760px, calc(100vw - 32px));
+  padding: 12px 18px 12px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: rgba(16, 22, 28, 0.86);
+  color: #f1f3f4;
+  font-family: Barlow, system-ui, sans-serif;
+  text-shadow: none;
+  backdrop-filter: blur(6px);
+}
+
+/* On the HUD the bottom row holds the air, the distance and the point of no return: the bar goes under the alert. */
+.demo-bar.is-hud {
+  bottom: auto;
+  top: 88px;
+}
+
+/* On the tablet the left column holds the air figures: the bar sits over the map, bottom right. */
+.demo-bar.is-tablet {
+  left: auto;
+  right: 16px;
+  width: min(520px, calc(100vw - 32px));
+  transform: none;
+}
+
+.demo-bar.is-tablet .demo-caption {
+  font-size: 16px;
+}
+
+.demo-caption {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.demo-step {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9fb3c2;
+}
+
+.demo-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.demo-dots span {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.demo-dots .is-past {
+  background: #9fb3c2;
+}
+
+.demo-dots .is-now {
+  background: #f1f3f4;
+}
+
+.demo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.2s ease, opacity 0.2s ease;
+}
+
+.demo-bar.is-awake .demo-controls {
+  max-height: 64px;
+  opacity: 1;
+}
+
+.demo-controls button {
+  min-height: 40px;
+  padding: 6px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.demo-controls button.is-primary {
+  border-color: #f1f3f4;
+  background: #f1f3f4;
+  color: #10161c;
+}
+
+.demo-controls small {
+  color: #9fb3c2;
+  font-size: 13px;
+}
+
+/* Waiting screens: how to start the demo without a PC. */
+.demo-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-controls {
+    transition: none;
+  }
+}

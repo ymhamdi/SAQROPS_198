@@ -1,0 +1,529 @@
+/* Tablet view: carried on the walk. High contrast for Martian daylight; every target at least 64 px, 16 px apart, for
+   gloved hands. Severity is always icon + word + colour. */
+
+.tablet {
+  position: fixed;
+  inset: 0;
+  z-index: 4500;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 460px;
+  background: var(--surface);
+  color: var(--black);
+  font-size: 16px;
+}
+
+.tablet-map,
+.tablet-map.leaflet-container {
+  height: 100%;
+  background: var(--black);
+}
+
+.tablet-map .crew-dot {
+  animation: crew-pulse 1.6s ease-out infinite;
+}
+
+@keyframes crew-pulse {
+  0% {
+    stroke-width: 4;
+    stroke-opacity: 1;
+  }
+  100% {
+    stroke-width: 18;
+    stroke-opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tablet-map .crew-dot {
+    animation: none;
+  }
+}
+
+.tablet-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 20px 0;
+  border-left: 1px solid var(--line);
+}
+
+.tablet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tablet-head strong {
+  display: block;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.tablet-kick {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.tablet-next {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 2px solid var(--black);
+  border-radius: 14px;
+}
+
+.tablet-next h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.tablet-next p {
+  font-size: 18px;
+}
+
+.tablet-next.is-abort {
+  border-color: var(--red);
+  background: var(--red-bg);
+  color: var(--red-text);
+}
+
+.tablet-next.is-abort .tablet-btn {
+  justify-self: start;
+}
+
+.tablet-num {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--on-accent);
+  font-size: 22px;
+}
+
+.tablet-gauges {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tablet-gauges > div {
+  display: grid;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.tablet-gauges span {
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+.tablet-gauges strong {
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.tablet-gauges .is-caution {
+  background: var(--amber-bg);
+}
+
+.tablet-gauges .is-warning {
+  background: var(--red-bg);
+  color: var(--red-text);
+}
+
+.tablet-gauge-state {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* An inline state word in front of a heading (Next, At stop, Abort): part of the line, not a label above it. */
+.tablet-state {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tablet-drill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.tablet-side h3 {
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.tablet-warnings ul {
+  display: grid;
+  gap: 8px;
+}
+
+.tablet-warnings li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 17px;
+}
+
+.tablet-warnings li svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.tablet-warnings .sev-no-go {
+  background: var(--red-bg);
+  color: var(--red-text);
+  font-weight: 500;
+}
+
+.tablet-warnings .sev-caution {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+
+.tablet-ok {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  color: var(--green);
+}
+
+.tablet-plan-head {
+  margin-top: 16px;
+}
+
+.tablet-warnings ul.tablet-plan {
+  gap: 2px;
+  margin-top: 8px;
+}
+
+.tablet-warnings .tablet-plan li {
+  padding: 0;
+  background: none;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.tablet-warnings .tablet-plan li.is-warning svg {
+  color: var(--red-text);
+}
+
+.tablet-warnings .tablet-plan li.is-caution svg {
+  color: var(--amber-text);
+}
+
+.tablet-upcoming ol {
+  display: grid;
+}
+
+.tablet-upcoming li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 17px;
+}
+
+.tablet-eta {
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.tablet-controls {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: auto;
+  padding: 16px 0 20px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.tablet-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 64px;
+  padding: 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-weight: 500;
+  font-size: 17px;
+  color: var(--black);
+}
+
+.tablet-btn:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.tablet-btn.is-primary {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: var(--on-accent);
+}
+
+.tablet-btn.is-primary:hover:not(:disabled) {
+  background: var(--blue-hover);
+}
+
+.tablet-btn.is-danger {
+  border-color: var(--visor-warning-band);
+  background: var(--visor-warning-band);
+  color: var(--on-accent);
+}
+
+.tablet-btn[aria-pressed='true'] {
+  border-color: var(--black);
+  box-shadow: inset 0 0 0 1px var(--black);
+}
+
+/* Position fix (simulated): the button, the result card and its map key share the rejoin pink. */
+.tablet-btn.is-locate {
+  border-color: var(--rejoin);
+  color: var(--rejoin);
+}
+
+.tablet-fix {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 2px solid var(--rejoin);
+  border-radius: 14px;
+  background: var(--rejoin-bg);
+}
+
+.tablet-fix-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tablet-fix h2 {
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.tablet-fix p {
+  font-size: 16px;
+}
+
+.tablet-fix .tablet-btn {
+  justify-self: start;
+  min-height: 44px;
+}
+
+.tablet-fix-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+.tablet-fix-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tablet-fix-key i {
+  display: inline-block;
+  width: 22px;
+  height: 5px;
+  border-radius: 3px;
+}
+
+.tablet-fix-key .key-rejoin {
+  background: var(--rejoin);
+}
+
+.tablet-fix-key .key-plan {
+  background: var(--blue);
+}
+
+.tablet-fix-key .key-correction {
+  height: 0;
+  border-top: 2px dashed var(--text-2);
+  border-radius: 0;
+}
+
+.tablet-fix.is-error {
+  border-color: var(--red);
+  background: var(--red-bg);
+  color: var(--red-text);
+}
+
+.tablet-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* The time slider gets a full-width row of its own above the buttons. */
+.tablet-controls input[type='range'] {
+  order: -1;
+  flex: 1 1 100%;
+  height: 64px;
+  accent-color: var(--blue);
+}
+
+.tablet-controls select {
+  height: 64px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 16px;
+}
+
+@media (max-width: 960px) {
+  .tablet {
+    grid-template-columns: 1fr;
+    grid-template-rows: 45vh minmax(0, 1fr);
+  }
+
+  .tablet-side {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .tablet-controls {
+    flex-wrap: wrap;
+  }
+}
+
+/* Running late: spare time and "stay longer" at a stop; what to drop when the rest no longer fits. */
+.late {
+  display: grid;
+  gap: 10px;
+}
+
+.late:empty {
+  display: none;
+}
+
+.late-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  font-size: 16px;
+}
+
+.late-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.late-btns .tablet-btn {
+  min-height: 52px;
+}
+
+.late-cut {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 2px solid var(--visor-warning-band);
+  border-radius: 10px;
+  background: var(--red-bg);
+  color: var(--red-text);
+}
+
+.late-cut p {
+  font-size: 17px;
+}
+
+.late-cut .tablet-btn {
+  justify-self: start;
+}
+
+/* A route change sent by mission control. */
+.tablet-fix.is-control {
+  border-color: var(--draft);
+  background: var(--draft-bg);
+}
+
+.tablet-fix.is-control p {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ---------- Responsive fixes (2026-11-15) ---------- */
+
+/* Sections keep their height: a short screen scrolls the side panel instead of squashing its sections to nothing. */
+.tablet-side > * {
+  flex-shrink: 0;
+}
+
+/* Short screens: the controls scroll with the rest instead of covering half of the panel. */
+@media (max-height: 820px) {
+  .tablet-controls {
+    position: static;
+  }
+}
+
+/* Narrow screens: map on top, then the panel, then the copilot; the whole view scrolls as one page. */
+@media (max-width: 960px) {
+  .tablet {
+    grid-template-rows: 45vh auto auto;
+    overflow-y: auto;
+  }
+
+  .tablet-side {
+    min-height: auto; /* grow with its content: the view scrolls, not the panel */
+    overflow: visible;
+  }
+
+  .tablet .copilot.is-tablet {
+    position: static;
+    width: auto;
+    max-height: none;
+    margin: 0 16px 16px;
+    overflow: visible; /* a scrolling box would collapse to nothing in this grid row */
+  }
+
+  .tablet-controls {
+    position: static;
+  }
+}

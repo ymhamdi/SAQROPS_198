@@ -1,0 +1,172 @@
+/* Mission control: shares the tablet's full-screen layout (.tablet) and buttons; only its own parts are here. */
+
+.control-map.is-editable {
+  cursor: crosshair;
+}
+
+.control-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.control-link > span:nth-child(2) {
+  display: inline-flex;
+  flex-wrap: wrap;
+  flex: 1 1 180px; /* text beside the dot; the button drops to its own line when there is no room for both */
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-link-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-2);
+}
+
+.control-link.is-live .control-link-dot {
+  background: var(--green);
+  box-shadow: 0 0 0 4px var(--surface-2);
+}
+
+.control-abort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--red-bg);
+  color: var(--red-text);
+  font-weight: 600;
+}
+
+.control-plan {
+  display: grid;
+  gap: 10px;
+}
+
+.control-plan-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.control-plan-head h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.control-kept {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.control-stops {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.control-stops li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  border-bottom: 1px solid var(--line);
+}
+
+.control-stops li.is-new .pin {
+  background: var(--draft);
+}
+
+.control-stop-name {
+  display: grid;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.control-stop-name small {
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.control-stop-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.control-stop-btns .icon-btn {
+  width: 40px;
+  height: 40px;
+}
+
+.control-hint {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.control-problem {
+  margin: 0;
+  color: var(--red-text);
+  font-weight: 500;
+}
+
+.control-draft {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 2px solid var(--draft);
+  border-radius: 10px;
+  background: var(--draft-bg);
+}
+
+.control-draft p {
+  margin: 0;
+}
+
+.control-draft-verdict {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.control-issue.is-no-go {
+  color: var(--red-text);
+  font-weight: 600;
+}
+
+.control-issue.is-caution {
+  color: var(--amber-text);
+}
+
+.control-draft-btns {
+  display: flex;
+  gap: 8px;
+}
+
+/* A stop the draft adds, on the map. */
+.mark-draft {
+  background: var(--surface);
+  border: 4px solid var(--draft);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.control-sent {
+  margin: 0;
+  color: var(--green);
+  font-weight: 600;
+}
