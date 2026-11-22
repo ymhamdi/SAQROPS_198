@@ -26,7 +26,7 @@ sécurité** (les règles R1 à R13), pas sur le vol de données.
 | Les fenêtres tablette, HUD et jumeau acceptaient n'importe quel message du canal (un message mal formé démonte la fenêtre) | contrôle de forme à la réception (`live/validate.ts`, `live/channel.ts`) | `leads.test.ts` |
 | Une alerte MAYDAY pouvait sortir de l'écran du PC après 50 échanges sans accusé de réception | les MAYDAY ouverts sont gardés à part du journal (`copilot/log.ts`) | contrôle de forme testé ; la liste séparée n'a pas de test dédié |
 | Un arbre XGBoost abîmé pouvait boucler sans fin ou lire hors arbre | borne de parcours et contrôle des indices (`ml/xgb.ts`) | `leads.test.ts` |
-| CI : jeton à droits par défaut, identifiants laissés dans le checkout | `permissions: contents: read`, `persist-credentials: false` | — |
+| CI : jeton à droits par défaut, identifiants laissés dans le checkout | **correctif fourni en patch** (`ci-permissions.patch` : `permissions: contents: read`, `persist-credentials: false`). Le jeton GitHub de cette machine n'a pas la portée `workflow`, donc GitHub a refusé de pousser `ci.yml` : à appliquer avec `git apply security/ci-permissions.patch` depuis un compte qui l'a | — |
 | `data/SOURCES.md` : trois liens de téléchargement à jeton | retirés, le SHA-256 identifie les fichiers | — |
 | `.gitignore` : motifs de secrets manquants | `*.pem`, `*.key`, `*.p12`, `*.pfx`, `credentials*.json` | — |
 
