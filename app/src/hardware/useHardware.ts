@@ -132,6 +132,13 @@ export function useHardware(sim: SimControls, site: Site): HardwareControls {
     if (!mayday) gate.current.clearMayday()
   }, [critical, mayday])
 
+  // A simulation reset rebuilds the state with no cylinder pressure: a steady reading must be delivered again (R13), not
+  // dropped as « already sent ».
+  const hasAri = sim.snap?.hardware.ari != null
+  useEffect(() => {
+    if (!hasAri) gate.current.clearAri()
+  }, [hasAri])
+
   useEffect(() => {
     const id = window.setInterval(() => setNowMs(Date.now()), 1000)
     return () => window.clearInterval(id)

@@ -34,6 +34,11 @@ export class EventGate {
     this.critical.clear()
   }
 
+  /** The simulation was rebuilt (a reset): its pressure is empty again, so the next reading is news. */
+  clearAri(): void {
+    this.ari = NaN
+  }
+
   /** The COS has cleared the mayday. */
   clearMayday(): void {
     this.mayday = false

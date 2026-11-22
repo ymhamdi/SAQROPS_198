@@ -8,6 +8,7 @@
 // Pure functions with .ts imports: the simulation worker runs them.
 
 import type { TrackPoint } from '../stats/air.ts'
+import { worstStatus } from '../stats/status.ts'
 import { verdictOf, type Reason, type Verdict } from '../stats/verdict.ts'
 import type { HardwareEvent, HwStatus } from './ingest.ts'
 
@@ -41,7 +42,7 @@ export function applyHardwareEvent(h: HardwareState, ev: HardwareEvent, atS: num
     const same = (c: CriticalRoom) => (ev.room !== null ? c.room === ev.room : c.room === null && c.roomName === ev.roomName)
     const known = h.critical.find(same)
     const critical = known
-      ? h.critical.map((c) => (c === known ? { ...c, valueC: Math.max(c.valueC, ev.valueC), thresholdC: Math.min(c.thresholdC, ev.thresholdC) } : c))
+      ? h.critical.map((c) => (c === known ? { ...c, valueC: Math.max(c.valueC, ev.valueC), thresholdC: Math.min(c.thresholdC, ev.thresholdC), status: worstStatus(c.status, ev.status) as HwStatus } : c))
       : [...h.critical, { room: ev.room, roomName: ev.roomName, valueC: ev.valueC, thresholdC: ev.thresholdC, atS, status: ev.status }]
     return { ...h, critical }
   }

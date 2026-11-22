@@ -1,0 +1,33 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index f99b1bf..dc356e4 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -4,6 +4,10 @@ on:
+   push:
+   pull_request:
+ 
++# The jobs only read the repository: the token gets no more than that, whatever the repository default is.
++permissions:
++  contents: read
++
+ jobs:
+   app:
+     runs-on: ubuntu-latest
+@@ -12,6 +16,8 @@ jobs:
+         working-directory: app
+     steps:
+       - uses: actions/checkout@v4
++        with:
++          persist-credentials: false
+       - uses: actions/setup-node@v4
+         with:
+           node-version: 24
+@@ -28,6 +34,8 @@ jobs:
+     if: ${{ hashFiles('ml/requirements.txt') != '' }}
+     steps:
+       - uses: actions/checkout@v4
++        with:
++          persist-credentials: false
+       - uses: actions/setup-python@v5
+         with:
+           python-version: '3.12'

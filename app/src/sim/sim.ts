@@ -375,12 +375,15 @@ export function judge(ctx: SimContext, s: SimState) {
   s.shown = shown
   s.latch = latch
   // The latch just closed on an engaged team: get them out.
-  if (!before && latch.latched && s.team.mode === 'engaged') {
-    s.team.mode = 'evacuating'
-    s.notes.push({ t: s.fire.t, text: `NO-GO : ${shown.reasons.find((r) => r.severity === 'no-go')?.message ?? ''}. Sortie la plus proche.` })
-    replan(ctx, s)
-    judgeAfterReplan(ctx, s)
-  }
+  if (!before && latch.latched && s.team.mode === 'engaged') recallTeam(ctx, s)
+}
+
+/** An engaged team is called back to the nearest exit, with the reason of the NO-GO in the notes. */
+function recallTeam(ctx: SimContext, s: SimState): void {
+  s.team.mode = 'evacuating'
+  s.notes.push({ t: s.fire.t, text: `NO-GO : ${s.shown.reasons.find((r) => r.severity === 'no-go')?.message ?? ''}. Sortie la plus proche.` })
+  replan(ctx, s)
+  judgeAfterReplan(ctx, s)
 }
 
 /** Re-judges after an evacuation re-plan without re-triggering it (the latch already holds). */
@@ -425,6 +428,10 @@ export function applyHardware(ctx: SimContext, s: SimState, ev: HardwareEvent): 
     s.notes.push({ t: s.fire.t, text: `Matériel : MAYDAY du chef de binôme (${ev.status})` })
   }
   judge(ctx, s)
+  // R13: a new danger from the hardware (a room marked, a MAYDAY) recalls an engaged team even when a NO-GO was already
+  // latched before the team went in: the recall of judge() fires only when the latch closes, which it had already done.
+  const newDanger = (ev.kind === 'critical-room' && s.hardware.critical.length > before.critical.length) || (ev.kind === 'mayday' && !before.mayday)
+  if (newDanger && s.team.mode === 'engaged') recallTeam(ctx, s)
 }
 
 /** True when a cell of the rest of the plan has become impassable (a passage the drone found blocked). */

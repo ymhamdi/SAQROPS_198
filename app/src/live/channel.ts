@@ -3,6 +3,7 @@
 
 import type { CopilotEntry } from '../copilot/pipeline'
 import type { Snapshot } from '../sim/protocol'
+import { isCopilotEntry, isSnapshot } from './validate'
 
 const NAME = 'pnr.live.v1'
 
@@ -17,7 +18,13 @@ export interface Channel {
 export function openChannel(onMessage: (m: LiveMessage) => void): Channel {
   if (typeof BroadcastChannel === 'undefined') return { post: () => {}, close: () => {} }
   const ch = new BroadcastChannel(NAME)
-  ch.onmessage = (e: MessageEvent<LiveMessage>) => onMessage(e.data)
+  // A message of an unexpected shape is dropped here, not rendered: one bad message must not unmount a window.
+  ch.onmessage = (e: MessageEvent<unknown>) => {
+    const m = e.data as { type?: unknown; snap?: unknown; entry?: unknown } | null
+    if (m?.type === 'hello') onMessage({ type: 'hello' })
+    else if (m?.type === 'snap' && isSnapshot(m.snap)) onMessage({ type: 'snap', snap: m.snap })
+    else if (m?.type === 'copilot' && isCopilotEntry(m.entry)) onMessage({ type: 'copilot', entry: m.entry })
+  }
   return {
     post: (m) => {
       try {

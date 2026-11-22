@@ -17,7 +17,7 @@ Une IA prévoit l'embrasement d'un local d'après les détecteurs de chaleur. Un
 
 <div align="center">
 
-**5** écrans reliés en direct · **3** modèles XGBoost sur **13** variables · **72 s** d'avance sur l'embrasement dans la démo (SIMULATED) · **120** essais réels pour juger l'IA · **13** règles de sécurité, chacune avec son test · **516** tests automatiques
+**5** écrans reliés en direct · **3** modèles XGBoost sur **13** variables · **72 s** d'avance sur l'embrasement dans la démo (SIMULATED) · **120** essais réels pour juger l'IA · **13** règles de sécurité, chacune avec son test · **555** tests automatiques
 
 </div>
 
@@ -271,6 +271,8 @@ Nous avons rejoué 105 essais UL FSRI dans notre moteur feu. L'écart quadratiqu
 | R12 | Tout ce qui vient de la répétition porte « RÉPÉTITION — SIMULATION » (cadre violet pointillé), jamais sur le HUD en direct ; le plan ne s'applique qu'après « Valider le plan (décision COS) » | [`plan.test.ts`](app/src/rehearsal/plan.test.ts), [`view.test.ts`](app/src/rehearsal/view.test.ts) |
 | R13 | Le matériel USB (drone ESP32, HUD STM32) ne peut qu'aggraver : une lecture au-dessus du seuil ou un MAYDAY force le NO-GO ; un capteur muet, un paquet perdu ou une lecture qui baisse ne ramènent jamais le GO ; un rejeu est étiqueté REPLAY, jamais « en direct » | [`ingest.test.ts`](app/src/hardware/ingest.test.ts), [`pipeline.test.ts`](app/src/hardware/pipeline.test.ts), [`replay.test.ts`](app/src/hardware/replay.test.ts), [`firmware.test.ts`](app/src/hardware/firmware.test.ts) |
 
+Un **audit de sécurité** (22/11, lecture du code) a relevé 12 pistes : 4 à valider, 8 réfutées, aucun secret ni injection ; le risque porte sur l'intégrité des règles, pas sur le vol de données. Les correctifs (rappel MAYDAY sous NO-GO verrouillé, étiquette d'un rejeu, vent illisible, messages du canal contrôlés, arbre XGBoost abîmé) ont chacun un test dans [`leads.test.ts`](app/src/security/leads.test.ts). Détail : [security/README.md](security/README.md).
+
 Le copilote de la tablette suit ses propres garde-fous (C1 à C8 : lecture seule, jamais oui ou non sur l'engagement, consignes lues telles qu'écrites, rien sur le HUD), testés dans [`guardrails.test.ts`](app/src/copilot/guardrails.test.ts).
 
 ---
@@ -302,7 +304,7 @@ Ouvrir <http://localhost:5173>. Aucun téléchargement de plus : toutes les donn
 À lancer dans `app/` :
 
 ```bash
-npm test           # 516 tests : règles R1 à R13, garde-fous du copilote, moteur feu, répétition, matériel, démo
+npm test           # 555 tests : règles R1 à R13, audit de sécurité, garde-fous du copilote, moteur feu, répétition, matériel, démo
 npm run typecheck  # vérification des types
 npm run build      # version de production dans app/dist
 npm run preview    # sert ce build sur http://localhost:4173
@@ -374,6 +376,7 @@ app/            application web : Vite + React + TypeScript, tests Vitest
 firmware/       croquis Arduino du drone (ESP32) et du HUD (STM32), câblage, résultats du banc
 data/           config.json (toutes les hypothèses), SOURCES.md, consignes.json
 ml/             données, entraînement, évaluation, modèles, MODEL_REPORT.md
+security/       audit de sécurité : rapport, pistes à valider, correctifs
 scripts/        fetch-weather.ts (vent Open-Meteo)
 ```
 

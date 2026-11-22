@@ -18,16 +18,20 @@ const KEEP = 50
 /** PC: the exchanges of the tablet, newest first, and the MAYDAYs not yet acknowledged. */
 export function useCopilotLog(): { entries: CopilotEntry[]; maydays: CopilotEntry[]; acknowledge: (id: string) => void } {
   const [entries, setEntries] = useState<CopilotEntry[]>([])
-  const [acked, setAcked] = useState<string[]>([])
+  // A MAYDAY stays on screen until the COS acknowledges it (C6): it is kept apart from the log, which is cut at KEEP, so that
+  // fifty later exchanges cannot push an unacknowledged MAYDAY out of the alert.
+  const [open, setOpen] = useState<CopilotEntry[]>([])
   useEffect(() => {
     const ch = openChannel((m) => {
-      if (m.type === 'copilot') setEntries((xs) => [m.entry, ...xs].slice(0, KEEP))
+      if (m.type !== 'copilot') return
+      setEntries((xs) => [m.entry, ...xs].slice(0, KEEP))
+      if (m.entry.mayday) setOpen((xs) => (xs.some((x) => x.id === m.entry.id) ? xs : [m.entry, ...xs]))
     })
     return () => ch.close()
   }, [])
   return {
     entries,
-    maydays: entries.filter((e) => e.mayday && !acked.includes(e.id)),
-    acknowledge: (id) => setAcked((xs) => [...xs, id]),
+    maydays: open,
+    acknowledge: (id) => setOpen((xs) => xs.filter((x) => x.id !== id)),
   }
 }
