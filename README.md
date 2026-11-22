@@ -17,7 +17,7 @@ Une IA prévoit l'embrasement d'un local d'après les détecteurs de chaleur. Un
 
 <div align="center">
 
-**5** écrans reliés en direct · **3** modèles XGBoost sur **13** variables · **72 s** d'avance sur l'embrasement dans la démo (SIMULATED) · **120** essais réels pour juger l'IA · **12** règles de sécurité, chacune avec son test · **327** tests automatiques
+**5** écrans reliés en direct · **3** modèles XGBoost sur **13** variables · **72 s** d'avance sur l'embrasement dans la démo (SIMULATED) · **120** essais réels pour juger l'IA · **13** règles de sécurité, chacune avec son test · **516** tests automatiques
 
 </div>
 
@@ -253,7 +253,7 @@ Nous avons rejoué 105 essais UL FSRI dans notre moteur feu. L'écart quadratiqu
 
 ---
 
-## 08 · Douze règles. Chacune a son test.
+## 08 · Treize règles. Chacune a son test.
 
 | | Règle | Test |
 |---|---|---|
@@ -269,6 +269,9 @@ Nous avons rejoué 105 essais UL FSRI dans notre moteur feu. L'écart quadratiqu
 | R10 | Une observation porte heure de prise de vue, position, confiance et source ; elle vieillit, et expirée le local repasse à INCONNU | [`known.test.ts`](app/src/knowledge/known.test.ts), [`indoor.test.ts`](app/src/drone/indoor.test.ts) |
 | R11 | La répétition ne lit jamais la vérité du simulateur : la modifier ne change aucun résultat | [`engine.test.ts`](app/src/rehearsal/engine.test.ts), [`view.test.ts`](app/src/rehearsal/view.test.ts), [`demo.test.ts`](app/src/demo/demo.test.ts) |
 | R12 | Tout ce qui vient de la répétition porte « RÉPÉTITION — SIMULATION » (cadre violet pointillé), jamais sur le HUD en direct ; le plan ne s'applique qu'après « Valider le plan (décision COS) » | [`plan.test.ts`](app/src/rehearsal/plan.test.ts), [`view.test.ts`](app/src/rehearsal/view.test.ts) |
+| R13 | Le matériel USB (drone ESP32, HUD STM32) ne peut qu'aggraver : une lecture au-dessus du seuil ou un MAYDAY force le NO-GO ; un capteur muet, un paquet perdu ou une lecture qui baisse ne ramènent jamais le GO ; un rejeu est étiqueté REPLAY, jamais « en direct » | [`ingest.test.ts`](app/src/hardware/ingest.test.ts), [`pipeline.test.ts`](app/src/hardware/pipeline.test.ts), [`replay.test.ts`](app/src/hardware/replay.test.ts), [`firmware.test.ts`](app/src/hardware/firmware.test.ts) |
+
+Le copilote de la tablette suit ses propres garde-fous (C1 à C8 : lecture seule, jamais oui ou non sur l'engagement, consignes lues telles qu'écrites, rien sur le HUD), testés dans [`guardrails.test.ts`](app/src/copilot/guardrails.test.ts).
 
 ---
 
@@ -299,7 +302,7 @@ Ouvrir <http://localhost:5173>. Aucun téléchargement de plus : toutes les donn
 À lancer dans `app/` :
 
 ```bash
-npm test           # 327 tests : règles R1 à R12, moteur feu, répétition, scénario de la démo, démo automatique
+npm test           # 516 tests : règles R1 à R13, garde-fous du copilote, moteur feu, répétition, matériel, démo
 npm run typecheck  # vérification des types
 npm run build      # version de production dans app/dist
 npm run preview    # sert ce build sur http://localhost:4173
@@ -342,6 +345,8 @@ Chaque hypothèse vit dans `data/config.json` avec sa source. Toutes les référ
 - Les hypothèses d'air et de vitesse sont des **ordres de grandeur à valider** par la Protection civile.
 - La position du binôme est factice (`MOCK`). En vrai, il faudrait localiser les pompiers à l'intérieur du bâtiment.
 - La vue du HUD est dessinée d'après le plan : ce n'est pas une caméra.
+- Le banc matériel est un prototype : deux cartes de développement, un capteur de pression et de température, un potentiomètre qui simule la bouteille. Plusieurs comportements restent non vérifiés sur carte (voir [firmware/README.md](firmware/README.md)).
+- Le copilote de la tablette est une première version : une liste fermée de questions et des boutons, sans reconnaissance vocale ni LLM dans `main`.
 - PNR **aide** à décider ; il ne décide pas : « Décision : COS ».
 
 <details>
@@ -364,12 +369,15 @@ app/            application web : Vite + React + TypeScript, tests Vitest
   src/twin        jumeau numérique
   src/demo        démonstration automatique (?demo=1)
   src/site        plan de l'atelier (grille 0,5 m)
+  src/hardware    liaison USB (Web Serial) : drone ESP32, HUD STM32, rejeu
+  src/copilot     copilote de la tablette : liste fermée de questions, réponses calculées par PNR
+firmware/       croquis Arduino du drone (ESP32) et du HUD (STM32), câblage, résultats du banc
 data/           config.json (toutes les hypothèses), SOURCES.md, consignes.json
 ml/             données, entraînement, évaluation, modèles, MODEL_REPORT.md
 scripts/        fetch-weather.ts (vent Open-Meteo)
 ```
 
-Une liaison matérielle par USB (drone sur ESP32, HUD sur STM32, via Web Serial) vit sur la branche `firmware`, séparée de `main` à dessein. Ses croquis Arduino n'ont **pas** été compilés ni testés sur carte.
+La liaison matérielle par USB (drone sur ESP32, HUD sur STM32, via Web Serial, Chrome ou Edge) est dans `main`. Les deux croquis ont été **compilés et téléversés le 22/11** sur les cartes du banc, et leurs lignes passent dans l'analyseur de l'application ; restent **non vérifiés sur carte** le MAYDAY déclenché à la main, la course complète du potentiomètre et le texte du LCD. Détail : [firmware/README.md](firmware/README.md).
 
 </details>
 
