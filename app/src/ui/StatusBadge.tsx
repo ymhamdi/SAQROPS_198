@@ -4,6 +4,7 @@ const TITLES: Record<DataStatus, string> = {
   OBSERVED: 'Mesure réelle',
   DERIVED: 'Calculé à partir de mesures',
   MODELED: 'Hypothèse, corrélation ou valeur normative',
+  REPLAY: 'Rejeu d’un enregistrement : pas une mesure',
   SIMULATED: 'Produit par la simulation, pas une mesure',
   MOCK: 'Valeur factice',
 }

@@ -148,6 +148,21 @@
     "obstacle": {
       "contactDelayS": { "value": 20, "unit": "s", "source": "Time a team loses when it meets a passage the plan does not show (a collapsed rack): it stops, sizes it up, reports it by radio and waits for the new route, all at working effort. Team assumption, to validate with the Protection civile", "status": "MODELED" }
     },
+    "hardware": {
+      "baudRate": { "value": 115200, "unit": "baud", "source": "Serial speed of the two USB microcontrollers (firmware/README.md): newline-delimited JSON. Team choice", "status": "MODELED" },
+      "triggerThresholdC": { "value": 35, "unit": "°C", "source": "Default reading of the drone payload above which a room counts as abnormal heat: it becomes a critical danger and the verdict goes NO-GO. Chosen so that a hairdryer triggers it in the demo; configurable in the hardware panel; to be replaced by a value validated with the Protection civile", "status": "MODELED" },
+      "demoFactor": { "value": 10, "unit": "×", "source": "Default factor applied to the payload's reading to show what an industrial fire would give. The scaled value is MODELED, never OBSERVED, and the factor is always shown with it; configurable in the hardware panel. Demo scaling, team choice", "status": "MODELED" },
+      "staleAfterS": { "value": 3, "unit": "s", "source": "A device with no packet for this long is shown as silent. Silence never lowers a danger or marks a room safe (hardware can only aggravate). Team choice", "status": "MODELED" },
+      "droneIntervalMs": { "value": 500, "unit": "ms", "source": "Interval of the drone payload's packets (two lines per cycle, temperature and altitude): firmware/drone_payload", "status": "MODELED" },
+      "hudIntervalMs": { "value": 400, "unit": "ms", "source": "Interval of the binôme HUD's air-pressure packets: firmware/binome_hud", "status": "MODELED" },
+      "roomAliases": { "value": { "sas-entree": "halle", "atelier": "halle", "stockage-solvants": "solvants" }, "unit": "mapping", "source": "The three rooms the payload firmware names, mapped to the rooms of the demo site (data/site/atelier.json): the entry airlock and the workshop are both seen in the production hall. Team choice", "status": "MODELED" },
+      "sampleCoolC": { "value": 24, "unit": "°C", "source": "Built-in demo sequence (hand-written, NOT a measurement): reading while the drone crosses the three rooms. Demo choice", "status": "MODELED" },
+      "samplePeakC": { "value": 48, "unit": "°C", "source": "Built-in demo sequence (hand-written, NOT a measurement): reading the payload ends on in the solvent store. Demo choice", "status": "MODELED" },
+      "sampleRoomDwellS": { "value": 6, "unit": "s", "source": "Built-in demo sequence: time spent in each room before the next. Demo choice", "status": "MODELED" },
+      "sampleHeatS": { "value": 16, "unit": "s", "source": "Built-in demo sequence: time the solvent store takes to go from the cool reading to the peak. Demo choice", "status": "MODELED" },
+      "sampleAriStartBar": { "value": 220, "unit": "bar", "source": "Built-in demo sequence: air pressure at the start. Demo choice", "status": "MODELED" },
+      "sampleAriEndBar": { "value": 110, "unit": "bar", "source": "Built-in demo sequence: air pressure at the end. Demo choice", "status": "MODELED" }
+    },
     "rehearsal": {
       "flashoverMarginS": { "value": 20, "unit": "s", "source": "A room becomes impassable in the rehearsal this long before the flashover the AI predicts for it. Safety margin, team assumption, to validate with the Protection civile", "status": "MODELED" },
       "playbackS": { "value": 8, "unit": "s", "source": "Wall-clock duration of the rehearsal replay in the self-playing demo (at ×20 the whole sequence must stay under 10 s). Team choice", "status": "MODELED" }

@@ -17,9 +17,11 @@ export type ReasonCode =
   | 'LATCHED'
   | 'ROOM_UNKNOWN'
   | 'DRONE_HOT'
+  | 'HARDWARE_HOT'
+  | 'HARDWARE_MAYDAY'
 
-/** Where a reason comes from: the AI and the indoor drone may only add reasons, never remove one (R1, R9). */
-export type ReasonSource = 'rules' | 'ai' | 'air' | 'route' | 'latch' | 'drone'
+/** Where a reason comes from: the AI, the indoor drone and the hardware may only add reasons, never remove one (R1, R9, R13). */
+export type ReasonSource = 'rules' | 'ai' | 'air' | 'route' | 'latch' | 'drone' | 'hardware'
 
 export interface Reason {
   code: ReasonCode

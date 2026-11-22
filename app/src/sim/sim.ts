@@ -7,6 +7,8 @@ import { aiMultiplier, aiReasons, predictRooms, type RoomPrediction } from '../d
 import { mergeAi } from '../danger/merge.ts'
 import { droneAt, droneParams, loopAround, planFlight, plumeOf, type DroneParams, type Flight, type Wind } from '../drone/drone.ts'
 import { indoorParams, planIndoor, senseIndoor, type IndoorKnown, type IndoorParams, type IndoorPlan } from '../drone/indoor.ts'
+import type { HardwareEvent } from '../hardware/ingest.ts'
+import { applyHardwareEvent, ariExtraUsedL, clearHardware, hardwareReasons, initialHardware, mergeHardware, shiftTrack, type HardwareState } from '../hardware/state.ts'
 import { knownReasons, mergeKnown, mergeKnowledge, type Known } from '../knowledge/known.ts'
 import type { Observation } from '../knowledge/observation.ts'
 import type { RehearsalPlan } from '../rehearsal/engine.ts'
@@ -118,6 +120,8 @@ export interface SimState {
   known: Known
   /** the plan the COS validated, or null (no rehearsal, or engaged without one) */
   plan: ValidatedPlan | null
+  /** what the USB hardware has told the simulation: it can only aggravate (R13) */
+  hardware: HardwareState
 }
 
 export function makeContext(site: Site, setup: FireSetup, params: FireParams, predictor: Predictor): SimContext {
@@ -178,6 +182,7 @@ export function initSim(ctx: SimContext, doors: boolean[], seed: number): SimSta
     contacts: [],
     known: mergeKnowledge(site.rooms.length, false, [], 0),
     plan: null,
+    hardware: initialHardware(),
   }
   observe(ctx, s)
   replan(ctx, s)
@@ -362,7 +367,7 @@ export function judge(ctx: SimContext, s: SimState) {
     if (o.condition === 'failed') reasons.push({ code: 'ROOM_FAILED', severity: 'no-go', message: `${name} : détecteurs hors service (> ${v(H.detectors.failureC)} °C au plafond)`, source: 'rules', status: o.status, room: r })
     else if (o.condition === 'hot') reasons.push({ code: 'ROOM_HOT', severity: 'caution', message: `${name} : fumées chaudes (${Math.round(o.tLastC)} °C au plafond)`, source: 'rules', status: o.status, room: r })
   }
-  if (s.team.track.length > 0 && s.team.mode !== 'out') reasons.push(...airReasons(s.team.track.slice(s.team.index), s.exitTravel, ctx.air))
+  if (s.team.track.length > 0 && s.team.mode !== 'out') reasons.push(...airReasons(airTrack(ctx, s), s.exitTravel, ctx.air))
   const base = verdictOf(reasons)
   s.computed = finalVerdict(ctx, s, base, involved)
   const before = s.latch.latched
@@ -382,15 +387,44 @@ export function judge(ctx: SimContext, s: SimState) {
 function judgeAfterReplan(ctx: SimContext, s: SimState) {
   const involved = involvedRooms(ctx, s)
   const reasons: Reason[] = []
-  if (s.team.track.length > 0) reasons.push(...airReasons(s.team.track.slice(s.team.index), s.exitTravel, ctx.air))
+  if (s.team.track.length > 0) reasons.push(...airReasons(airTrack(ctx, s), s.exitTravel, ctx.air))
   s.computed = finalVerdict(ctx, s, verdictOf(reasons), involved)
   s.shown = applyLatch(s.latch, s.computed, s.fire.t).shown
 }
 
-/** The rules' verdict, then the AI's reasons (R1), then the indoor drone's (R9): each can only add. */
+/** The rules' verdict, then the AI's reasons (R1), the indoor drone's (R9) and the hardware's (R13): each can only add. */
 function finalVerdict(ctx: SimContext, s: SimState, base: Verdict, involved: Set<number>): Verdict {
   const withAi = mergeAi(base, aiReasons(ctx.site, s.predictions, involved, ctx.predictor.dummy))
-  return mergeKnown(withAi, knownReasons(s.known, involved, (r) => ctx.site.rooms[r].name))
+  const withDrone = mergeKnown(withAi, knownReasons(s.known, involved, (r) => ctx.site.rooms[r].name))
+  return mergeHardware(withDrone, hardwareReasons(s.hardware, (r) => ctx.site.rooms[r].name))
+}
+
+/**
+ * The rest of the plan with the live cylinder pressure in it: if the cylinder reads lower than the model says, the point of
+ * no return is checked on the lower air. A fuller cylinder changes nothing (the live pressure can only make the PNR worse).
+ */
+function airTrack(ctx: SimContext, s: SimState): TrackPoint[] {
+  const rest = s.team.track.slice(s.team.index)
+  if (!s.hardware.ari) return rest
+  const modelUsedL = s.team.mode === 'standby' ? 0 : locate(s).airUsedL
+  return shiftTrack(rest, ariExtraUsedL(s.hardware, ctx.air, modelUsedL))
+}
+
+/**
+ * An event from the USB hardware (the browser sends it, the simulation judges it at once). Hardware can only aggravate
+ * (R13): the dangers it raises stay until the COS re-engages, and the verdict goes NO-GO the moment one is raised, with the
+ * team recalled if it is in.
+ */
+export function applyHardware(ctx: SimContext, s: SimState, ev: HardwareEvent): void {
+  const before = s.hardware
+  s.hardware = applyHardwareEvent(before, ev, s.fire.t)
+  if (ev.kind === 'critical-room' && s.hardware.critical.length > before.critical.length) {
+    const room = ev.room !== null ? ctx.site.rooms[ev.room].name : ev.roomName
+    s.notes.push({ t: s.fire.t, text: `Matériel : chaleur anormale relevée par la charge utile — ${room} (${ev.status})` })
+  } else if (ev.kind === 'mayday' && !before.mayday) {
+    s.notes.push({ t: s.fire.t, text: `Matériel : MAYDAY du chef de binôme (${ev.status})` })
+  }
+  judge(ctx, s)
 }
 
 /** True when a cell of the rest of the plan has become impassable (a passage the drone found blocked). */
@@ -591,6 +625,9 @@ export function evacuate(ctx: SimContext, s: SimState): void {
 export function reengageTeam(ctx: SimContext, s: SimState): void {
   if (!s.latch.latched) return
   s.latch = openLatch(s.latch, s.fire.t)
+  // The COS's decision also clears what the hardware raised; if a room is still hot, its next packet raises it again.
+  if (s.hardware.critical.length > 0 || s.hardware.mayday) s.notes.push({ t: s.fire.t, text: 'Matériel : dangers remis à zéro par le COS (décision COS).' })
+  s.hardware = clearHardware(s.hardware)
   if (s.team.mode === 'evacuating' || s.team.mode === 'out') s.team.mode = 'engaged'
   s.notes.push({ t: s.fire.t, text: 'Ré-engagement : décision COS.' })
   replan(ctx, s)
@@ -600,10 +637,14 @@ export function reengageTeam(ctx: SimContext, s: SimState): void {
 /** Live numbers of the team for the views. */
 export function teamNow(ctx: SimContext, s: SimState) {
   const here = s.team.mode === 'standby' ? { index: 0, cell: s.team.track[0]?.cell ?? -1, airUsedL: 0 } : locate(s)
-  const pnr = s.team.track.length ? checkPnr(s.team.track.slice(here.index), s.exitTravel, ctx.air) : null
+  // The cylinder's live pressure, when it reads lower than the model: the air and the PNR follow it (never the other way).
+  const extraL = ariExtraUsedL(s.hardware, ctx.air, here.airUsedL)
+  const pnr = s.team.track.length ? checkPnr(shiftTrack(s.team.track.slice(here.index), extraL), s.exitTravel, ctx.air) : null
   return {
     cell: here.cell,
-    bar: barAfter(ctx.air, here.airUsedL),
+    bar: barAfter(ctx.air, here.airUsedL + extraL),
+    /** the pressure shown is the cylinder's (OBSERVED, or REPLAY) because it is lower than the model's */
+    ariBinding: extraL > 0,
     exitBar: pnr?.exitBar ?? null,
     pnrMarginBar: pnr && Number.isFinite(pnr.worstMarginL) ? pnr.worstMarginL / ctx.air.cylinderL : null,
     toExitS: here.cell >= 0 ? s.exitTravel[here.cell] : null,

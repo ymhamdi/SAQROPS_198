@@ -35,6 +35,8 @@ export interface PlanProps {
   onFire: (at: Point) => void
   /** the drone layer and its thermal image: PC only (R5) */
   showDrone?: boolean
+  /** the room the real drone payload says it is in (USB hardware), if any */
+  hardwareDroneRoom?: number | null
 }
 
 export function roomBoxes(site: Site) {
@@ -61,7 +63,7 @@ function readingColour(c: number): string {
   return `rgb(${Math.round(249 + (217 - 249) * f)}, ${Math.round(171 + (48 - 171) * f)}, ${Math.round(0 + 37 * f)})`
 }
 
-export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = false }: PlanProps) {
+export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = false, hardwareDroneRoom = null }: PlanProps) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const boxes = useMemo(() => roomBoxes(site), [site])
   const base = useMemo(() => {
@@ -109,6 +111,42 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
     // Passages the indoor drone found blocked (a SIMULATED observation): the plan does not show them.
     ctx.fillStyle = '#9a5b2a'
     for (const cell of snap.known.blockedCells) ctx.fillRect((cell % site.width) * PX, ((cell / site.width) | 0) * PX, PX, PX)
+
+    // Rooms the USB hardware marked critical (R13): a heavy red frame, kept until the COS re-engages. For the production hall
+    // (the whole building) the frame would hide the plan, so it is drawn dashed and thin there.
+    for (const c of snap.hardware.critical) {
+      if (c.room === null) continue
+      const b = boxes[c.room]
+      const big = site.rooms[c.room].id === 'halle'
+      ctx.strokeStyle = '#d93025'
+      ctx.lineWidth = big ? 2 : 5
+      ctx.setLineDash(big ? [10, 6] : [])
+      ctx.strokeRect(b.x + 2, b.y + 2, b.w - 4, b.h - 4)
+      ctx.setLineDash([])
+      ctx.font = '700 12px Barlow, system-ui, sans-serif'
+      ctx.fillStyle = '#d93025'
+      ctx.fillText(big ? '⚠ chaleur anormale (matériel)' : '⚠ chaleur', b.x + 6, b.y + b.h - 8)
+    }
+    // Where the real drone payload says it is (a diamond; the simulated drone keeps its own, violet).
+    if (hardwareDroneRoom !== null) {
+      const c = site.rooms[hardwareDroneRoom].centre
+      const px = (c.x / site.cellM) * PX
+      const py = (c.y / site.cellM) * PX
+      ctx.fillStyle = '#e37400'
+      ctx.strokeStyle = '#fff'
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(px, py - 10)
+      ctx.lineTo(px + 8, py)
+      ctx.lineTo(px, py + 10)
+      ctx.lineTo(px - 8, py)
+      ctx.closePath()
+      ctx.fill()
+      ctx.stroke()
+      ctx.font = '700 11px Barlow, system-ui, sans-serif'
+      ctx.fillStyle = '#7a3e00'
+      ctx.fillText('drone matériel', px + 12, py + 4)
+    }
 
     const at = (p: Point) => ({ x: (p.x / site.cellM) * PX, y: (p.y / site.cellM) * PX })
     const centre = (cell: number) => at(cellCentre(site, cell))
@@ -284,7 +322,7 @@ export function Plan({ site, snap, truth, mode, onDoor, onFire, showDrone = fals
       ctx.fill()
       ctx.stroke()
     }
-  }, [site, snap, truth, base, boxes, showDrone])
+  }, [site, snap, truth, base, boxes, showDrone, hardwareDroneRoom])
 
   function click(ev: React.MouseEvent<HTMLCanvasElement>) {
     const cv = canvas.current!

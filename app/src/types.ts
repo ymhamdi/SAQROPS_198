@@ -1,10 +1,13 @@
 // Shared shapes of PNR. Coordinates on the plan: metres, x eastwards, y southwards, origin at the site's north-west
 // corner (the building plus its outdoor margin). Grid cells: row-major, index = row * width + col.
 
-/** How a value was obtained. SIMULATED and MOCK never look like OBSERVED (CLAUDE.md R3, §4). */
-export type DataStatus = 'OBSERVED' | 'DERIVED' | 'MODELED' | 'SIMULATED' | 'MOCK'
+/**
+ * How a value was obtained. SIMULATED, REPLAY and MOCK never look like OBSERVED (CLAUDE.md R3, §4). REPLAY: a recorded
+ * hardware session played back, never « en direct ».
+ */
+export type DataStatus = 'OBSERVED' | 'DERIVED' | 'MODELED' | 'REPLAY' | 'SIMULATED' | 'MOCK'
 
-export const DATA_STATUSES: readonly DataStatus[] = ['OBSERVED', 'DERIVED', 'MODELED', 'SIMULATED', 'MOCK']
+export const DATA_STATUSES: readonly DataStatus[] = ['OBSERVED', 'DERIVED', 'MODELED', 'REPLAY', 'SIMULATED', 'MOCK']
 
 /** A number shown to someone, always with how it was obtained. */
 export interface Labelled<T = number> {

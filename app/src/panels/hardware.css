@@ -1,0 +1,81 @@
+/* « Télémétrie matérielle ». Colour is never alone: every state also has a word. A REPLAY banner is amber and heavy, so that a
+   recording is never mistaken for the live link. */
+
+.hw-card {
+  display: grid;
+  gap: 8px;
+}
+
+.hw-device {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.hw-state {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hw-state.is-connected {
+  color: var(--green, #188038);
+}
+
+.hw-state.is-disconnected {
+  color: var(--text-2, #5f6368);
+}
+
+.hw-state.is-replay {
+  color: #8a4b00;
+}
+
+.hw-silent,
+.hw-error {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: #8c1d18;
+}
+
+.hw-banner {
+  margin: 0;
+  padding: 6px 10px;
+  border: 2px dotted #8a4b00;
+  background: #fff3d6;
+  color: #5c3200;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.hw-banner.is-global {
+  flex: 1 1 100%;
+}
+
+.hw-settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 13px;
+}
+
+.hw-settings input {
+  width: 78px;
+  min-height: 30px;
+  padding: 0 6px;
+  font: inherit;
+  border: 1px solid var(--line, #dadce0);
+  border-radius: 6px;
+}
+
+.hw-dangers {
+  margin: 0;
+  padding: 8px 10px;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  border-left: 4px solid var(--red, #d93025);
+  background: rgba(217, 48, 37, 0.07);
+  font-size: 14px;
+  font-weight: 600;
+}

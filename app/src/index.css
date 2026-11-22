@@ -209,6 +209,13 @@ button {
   background: repeating-linear-gradient(-45deg, rgba(95, 99, 104, 0.18) 0 2px, transparent 2px 5px);
 }
 
+/* A recording played back: dotted and slanted, never the plain solid badge of a live measurement. */
+.badge-replay {
+  border-style: dotted;
+  border-width: 2px;
+  font-style: italic;
+}
+
 /* A drill or simulation: a double border no measured value ever carries. */
 .badge-simulated {
   border: 3px double currentColor;

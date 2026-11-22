@@ -43,6 +43,14 @@ Challenge Aero-Entrepreneur (Tunisian Aeroday × Protection civile × INJAZ). Ge
   direct (violet, pointillé). La répétition n'apparaît jamais sur le HUD en direct. Le plan ne s'applique qu'après
   « Valider le plan (décision COS) » ; « Engager sans répétition » reste toujours possible.
   → app/src/rehearsal/plan.test.ts, app/src/rehearsal/view.test.ts
+- R13 Le matériel USB (drone ESP32, HUD binôme STM32) ne peut qu'aggraver, comme l'IA (R1) et le drone d'intérieur (R9) : une
+  lecture du drone au-dessus du seuil rend le local critique et le verdict NO-GO ; un MAYDAY force le NO-GO et rappelle
+  l'équipe ; la pression de la bouteille alimente le PNR si elle est plus basse que celle du modèle. Une lecture qui baisse, un
+  capteur silencieux, un paquet manquant, une bouteille plus pleine que le modèle ne rendent jamais un local sûr et ne
+  ramènent jamais le verdict à GO : seul le COS efface (« Ré-engager (Décision : COS) », journalisé, qui envoie GO au HUD).
+  Un rejeu est étiqueté REPLAY sous une bannière qui ne dit jamais « en direct » ; « REJEU d'une mesure réelle » est réservé
+  aux fichiers enregistrés par l'application depuis l'USB (la séquence intégrée, écrite à la main, dit qu'elle n'est pas une
+  mesure). → app/src/hardware/hardwareSim.test.ts, ingest.test.ts, replay.test.ts, pipeline.test.ts, firmware.test.ts
 
 Copilote vocal de la tablette (app/src/copilot, server/) : le LLM comprend la question, PNR fournit la réponse.
 Tests : app/src/copilot/guardrails.test.ts (C1–C8), app/src/copilot/copilot.test.ts, server/tests.
@@ -68,7 +76,9 @@ OBSERVED mesure réelle (courbes NIST FCD, essais UL FSRI) · DERIVED calculé d
 analyse de modèle météo, pas une mesure sur site) · MODELED nos hypothèses, corrélations et valeurs normatives (EN 137,
 SFPE : hypothèse que l'équipement/le site est conforme), ET les données d'entraînement NIST P-Flash (simulations CFAST
 du NIST, pas des mesures) · SIMULATED sortie du moteur feu pendant la démo, image thermique du drone, liaison
-BroadcastChannel · MOCK getRealPosition(). worstStatus : OBSERVED < DERIVED < MODELED < SIMULATED < MOCK ; une valeur
+BroadcastChannel · MOCK getRealPosition() · REPLAY un enregistrement matériel rejoué (jamais « en direct »). Les valeurs
+reçues en direct par l'USB sont OBSERVED ; la température × facteur du mode démo est MODELED, facteur affiché.
+worstStatus : OBSERVED < DERIVED < MODELED < REPLAY < SIMULATED < MOCK ; une valeur
 vaut son entrée la plus faible (la prédiction IA affichée en démo est donc SIMULATED).
 
 ## 5. Architecture
@@ -108,6 +118,14 @@ app/src/demo/    démonstration automatique (?demo=1, ou ?view=hud|tablet|twin&d
                  §9 (feu, drone, engagement, porte fermée, ré-engagement) à partir du seul snapshot, sans la vérité du
                  simulateur (R5 testé) ; useDemo.ts l'applique au worker et règle la vitesse (allures dans config.json,
                  hypotheses.demo) ; DemoHost/DemoBar = fenêtre autonome et bandeau de légendes (sans mot de verdict : R2)
+app/src/hardware/ liaison USB par Web Serial (Chrome, Edge ; aucun serveur) : protocol.ts (lignes JSON, jamais d'exception sur le
+                 bruit), serialManager.ts (deux ports, débranchement et écriture en échec survécus, alertes au HUD
+                 dédoublonnées), ingest.ts (ce qu'un paquet peut faire : seulement aggraver, R13), state.ts + sim (dangers
+                 persistants, PNR sur la pression lue), gate.ts, replay.ts (enregistrement pnr-replay.json, rejeu déterministe,
+                 séquence intégrée), useHardware.ts ; panneau panels/HardwarePanel.tsx
+firmware/        drone_payload (ESP32 + GY-BMP280 + microswitch) et binome_hud (STM32 + potentiomètre + IR + LCD) : croquis
+                 Arduino, README de câblage et de protocole ; non compilés ici, mais tenus à l'accord avec l'application par
+                 app/src/hardware/firmware.test.ts
 ml/              kaggle/pnr-flashover.ipynb (notebook exporté de Kaggle), train.py (même code), prepare.py (NIST xlsx →
                  Parquet), generate.ts (plan B : Node → CSV sur l'atelier), model/ (model-*.json, metrics.json,
                  golden.csv), MODEL_REPORT.md

@@ -1,7 +1,7 @@
 import type { Reason } from '../stats/verdict'
 import { StatusBadge } from '../ui/StatusBadge'
 
-const SOURCE_LABEL: Record<Reason['source'], string> = { rules: 'Règles', ai: 'IA', air: 'Air', route: 'Itinéraire', latch: 'Verrou', drone: 'Drone' }
+const SOURCE_LABEL: Record<Reason['source'], string> = { rules: 'Règles', ai: 'IA', air: 'Air', route: 'Itinéraire', latch: 'Verrou', drone: 'Drone', hardware: 'Matériel' }
 
 /** The reasons of a verdict, each with where it comes from and how it was obtained (R3). */
 export function ReasonList({ reasons }: { reasons: Reason[] }) {
